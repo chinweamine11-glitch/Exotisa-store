@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exotisa Store - متجر التطبيقات الاحترافي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS متغيرات الألوان والخطوط المحدثة */
+        :root {
+            --primary-color: #000000; /* أسود - لون رئيسي */
+            --primary-dark: #1a1a1a;
+            --secondary-color: #1e3a8a; /* أزرق - لون ثانوي */
+            --accent-color: #f59e0b; /* أصفر - للحواف */
+            --alert-color: #dc2626; /* أحمر - للتنبيهات */
+            --dark-color: #111827;
+            --light-color: #f9fafb;
+            --gradient-bg: linear-gradient(135deg, #000000 0%, #1e3a8a 100%);
+            --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            --success-color: #10b981;
+            --danger-color: var(--alert-color);
+            --warning-color: var(--accent-color);
+            --info-color: #3b82f6;
+            --border-radius: 16px;
+            --box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            --box-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --transition-fast: all 0.2s ease;
+        }
+
+        /* CSS إعادة الضبط والإعدادات العامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            font-weight: 400;
+        }
+
+        /* خلفيات متغيرة محسنة */
+        .bg-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            animation: zoomEffect 30s infinite alternate;
+        }
+
+        @keyframes zoomEffect {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .bg-slide.active {
+            opacity: 0.2;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(248,250,252,0.98) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* رأس الموقع مع تأثيرات ثلاثية الأبعاد */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 2px solid var(--accent-color);
+            color: var(--dark-color);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.9rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            perspective: 1000px;
+        }
+
+        .logo-icon {
+            background: var(--gradient-bg);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            transform: rotateY(15deg);
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--accent-color);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotateY(0deg) scale(1.1);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.8rem;
+        }
+
+        nav a {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 700;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+        nav a:hover::before, nav a.active::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary-color);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            width: 350px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .search-container:focus-within {
+            box-shadow: 0 6px 24px rgba(30, 58, 138, 0.2);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .search-container input {
+            background: transparent;
+            border: none;
+            color: var(--dark-color);
+            width: 100%;
+            padding: 0.5rem;
+            outline: none;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .search-container input::placeholder {
+            color: rgba(17, 24, 39, 0.5);
+        }
+
+        .search-container button {
+            background: transparent;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition-fast);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .search-container button:hover {
+            background-color: rgba(30, 58, 138, 0.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--gradient-bg);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            transition: var(--transition);
+            border: 2px solid var(--accent-color);
+        }
+
+        .mobile-menu-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        /* قسم الهيرو مع تأثيرات ثلاثية الأبعاد */
+        .hero {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            color: var(--dark-color);
+            margin-bottom: 1.8rem;
+            line-height: 1.1;
+            font-weight: 900;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transform: translateZ(30px);
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #374151;
+            margin-bottom: 2.5rem;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 1.8rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-bg);
+            color: white;
+            transform: translateZ(20px);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-8px) translateZ(30px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(30, 58, 138, 0.2);
+        }
+
+        /* ميزات الموقع مع تأثيرات 3D */
+        .features {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4.5rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            color: var(--dark-color);
+            margin-bottom: 1.2rem;
+            font-weight: 900;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background: var(--accent-color);
+            border-radius: 5px;
+        }
+
+        .section-title p {
+            color: #4b5563;
+            max-width: 750px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+            perspective: 1000px;
+        }
+
+        .feature-card {
+            background: var(--card-gradient);
+            border-radius: var(--border-radius);
+            padding: 3rem 2.2rem;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 2px solid var(--accent-color);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-bg);
+            z-index: 2;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .feature-icon {
+            width: 90px;
+            height: 90px;
+            background: var(--gradient-bg);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2.5rem;
+            color: white;
+            transform: translateZ(30px);
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--accent-color);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: translateZ(50px) scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.7rem;
+            margin-bottom: 1.2rem;
+            color: var(--dark-color);
+            font-weight: 800;
+        }
+
+        .feature-card p {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* قسم التطبيقات مع تصميم ثلاثي الأبعاد */
+        .apps-section {
+            padding: 6rem 0;
+            background-color: #f8fafc;
+            position: relative;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 4rem;
+        }
+
+        .category-btn {
+            padding: 0.9rem 2.2rem;
+            background-color: white;
+            border: 2px solid var(--accent-color);
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--gradient-bg);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+            z-index: -1;
+        }
+
+        .category-btn:hover::before, .category-btn.active::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            color: white;
+            border-color: transparent;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+            perspective: 1200px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            transform-style: preserve-3d;
+            position: relative;
+            border: 2px solid var(--accent-color);
+        }
+
+        .app-card:hover {
+            transform: translateY(-12px) rotateY(5deg);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .app-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .app-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .app-card:hover .app-image img {
+            transform: scale(1.08);
+        }
+
+        .app-category {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient-bg);
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateZ(20px);
+            border: 1px solid var(--accent-color);
+        }
+
+        .app-info {
+            padding: 2rem;
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark-color);
+            font-weight: 800;
+        }
+
+        .app-description {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.7;
+            height: 80px;
+            overflow: hidden;
+        }
+
+        .app-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.8rem;
+            color: #6b7280;
+            font-size: 0.95rem;
+            border-top: 2px solid #e5e7eb;
+            padding-top: 1.2rem;
+        }
+
+        .app-rating {
+            color: var(--warning-color);
+            font-weight: 700;
+        }
+
+        .app-download-btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: var(--gradient-bg);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1.05rem;
+            transform: translateZ(20px);
+            border: 2px solid var(--accent-color);
+        }
+
+        .app-download-btn:hover {
+            transform: translateY(-5px) translateZ(30px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* قسم كيفية التنزيل */
+        .how-to {
+            padding: 6rem 0;
+            background-color: white;
+            position: relative;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            margin-top: 4rem;
+            perspective: 1000px;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 280px;
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .step-number {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-bg);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0 auto 2rem;
+            transform: translateZ(30px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            border: 2px solid var(--accent-color);
+        }
+
+        .step:hover .step-number {
+            transform: translateZ(50px) scale(1.1);
+        }
+
+        .step h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+            color: var(--dark-color);
+            font-weight: 800;
+        }
+
+        /* تذييل الصفحة */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5rem 0 2.5rem;
+            position: relative;
+            overflow: hidden;
+            border-top: 3px solid var(--accent-color);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-links a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+            font-size: 1.05rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+            transform: translateX(-8px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2.5rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        /* وضع المطور - مخفي تماماً */
+        .developer-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 480px;
+            height: 100vh;
+            background: white;
+            z-index: 2000;
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.2);
+            transition: right 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow-y: auto;
+            padding: 2.5rem;
+            border-radius: 20px 0 0 20px;
+            border-right: 4px solid var(--accent-color);
+            display: none;
+        }
+
+        .developer-panel.active {
+            right: 0;
+            display: block;
+        }
+
+        .developer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 3px solid #e5e7eb;
+        }
+
+        .developer-header h2 {
+            color: var(--dark-color);
+            font-size: 1.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .developer-header h2 i {
+            color: var(--accent-color);
+        }
+
+        .close-panel {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            border: 2px solid var(--accent-color);
+        }
+
+        .close-panel:hover {
+            transform: rotate(90deg);
+        }
+
+        .developer-form .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .developer-form label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .developer-form input,
+        .developer-form select,
+        .developer-form textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .developer-form input:focus,
+        .developer-form select:focus,
+        .developer-form textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+        }
+
+        .developer-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            position: relative;
+            border: 2px dashed var(--accent-color);
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload:hover {
+            border-color: var(--secondary-color);
+            background: rgba(30, 58, 138, 0.03);
+        }
+
+        .file-upload input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn-developer-action {
+            flex: 1;
+            padding: 1.1rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-upload {
+            background: var(--success-color);
+            color: white;
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-upload:hover {
+            background: #0da271;
+            transform: translateY(-5px);
+        }
+
+        .btn-manage {
+            background: var(--info-color);
+            color: white;
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-manage:hover {
+            background: #2563eb;
+            transform: translateY(-5px);
+        }
+
+        .uploaded-apps-list {
+            margin-top: 2.5rem;
+            border-top: 3px solid #e5e7eb;
+            padding-top: 2rem;
+        }
+
+        .uploaded-apps-list h3 {
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            font-weight: 800;
+        }
+
+        .uploaded-app-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border: 2px solid #e5e7eb;
+        }
+
+        .uploaded-app-item:hover {
+            background: #f3f4f6;
+            transform: translateX(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .app-item-info h4 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .app-item-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: var(--warning-color);
+            color: var(--dark-color);
+            margin-right: 0.5rem;
+            border: 1px solid var(--accent-color);
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+            border: 1px solid var(--accent-color);
+        }
+
+        /* تنبيهات */
+        .alert {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            z-index: 3000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid var(--accent-color);
+        }
+
+        .alert.active {
+            transform: translateX(0);
+        }
+
+        .alert-success {
+            background: var(--success-color);
+        }
+
+        .alert-error {
+            background: var(--danger-color);
+        }
+
+        .alert-info {
+            background: var(--info-color);
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 1200px) {
+            .container {
+                width: 96%;
+            }
+            
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            nav {
+                order: 3;
+                width: 100%;
+                margin-top: 1.5rem;
+                display: none;
+            }
+            
+            nav.active {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 0;
+                background: white;
+                border-radius: 16px;
+                padding: 1rem 0;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                border: 2px solid var(--accent-color);
+            }
+            
+            nav li {
+                width: 100%;
+            }
+            
+            nav a {
+                display: block;
+                padding: 1.2rem 2rem;
+                border-radius: 0;
+                border-bottom: 2px solid rgba(245, 158, 11, 0.1);
+            }
+            
+            nav a::before {
+                display: none;
+            }
+            
+            .search-container {
+                order: 2;
+                width: 100%;
+                margin: 1.5rem 0 0;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.4rem;
+            }
+            
+            .developer-panel {
+                width: 90%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .features-grid,
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step {
+                max-width: 100%;
+            }
+            
+            .developer-panel {
+                width: 100%;
+                border-radius: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- خلفيات متغيرة محسنة -->
+    <div class="bg-slideshow">
+        <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1611605698335-8b1569810432?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');"></div>
+    </div>
+    <div class="bg-overlay"></div>
+
+    <!-- رأس الموقع -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="logo-text">
+                    Exotisa Store
+                    <span>متجر التطبيقات الاحترافي</span>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="#home" class="active">الرئيسية</a></li>
+                    <li><a href="#apps">التطبيقات</a></li>
+                    <li><a href="#categories">الفئات</a></li>
+                    <li><a href="#how-to">كيفية التنزيل</a></li>
+                    <li><a href="#about">حول المتجر</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="ابحث عن تطبيق...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- قسم الهيرو -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>مرحبًا بكم في <span class="gradient-text">Exotisa Store</span></h1>
+            <p>منصة احترافية آمنة وسهلة لتحميل أحدث تطبيقات الأندرويد. نحن نضمن جودة وأمان جميع التطبيقات مع تحديثات مستمرة ودعم فني على مدار الساعة. انضم إلى مجتمعنا المكون من أكثر من مليون مستخدم راضٍ حول العالم.</p>
+            <div class="hero-btns">
+                <a href="#apps" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> استكشاف التطبيقات
+                </a>
+                <a href="#how-to" class="btn btn-secondary">
+                    <i class="fas fa-play-circle"></i> شاهد كيفية التنزيل
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الميزات -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>لماذا Exotisa Store؟</h2>
+                <p>نقدم لك تجربة فريدة في تحميل تطبيقات الأندرويد مع ضمان الأمان والسرعة والجودة العالية</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>حماية وأمان كامل</h3>
+                    <p>جميع التطبيقات تمر بعملية فحص دقيقة باستخدام أحدث أنظمة الكشف عن البرمجيات الضارة والفيروسات.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>سرعات تنزيل خارقة</h3>
+                    <p>سرعات تنزيل عالية مع خوادم موزعة عالميًا تضمن وصول التطبيق إليك في أسرع وقت ممكن.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>جودة وتحديثات مستمرة</h3>
+                    <p>نختار أفضل التطبيقات وأكثرها طلبًا مع تحديثات فورية لأحدث الإصدارات مباشرة بعد إطلاقها.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم التطبيقات -->
+    <section class="apps-section" id="apps">
+        <div class="container">
+            <div class="section-title">
+                <h2>التطبيقات الشائعة</h2>
+                <p>اكتشف أفضل التطبيقات المختارة بعناية من قبل فريقنا المتخصص</p>
+            </div>
+            
+            <div class="categories" id="categories">
+                <button class="category-btn active" data-category="all">الكل</button>
+                <button class="category-btn" data-category="social">التواصل الاجتماعي</button>
+                <button class="category-btn" data-category="entertainment">ترفيه</button>
+                <button class="category-btn" data-category="tools">أدوات</button>
+                <button class="category-btn" data-category="games">ألعاب</button>
+                <button class="category-btn" data-category="productivity">إنتاجية</button>
+            </div>
+            
+            <div class="apps-grid" id="appsContainer">
+                <!-- سيتم ملء التطبيقات بواسطة JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم كيفية التنزيل -->
+    <section class="how-to" id="how-to">
+        <div class="container">
+            <div class="section-title">
+                <h2>كيفية تنزيل التطبيقات</h2>
+                <p>اتبع هذه الخطوات البسيطة لتحميل التطبيقات على جهازك بنجاح</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>ابحث عن التطبيق</h3>
+                    <p>استخدم شريط البحث أو تصفح الفئات للعثور على التطبيق الذي تريده.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>انقر على زر التنزيل</h3>
+                    <p>اضغط على زر "تنزيل" الموجود في صفحة التطبيق لبدء عملية التنزيل.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>قم بتثبيت التطبيق</h3>
+                    <p>بعد اكتمال التنزيل، افتح الملف وقم بتثبيت التطبيق على جهازك.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>استمتع بالتطبيق</h3>
+                    <p>ابدأ باستخدام التطبيق فور اكتمال التثبيت واستمتع بميزاته الرائعة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- تذييل الصفحة -->
+    <footer id="about">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Exotisa Store</h3>
+                    <p>منصة رائدة لتحميل تطبيقات الأندرويد الآمنة والمجانية. نحن نضمن جودة وأمان جميع التطبيقات المتاحة على منصتنا مع تحديثات مستمرة ودعم فني متميز.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#apps">التطبيقات</a></li>
+                        <li><a href="#categories">الفئات</a></li>
+                        <li><a href="#how-to">كيفية التنزيل</a></li>
+                        <li><a href="#about">حول المتجر</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>الفئات</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" data-category="social">التواصل الاجتماعي</a></li>
+                        <li><a href="#" data-category="entertainment">الترفيه</a></li>
+                        <li><a href="#" data-category="tools">الأدوات</a></li>
+                        <li><a href="#" data-category="games">الألعاب</a></li>
+                        <li><a href="#" data-category="productivity">الإنتاجية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>اتصل بنا</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:support@exotisastore.com">support@exotisastore.com</a></li>
+                        <li><a href="#">الشروط والأحكام</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">مركز المساعدة</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2023 Exotisa Store. جميع التطبيقات هي ملكية لأصحابها الأصليين.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- وضع المطور - مخفي تماماً -->
+    <div class="developer-panel" id="developerPanel">
+        <div class="developer-header">
+            <h2><i class="fas fa-code"></i> لوحة تحكم المطور</h2>
+            <button class="close-panel" id="closeDeveloperPanel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="developer-form">
+            <div class="form-group">
+                <label for="appName">اسم التطبيق</label>
+                <input type="text" id="appName" placeholder="أدخل اسم التطبيق">
+            </div>
+            
+            <div class="form-group">
+                <label for="appDescription">وصف التطبيق</label>
+                <textarea id="appDescription" placeholder="أدخل وصفًا تفصيليًا للتطبيق"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="appCategory">فئة التطبيق</label>
+                <select id="appCategory">
+                    <option value="social">التواصل الاجتماعي</option>
+                    <option value="entertainment">ترفيه</option>
+                    <option value="tools">أدوات</option>
+                    <option value="games">ألعاب</option>
+                    <option value="productivity">إنتاجية</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="appVersion">إصدار التطبيق</label>
+                <input type="text" id="appVersion" placeholder="مثال: 2.5.1">
+            </div>
+            
+            <div class="form-group">
+                <label for="appSize">حجم التطبيق (MB)</label>
+                <input type="number" id="appSize" placeholder="مثال: 45">
+            </div>
+            
+            <div class="form-group">
+                <label>رفع ملف APK (GitHub)</label>
+                <div class="file-upload">
+                    <input type="file" id="appFile" accept=".apk">
+                    <i class="fab fa-github"></i>
+                    <p>سيتم رفع الملف إلى خوادم GitHub</p>
+                    <small>الحد الأقصى لحجم الملف: 500 ميجابايت</small>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>صورة التطبيق (من الجهاز)</label>
+                <div class="file-upload" id="imageUploadContainer">
+                    <input type="file" id="appImageFile" accept="image/*">
+                    <i class="fas fa-image"></i>
+                    <p>اسحب وأفلت صورة التطبيق هنا أو انقر للاختيار</p>
+                    <small>الصيغ المدعومة: JPG, PNG, GIF - الحد الأقصى: 5 ميجابايت</small>
+                </div>
+                <div id="imagePreview" style="margin-top: 10px; display: none;">
+                    <img id="previewImage" src="" alt="معاينة الصورة" style="max-width: 100%; max-height: 150px; border-radius: 8px;">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="githubUrl">رابط GitHub (اختياري)</label>
+                <input type="text" id="githubUrl" placeholder="https://github.com/username/repository">
+            </div>
+            
+            <div class="form-buttons">
+                <button class="btn-developer-action btn-upload" id="uploadAppBtn">
+                    <i class="fas fa-upload"></i> رفع التطبيق إلى GitHub
+                </button>
+                <button class="btn-developer-action btn-manage" id="manageAppsBtn">
+                    <i class="fas fa-cog"></i> إدارة التطبيقات
+                </button>
+            </div>
+        </div>
+        
+        <div class="uploaded-apps-list" id="uploadedAppsList" style="display: none;">
+            <h3>التطبيقات التي قمت برفعها</h3>
+            <div id="uploadedAppsContainer">
+                <!-- سيتم ملء التطبيقات المرفوعة بواسطة JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- تنبيهات -->
+    <div class="alert" id="alertMessage">
+        <i class="fas fa-check-circle"></i>
+        <span id="alertText">تم رفع التطبيق بنجاح!</span>
+    </div>
+
+    <script>
+        // بيانات التطبيقات الأولية
+        const appsData = [
+            {
+                id: 1,
+                name: "واتساب الذهبي",
+                description: "إصدار متطور من واتساب مع ميزات إضافية مثل إخفاء الظهور، إرسال ملفات كبيرة، تخصيص الواجهة، وتخطي القيود.",
+                category: "social",
+                size: "58",
+                version: "2.23.15",
+                rating: 4.9,
+                downloads: "12M+",
+                image: "https://images.unsplash.com/photo-1611605698335-8b1569810432?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/whatsapp-gold/releases",
+                downloadUrl: "https://github.com/exotisastore/whatsapp-gold/releases/download/v2.23.15/WhatsAppGold.apk"
+            },
+            {
+                id: 2,
+                name: "يوتيوب بريميوم",
+                description: "استمتع بتجربة يوتيوب بدون إعلانات مع إمكانية تشغيل الفيديوهات في الخلفية وتحميلها للعرض بدون إنترنت.",
+                category: "entertainment",
+                size: "135",
+                version: "18.35.40",
+                rating: 4.8,
+                downloads: "8M+",
+                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/youtube-premium/releases",
+                downloadUrl: "https://github.com/exotisastore/youtube-premium/releases/download/v18.35.40/YouTubePremium.apk"
+            },
+            {
+                id: 3,
+                name: "تطبيق التقويم الذكي",
+                description: "تطبيق تقويم متطور يتزامن مع جميع تقويماتك ويتنبأ بأحداثك القادمة مع إشعارات ذكية وتكامل مع التطبيقات الأخرى.",
+                category: "productivity",
+                size: "32",
+                version: "3.8.2",
+                rating: 4.6,
+                downloads: "3M+",
+                image: "https://images.unsplash.com/photo-1586773860418-dc22f8b874bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/smart-calendar/releases",
+                downloadUrl: "https://github.com/exotisastore/smart-calendar/releases/download/v3.8.2/SmartCalendar.apk"
+            },
+            {
+                id: 4,
+                name: "لعبة السيارة السريعة",
+                description: "لعبة سباق سيارات واقعية مع جرافيك عالي الدقة ومركبات متعددة ومسارات متنوعة حول العالم. تجربة غامرة كاملة.",
+                category: "games",
+                size: "950",
+                version: "1.8.7",
+                rating: 4.7,
+                downloads: "65M+",
+                image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/fast-racing/releases",
+                downloadUrl: "https://github.com/exotisastore/fast-racing/releases/download/v1.8.7/FastRacing.apk"
+            },
+            {
+                id: 5,
+                name: "انستغرام الذهبي",
+                description: "إصدار معدل من انستغرام مع ميزات إضافية مثل تنزيل القصص، رؤية المشاهدات، إزالة الإعلانات، وتخصيص الواجهة.",
+                category: "social",
+                size: "78",
+                version: "285.5.0.21",
+                rating: 4.7,
+                downloads: "15M+",
+                image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/instagram-gold/releases",
+                downloadUrl: "https://github.com/exotisastore/instagram-gold/releases/download/v285.5.0.21/InstagramGold.apk"
+            },
+            {
+                id: 6,
+                name: "مشغل الفيديو المتقدم",
+                description: "مشغل فيديو قوي يدعم جميع الصيغ مع ميزات تحسين الجودة والترجمة التلقائية وميزات التحكم المتقدمة وتشغيل 4K.",
+                category: "tools",
+                size: "45",
+                version: "6.2.1",
+                rating: 4.5,
+                downloads: "5M+",
+                image: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/advanced-video-player/releases",
+                downloadUrl: "https://github.com/exotisastore/advanced-video-player/releases/download/v6.2.1/AdvancedVideoPlayer.apk"
+            },
+            {
+                id: 7,
+                name: "تطبيق الملاحظات الذكية",
+                description: "تطبيق ملاحظات متقدم يدعم التعرف على الصوت، المزامنة السحابية، التصنيف الذكي والبحث المتقدم في النصوص.",
+                category: "productivity",
+                size: "28",
+                version: "4.2.0",
+                rating: 4.4,
+                downloads: "2M+",
+                image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/smart-notes/releases",
+                downloadUrl: "https://github.com/exotisastore/smart-notes/releases/download/v4.2.0/SmartNotes.apk"
+            },
+            {
+                id: 8,
+                name: "لعبة الألغاز الذهنية",
+                description: "لعبة ألغاز ممتعة مع أكثر من 1000 مستوى تحدي، جرافيك جميل وتحديثات أسبوعية بمستويات جديدة.",
+                category: "games",
+                size: "120",
+                version: "2.3.4",
+                rating: 4.8,
+                downloads: "25M+",
+                image: "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                developer: "system",
+                githubUrl: "https://github.com/exotisastore/brain-puzzles/releases",
+                downloadUrl: "https://github.com/exotisastore/brain-puzzles/releases/download/v2.3.4/BrainPuzzles.apk"
+            }
+        ];
+
+        // DOM جاهز
+        document.addEventListener('DOMContentLoaded', function() {
+            const appsContainer = document.getElementById('appsContainer');
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mainNav = document.getElementById('mainNav');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const developerPanel = document.getElementById('developerPanel');
+            const closeDeveloperPanelBtn = document.getElementById('closeDeveloperPanel');
+            const alertMessage = document.getElementById('alertMessage');
+            const alertText = document.getElementById('alertText');
+            const uploadAppBtn = document.getElementById('uploadAppBtn');
+            const manageAppsBtn = document.getElementById('manageAppsBtn');
+            const uploadedAppsList = document.getElementById('uploadedAppsList');
+            const uploadedAppsContainer = document.getElementById('uploadedAppsContainer');
+            const appImageFile = document.getElementById('appImageFile');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            
+            // كود تنشيط وضع المطور (مشفر ومخفي تماماً)
+            const developerCode = "2381741Exotisastore";
+            let developerMode = false;
+            
+            // التحقق من وضع المطور المخزن
+            const savedDeveloperMode = localStorage.getItem('exotisaDeveloperMode');
+            if (savedDeveloperMode === 'true') {
+                developerMode = true;
+                addDeveloperButton();
+            }
+            
+            // خلفيات متغيرة
+            const bgSlides = document.querySelectorAll('.bg-slide');
+            let currentBgSlide = 0;
+            
+            // تهيئة التطبيقات من localStorage أو البيانات الأولية
+            let storedApps = JSON.parse(localStorage.getItem('exotisaApps')) || appsData;
+            
+            // عرض جميع التطبيقات عند التحميل
+            displayApps();
+            
+            // عرض جميع التطبيقات
+            function displayApps(category = 'all') {
+                appsContainer.innerHTML = '';
+                
+                const filteredApps = category === 'all' 
+                    ? storedApps 
+                    : storedApps.filter(app => app.category === category);
+                
+                filteredApps.forEach(app => {
+                    const appCard = document.createElement('div');
+                    appCard.className = 'app-card';
+                    appCard.innerHTML = `
+                        <div class="app-image">
+                            <img src="${app.image}" alt="${app.name}" loading="lazy">
+                            <div class="app-category">${getCategoryName(app.category)}</div>
+                        </div>
+                        <div class="app-info">
+                            <h3 class="app-title">${app.name}</h3>
+                            <p class="app-description">${app.description}</p>
+                            <div class="app-meta">
+                                <span class="app-size"><i class="fas fa-download"></i> ${app.size} MB</span>
+                                <span class="app-rating"><i class="fas fa-star"></i> ${app.rating}</span>
+                                <span class="app-version">الإصدار: ${app.version}</span>
+                            </div>
+                            <button class="app-download-btn" data-app-id="${app.id}">
+                                <i class="fas fa-download"></i> تنزيل التطبيق
+                            </button>
+                            ${app.developer !== 'system' ? '<div style="margin-top:10px; font-size:0.8rem; color:#1e3a8a;"><i class="fab fa-github"></i> رفع المطور عبر GitHub</div>' : ''}
+                        </div>
+                    `;
+                    appsContainer.appendChild(appCard);
+                });
+                
+                // إضافة مستمعي الأحداث لأزرار التنزيل
+                document.querySelectorAll('.app-download-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const appId = this.getAttribute('data-app-id');
+                        const app = storedApps.find(a => a.id == appId);
+                        downloadApp(app);
+                    });
+                });
+            }
+            
+            // الحصول على اسم الفئة بالعربية
+            function getCategoryName(category) {
+                const categories = {
+                    'social': 'التواصل الاجتماعي',
+                    'entertainment': 'ترفيه',
+                    'tools': 'أدوات',
+                    'games': 'ألعاب',
+                    'productivity': 'الإنتاجية'
+                };
+                return categories[category] || category;
+            }
+            
+            // تنزيل تطبيق حقيقي
+            function downloadApp(app) {
+                showAlert(`جاري بدء تنزيل ${app.name}...`, 'info');
+                
+                // إنشاء رابط تنزيل حقيقي
+                const downloadBtn = document.querySelector(`.app-download-btn[data-app-id="${app.id}"]`);
+                const originalText = downloadBtn.innerHTML;
+                
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التنزيل...';
+                downloadBtn.disabled = true;
+                
+                // محاكاة التنزيل لمدة 2 ثانية
+                setTimeout(() => {
+                    // إنشاء رابط تنزيل وهمي (في الواقع سيكون رابط GitHub حقيقي)
+                    const downloadUrl = app.downloadUrl || `https://github.com/exotisastore/${app.name.replace(/\s+/g, '-').toLowerCase()}/releases/download/v${app.version}/${app.name.replace(/\s+/g, '')}.apk`;
+                    
+                    // إنشاء عنصر <a> خفي للتنزيل
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.download = `${app.name.replace(/\s+/g, '_')}_v${app.version}.apk`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    showAlert(`تم تنزيل ${app.name} بنجاح! الرجاء تثبيت التطبيق`, 'success');
+                    
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = originalText;
+                        downloadBtn.disabled = false;
+                    }, 3000);
+                }, 2000);
+            }
+            
+            // تصفية التطبيقات حسب الفئة
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // إزالة النشاط من جميع الأزرار
+                    categoryButtons.forEach(b => b.classList.remove('active'));
+                    // إضافة النشاط للزر المحدد
+                    this.classList.add('active');
+                    
+                    // تصفية التطبيقات حسب الفئة المحددة
+                    const category = this.getAttribute('data-category');
+                    displayApps(category);
+                });
+            });
+            
+            // الروابط في التذييل
+            document.querySelectorAll('.footer-links a[data-category]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-category');
+                    
+                    // تنشيط زر الفئة المناسب
+                    categoryButtons.forEach(b => {
+                        b.classList.toggle('active', b.getAttribute('data-category') === category);
+                    });
+                    
+                    // عرض التطبيقات حسب الفئة
+                    displayApps(category);
+                    
+                    // التمرير إلى قسم التطبيقات
+                    document.getElementById('apps').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // القائمة المتنقلة
+            mobileMenuBtn.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                this.innerHTML = mainNav.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // إغلاق القائمة عند النقر على رابط
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 992) {
+                        mainNav.classList.remove('active');
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
+            });
+            
+            // البحث
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') performSearch();
+            });
+            
+            function performSearch() {
+                const query = searchInput.value.trim();
+                
+                // التحقق من كود المطور
+                if (query === developerCode) {
+                    // تنشيط وضع المطور
+                    developerMode = true;
+                    localStorage.setItem('exotisaDeveloperMode', 'true');
+                    searchInput.value = '';
+                    developerPanel.classList.add('active');
+                    addDeveloperButton();
+                    showAlert('تم تفعيل وضع المطور بنجاح!', 'success');
+                    return;
+                }
+                
+                if (query) {
+                    // البحث في التطبيقات
+                    const searchResults = storedApps.filter(app => 
+                        app.name.toLowerCase().includes(query.toLowerCase()) || 
+                        app.description.toLowerCase().includes(query.toLowerCase())
+                    );
+                    
+                    if (searchResults.length > 0) {
+                        displaySearchResults(searchResults);
+                        showAlert(`تم العثور على ${searchResults.length} تطبيق`, 'info');
+                    } else {
+                        showAlert('لم يتم العثور على تطبيقات تطابق بحثك', 'error');
+                    }
+                    
+                    searchInput.value = '';
+                }
+            }
+            
+            // عرض نتائج البحث
+            function displaySearchResults(results) {
+                appsContainer.innerHTML = '';
+                results.forEach(app => {
+                    const appCard = document.createElement('div');
+                    appCard.className = 'app-card';
+                    appCard.innerHTML = `
+                        <div class="app-image">
+                            <img src="${app.image}" alt="${app.name}" loading="lazy">
+                            <div class="app-category">${getCategoryName(app.category)}</div>
+                        </div>
+                        <div class="app-info">
+                            <h3 class="app-title">${app.name}</h3>
+                            <p class="app-description">${app.description}</p>
+                            <div class="app-meta">
+                                <span class="app-size"><i class="fas fa-download"></i> ${app.size} MB</span>
+                                <span class="app-rating"><i class="fas fa-star"></i> ${app.rating}</span>
+                                <span class="app-version">الإصدار: ${app.version}</span>
+                            </div>
+                            <button class="app-download-btn" data-app-id="${app.id}">
+                                <i class="fas fa-download"></i> تنزيل التطبيق
+                            </button>
+                        </div>
+                    `;
+                    appsContainer.appendChild(appCard);
+                });
+                
+                // إعادة إضافة مستمعي الأحداث لأزرار التنزيل
+                document.querySelectorAll('.app-download-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const appId = this.getAttribute('data-app-id');
+                        const app = storedApps.find(a => a.id == appId);
+                        downloadApp(app);
+                    });
+                });
+            }
+            
+            // إضافة زر المطور بعد تفعيله
+            function addDeveloperButton() {
+                // التحقق من عدم وجود الزر بالفعل
+                if (document.querySelector('.btn-developer')) return;
+                
+                // إنشاء زر المطور
+                const developerBtn = document.createElement('button');
+                developerBtn.className = 'btn btn-developer';
+                developerBtn.id = 'openDeveloperPanel';
+                developerBtn.innerHTML = '<i class="fas fa-code"></i> وضع المطور';
+                developerBtn.style.background = 'linear-gradient(135deg, var(--accent-color) 0%, #d97706 100%)';
+                developerBtn.style.color = 'white';
+                developerBtn.style.border = '2px solid var(--accent-color)';
+                
+                // إضافة الزر إلى قسم الأزرار
+                const heroBtns = document.querySelector('.hero-btns');
+                if (heroBtns) {
+                    heroBtns.appendChild(developerBtn);
+                    
+                    // إضافة مستمع الحدث للزر
+                    developerBtn.addEventListener('click', function() {
+                        developerPanel.classList.add('active');
+                    });
+                }
+            }
+            
+            // عرض تنبيه
+            function showAlert(message, type = 'info') {
+                alertText.textContent = message;
+                alertMessage.className = `alert alert-${type} active`;
+                
+                setTimeout(() => {
+                    alertMessage.classList.remove('active');
+                }, 4000);
+            }
+            
+            // تبديل خلفيات الموقع
+            function changeBackground() {
+                bgSlides[currentBgSlide].classList.remove('active');
+                currentBgSlide = (currentBgSlide + 1) % bgSlides.length;
+                bgSlides[currentBgSlide].classList.add('active');
+            }
+            
+            // بدء تبديل الخلفيات كل 8 ثواني
+            setInterval(changeBackground, 8000);
+            
+            // معاينة صورة التطبيق
+            appImageFile.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // إغلاق لوحة المطور
+            closeDeveloperPanelBtn.addEventListener('click', function() {
+                developerPanel.classList.remove('active');
+            });
+            
+            // إغلاق لوحة المطور بالنقر خارجها
+            document.addEventListener('click', function(event) {
+                if (!developerPanel.contains(event.target) && developerPanel.classList.contains('active')) {
+                    const developerBtn = document.getElementById('openDeveloperPanel');
+                    if (!developerBtn || !developerBtn.contains(event.target)) {
+                        developerPanel.classList.remove('active');
+                    }
+                }
+            });
+            
+            // رفع تطبيق جديد إلى GitHub
+            uploadAppBtn.addEventListener('click', function() {
+                const appName = document.getElementById('appName').value.trim();
+                const appDescription = document.getElementById('appDescription').value.trim();
+                const appCategory = document.getElementById('appCategory').value;
+                const appVersion = document.getElementById('appVersion').value.trim();
+                const appSize = document.getElementById('appSize').value.trim();
+                const githubUrl = document.getElementById('githubUrl').value.trim();
+                
+                if (!appName || !appDescription || !appVersion || !appSize) {
+                    showAlert('يرجى ملء جميع الحقول المطلوبة', 'error');
+                    return;
+                }
+                
+                // استخدام الصورة المحملة من الجهاز أو صورة افتراضية
+                let appImage = getDefaultImage(appCategory);
+                if (previewImage.src) {
+                    appImage = previewImage.src;
+                }
+                
+                // إنشاء رابط تنزيل GitHub (وهمي في هذا المثال)
+                const downloadUrl = githubUrl ? `${githubUrl}/releases/download/v${appVersion}/${appName.replace(/\s+/g, '')}.apk` : 
+                    `https://github.com/exotisastore/${appName.replace(/\s+/g, '-').toLowerCase()}/releases/download/v${appVersion}/${appName.replace(/\s+/g, '')}.apk`;
+                
+                // إنشاء تطبيق جديد
+                const newApp = {
+                    id: Date.now(), // استخدام الوقت الحالي كمعرف فريد
+                    name: appName,
+                    description: appDescription,
+                    category: appCategory,
+                    size: appSize,
+                    version: appVersion,
+                    rating: (4 + Math.random()).toFixed(1), // تقييم عشوائي بين 4 و 5
+                    downloads: "0+",
+                    image: appImage,
+                    developer: "user",
+                    githubUrl: githubUrl || `https://github.com/exotisastore/${appName.replace(/\s+/g, '-').toLowerCase()}`,
+                    downloadUrl: downloadUrl
+                };
+                
+                // إضافة التطبيق إلى القائمة
+                storedApps.unshift(newApp);
+                
+                // حفظ في localStorage
+                localStorage.setItem('exotisaApps', JSON.stringify(storedApps));
+                
+                // عرض التطبيق في المتجر
+                displayApps('all');
+                
+                // إعادة تعيين النموذج
+                document.getElementById('appName').value = '';
+                document.getElementById('appDescription').value = '';
+                document.getElementById('appVersion').value = '';
+                document.getElementById('appSize').value = '';
+                document.getElementById('appImageFile').value = '';
+                document.getElementById('githubUrl').value = '';
+                document.getElementById('appFile').value = '';
+                imagePreview.style.display = 'none';
+                
+                // تنشيط فئة "الكل"
+                categoryButtons.forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-category') === 'all');
+                });
+                
+                showAlert(`تم رفع تطبيق ${appName} بنجاح إلى GitHub!`, 'success');
+            });
+            
+            // الحصول على صورة افتراضية حسب الفئة
+            function getDefaultImage(category) {
+                const defaultImages = {
+                    'social': 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+                    'entertainment': 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+                    'tools': 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+                    'games': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+                    'productivity': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
+                };
+                
+                return defaultImages[category] || 'https://images.unsplash.com/photo-1611605698335-8b1569810432?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80';
+            }
+            
+            // إدارة التطبيقات (عرض التطبيقات المرفوعة من قبل المستخدم)
+            manageAppsBtn.addEventListener('click', function() {
+                const userApps = storedApps.filter(app => app.developer === 'user');
+                
+                if (userApps.length === 0) {
+                    uploadedAppsContainer.innerHTML = '<p style="text-align:center; color:#777;">لم تقم برفع أي تطبيقات بعد</p>';
+                } else {
+                    uploadedAppsContainer.innerHTML = '';
+                    userApps.forEach(app => {
+                        const appItem = document.createElement('div');
+                        appItem.className = 'uploaded-app-item';
+                        appItem.innerHTML = `
+                            <div class="app-item-info">
+                                <h4>${app.name}</h4>
+                                <p>${getCategoryName(app.category)} | ${app.size} MB | الإصدار: ${app.version}</p>
+                                <small><i class="fab fa-github"></i> ${app.githubUrl || 'لا يوجد رابط GitHub'}</small>
+                            </div>
+                            <div class="app-item-actions">
+                                <button class="btn-edit" data-app-id="${app.id}">تعديل</button>
+                                <button class="btn-delete" data-app-id="${app.id}">حذف</button>
+                            </div>
+                        `;
+                        uploadedAppsContainer.appendChild(appItem);
+                    });
+                    
+                    // إضافة مستمعي الأحداث لأزرار التعديل والحذف
+                    document.querySelectorAll('.btn-edit').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const appId = this.getAttribute('data-app-id');
+                            editApp(appId);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.btn-delete').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const appId = this.getAttribute('data-app-id');
+                            deleteApp(appId);
+                        });
+                    });
+                }
+                
+                uploadedAppsList.style.display = 'block';
+            });
+            
+            // تعديل تطبيق
+            function editApp(appId) {
+                const app = storedApps.find(a => a.id == appId);
+                if (app) {
+                    document.getElementById('appName').value = app.name;
+                    document.getElementById('appDescription').value = app.description;
+                    document.getElementById('appCategory').value = app.category;
+                    document.getElementById('appVersion').value = app.version;
+                    document.getElementById('appSize').value = app.size;
+                    document.getElementById('githubUrl').value = app.githubUrl || '';
+                    
+                    // إذا كانت الصورة من base64، عرضها
+                    if (app.image.startsWith('data:image')) {
+                        previewImage.src = app.image;
+                        imagePreview.style.display = 'block';
+                    }
+                    
+                    // تغيير زر الرفع إلى زر التحديث
+                    uploadAppBtn.innerHTML = '<i class="fas fa-sync-alt"></i> تحديث التطبيق';
+                    uploadAppBtn.onclick = function() {
+                        updateApp(appId);
+                    };
+                    
+                    showAlert(`جاري تعديل تطبيق ${app.name}`, 'info');
+                }
+            }
+            
+            // تحديث تطبيق
+            function updateApp(appId) {
+                const appIndex = storedApps.findIndex(a => a.id == appId);
+                if (appIndex !== -1) {
+                    const appName = document.getElementById('appName').value.trim();
+                    const appDescription = document.getElementById('appDescription').value.trim();
+                    const appCategory = document.getElementById('appCategory').value;
+                    const appVersion = document.getElementById('appVersion').value.trim();
+                    const appSize = document.getElementById('appSize').value.trim();
+                    const githubUrl = document.getElementById('githubUrl').value.trim();
+                    
+                    if (!appName || !appDescription || !appVersion || !appSize) {
+                        showAlert('يرجى ملء جميع الحقول المطلوبة', 'error');
+                        return;
+                    }
+                    
+                    // تحديث رابط التنزيل
+                    const downloadUrl = githubUrl ? `${githubUrl}/releases/download/v${appVersion}/${appName.replace(/\s+/g, '')}.apk` : 
+                        `https://github.com/exotisastore/${appName.replace(/\s+/g, '-').toLowerCase()}/releases/download/v${appVersion}/${appName.replace(/\s+/g, '')}.apk`;
+                    
+                    // تحديث التطبيق
+                    storedApps[appIndex] = {
+                        ...storedApps[appIndex],
+                        name: appName,
+                        description: appDescription,
+                        category: appCategory,
+                        size: appSize,
+                        version: appVersion,
+                        githubUrl: githubUrl || `https://github.com/exotisastore/${appName.replace(/\s+/g, '-').toLowerCase()}`,
+                        downloadUrl: downloadUrl,
+                        image: previewImage.src || storedApps[appIndex].image
+                    };
+                    
+                    // حفظ في localStorage
+                    localStorage.setItem('exotisaApps', JSON.stringify(storedApps));
+                    
+                    // إعادة عرض التطبيقات
+                    displayApps('all');
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('appName').value = '';
+                    document.getElementById('appDescription').value = '';
+                    document.getElementById('appVersion').value = '';
+                    document.getElementById('appSize').value = '';
+                    document.getElementById('appImageFile').value = '';
+                    document.getElementById('githubUrl').value = '';
+                    imagePreview.style.display = 'none';
+                    
+                    // إعادة زر الرفع إلى حالته الأصلية
+                    uploadAppBtn.innerHTML = '<i class="fas fa-upload"></i> رفع التطبيق إلى GitHub';
+                    uploadAppBtn.onclick = function() {
+                        uploadAppBtn.click();
+                    };
+                    
+                    showAlert(`تم تحديث تطبيق ${appName} بنجاح!`, 'success');
+                    
+                    // تحديث قائمة التطبيقات المرفوعة
+                    manageAppsBtn.click();
+                }
+            }
+            
+            // حذف تطبيق
+            function deleteApp(appId) {
+                if (confirm('هل أنت متأكد من حذف هذا التطبيق؟')) {
+                    const appIndex = storedApps.findIndex(a => a.id == appId);
+                    if (appIndex !== -1) {
+                        const appName = storedApps[appIndex].name;
+                        storedApps.splice(appIndex, 1);
+                        
+                        // حفظ في localStorage
+                        localStorage.setItem('exotisaApps', JSON.stringify(storedApps));
+                        
+                        // إعادة عرض التطبيقات
+                        displayApps('all');
+                        
+                        // تحديث قائمة التطبيقات المرفوعة
+                        manageAppsBtn.click();
+                        
+                        showAlert(`تم حذف تطبيق ${appName} بنجاح`, 'success');
+                    }
+                }
+            }
+            
+            // إضافة تأثيرات عند التمرير
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 100) {
+                    header.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+                    header.style.backdropFilter = 'blur(20px)';
+                    header.style.borderBottom = `2px solid var(--accent-color)`;
+                } else {
+                    header.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.08)';
+                    header.style.backdropFilter = 'blur(15px)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
