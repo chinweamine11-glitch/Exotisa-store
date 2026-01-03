@@ -5125,5 +5125,491 @@
             }
         }
     </script>
+
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // تكوين Supabase
+        const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+        
+        // إنشاء Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // ==================== وظائف الأقسام ====================
+        
+        // جلب جميع الأقسام
+        async function fetchCategories() {
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .select('*')
+                    .order('name', { ascending: true });
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب الأقسام:', error);
+                return [];
+            }
+        }
+        
+        // إضافة قسم جديد
+        async function addCategory(name, icon, description) {
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .insert([{ name, icon, description }])
+                    .select();
+                
+                if (error) throw error;
+                console.log('تم إضافة القسم بنجاح:', data);
+                return data;
+            } catch (error) {
+                console.error('خطأ في إضافة القسم:', error);
+                return null;
+            }
+        }
+        
+        // ==================== وظائف التطبيقات ====================
+        
+        // جلب جميع التطبيقات
+        async function fetchApps(categoryId = null, featured = null) {
+            try {
+                let query = supabase
+                    .from('apps')
+                    .select(`
+                        *,
+                        categories (
+                            id,
+                            name,
+                            icon
+                        )
+                    `)
+                    .order('created_at', { ascending: false });
+                
+                if (categoryId) {
+                    query = query.eq('category_id', categoryId);
+                }
+                
+                if (featured !== null) {
+                    query = query.eq('is_featured', featured);
+                }
+                
+                const { data, error } = await query;
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب التطبيقات:', error);
+                return [];
+            }
+        }
+        
+        // جلب تطبيق واحد مع التقييمات
+        async function fetchAppById(appId) {
+            try {
+                const { data, error } = await supabase
+                    .from('apps')
+                    .select(`
+                        *,
+                        categories (
+                            id,
+                            name,
+                            icon
+                        ),
+                        reviews (
+                            id,
+                            rating,
+                            comment,
+                            created_at,
+                            users (
+                                username,
+                                full_name,
+                                avatar_url
+                            )
+                        )
+                    `)
+                    .eq('id', appId)
+                    .single();
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب التطبيق:', error);
+                return null;
+            }
+        }
+        
+        // إضافة تطبيق جديد
+        async function addApp(appData) {
+            try {
+                const { data, error } = await supabase
+                    .from('apps')
+                    .insert([appData])
+                    .select();
+                
+                if (error) throw error;
+                console.log('تم إضافة التطبيق بنجاح:', data);
+                return data;
+            } catch (error) {
+                console.error('خطأ في إضافة التطبيق:', error);
+                return null;
+            }
+        }
+        
+        // تحديث تطبيق
+        async function updateApp(appId, updates) {
+            try {
+                const { data, error } = await supabase
+                    .from('apps')
+                    .update(updates)
+                    .eq('id', appId)
+                    .select();
+                
+                if (error) throw error;
+                console.log('تم تحديث التطبيق بنجاح:', data);
+                return data;
+            } catch (error) {
+                console.error('خطأ في تحديث التطبيق:', error);
+                return null;
+            }
+        }
+        
+        // حذف تطبيق
+        async function deleteApp(appId) {
+            try {
+                const { error } = await supabase
+                    .from('apps')
+                    .delete()
+                    .eq('id', appId);
+                
+                if (error) throw error;
+                console.log('تم حذف التطبيق بنجاح');
+                return true;
+            } catch (error) {
+                console.error('خطأ في حذف التطبيق:', error);
+                return false;
+            }
+        }
+        
+        // البحث في التطبيقات
+        async function searchApps(searchTerm) {
+            try {
+                const { data, error } = await supabase
+                    .from('apps')
+                    .select(`
+                        *,
+                        categories (
+                            id,
+                            name,
+                            icon
+                        )
+                    `)
+                    .or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,developer.ilike.%${searchTerm}%`);
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في البحث:', error);
+                return [];
+            }
+        }
+        
+        // زيادة عدد التنزيلات
+        async function incrementDownloads(appId) {
+            try {
+                // جلب العدد الحالي
+                const { data: app } = await supabase
+                    .from('apps')
+                    .select('downloads')
+                    .eq('id', appId)
+                    .single();
+                
+                // تحديث العدد
+                const { error } = await supabase
+                    .from('apps')
+                    .update({ downloads: (app?.downloads || 0) + 1 })
+                    .eq('id', appId);
+                
+                if (error) throw error;
+                return true;
+            } catch (error) {
+                console.error('خطأ في تحديث التنزيلات:', error);
+                return false;
+            }
+        }
+        
+        // ==================== وظائف المستخدمين ====================
+        
+        // إنشاء مستخدم جديد
+        async function createUser(username, email, fullName) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .insert([{ 
+                        username, 
+                        email, 
+                        full_name: fullName,
+                        avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random`
+                    }])
+                    .select();
+                
+                if (error) throw error;
+                console.log('تم إنشاء المستخدم بنجاح:', data);
+                return data;
+            } catch (error) {
+                console.error('خطأ في إنشاء المستخدم:', error);
+                return null;
+            }
+        }
+        
+        // جلب مستخدم
+        async function getUser(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب المستخدم:', error);
+                return null;
+            }
+        }
+        
+        // ==================== وظائف التقييمات ====================
+        
+        // إضافة تقييم
+        async function addReview(appId, userId, rating, comment) {
+            try {
+                const { data, error } = await supabase
+                    .from('reviews')
+                    .insert([{ app_id: appId, user_id: userId, rating, comment }])
+                    .select();
+                
+                if (error) throw error;
+                
+                // تحديث متوسط التقييم للتطبيق
+                await updateAppRating(appId);
+                
+                console.log('تم إضافة التقييم بنجاح:', data);
+                return data;
+            } catch (error) {
+                console.error('خطأ في إضافة التقييم:', error);
+                return null;
+            }
+        }
+        
+        // تحديث متوسط التقييم للتطبيق
+        async function updateAppRating(appId) {
+            try {
+                // جلب جميع التقييمات للتطبيق
+                const { data: reviews } = await supabase
+                    .from('reviews')
+                    .select('rating')
+                    .eq('app_id', appId);
+                
+                if (reviews && reviews.length > 0) {
+                    // حساب المتوسط
+                    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+                    
+                    // تحديث التطبيق
+                    await supabase
+                        .from('apps')
+                        .update({ rating: avgRating.toFixed(1) })
+                        .eq('id', appId);
+                }
+            } catch (error) {
+                console.error('خطأ في تحديث التقييم:', error);
+            }
+        }
+        
+        // جلب تقييمات تطبيق
+        async function getAppReviews(appId) {
+            try {
+                const { data, error } = await supabase
+                    .from('reviews')
+                    .select(`
+                        *,
+                        users (
+                            username,
+                            full_name,
+                            avatar_url
+                        )
+                    `)
+                    .eq('app_id', appId)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب التقييمات:', error);
+                return [];
+            }
+        }
+        
+        // ==================== وظائف التنزيلات ====================
+        
+        // تسجيل تنزيل
+        async function recordDownload(appId, userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('user_downloads')
+                    .insert([{ app_id: appId, user_id: userId }])
+                    .select();
+                
+                if (error) {
+                    // إذا كان المستخدم قد نزل التطبيق من قبل
+                    if (error.code === '23505') {
+                        console.log('المستخدم قام بتنزيل هذا التطبيق من قبل');
+                        return null;
+                    }
+                    throw error;
+                }
+                
+                // زيادة عدد التنزيلات
+                await incrementDownloads(appId);
+                
+                return data;
+            } catch (error) {
+                console.error('خطأ في تسجيل التنزيل:', error);
+                return null;
+            }
+        }
+        
+        // جلب تنزيلات المستخدم
+        async function getUserDownloads(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('user_downloads')
+                    .select(`
+                        *,
+                        apps (
+                            id,
+                            name,
+                            icon_url,
+                            developer,
+                            rating
+                        )
+                    `)
+                    .eq('user_id', userId)
+                    .order('downloaded_at', { ascending: false });
+                
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('خطأ في جلب التنزيلات:', error);
+                return [];
+            }
+        }
+        
+        // ==================== وظائف مساعدة ====================
+        
+        // عرض التطبيقات في الصفحة
+        async function displayApps(containerId = 'apps-container') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '<div class="loading">جاري تحميل التطبيقات...</div>';
+            
+            const apps = await fetchApps();
+            
+            if (apps.length === 0) {
+                container.innerHTML = '<div class="no-apps">لا توجد تطبيقات حالياً</div>';
+                return;
+            }
+            
+            container.innerHTML = apps.map(app => `
+                <div class="app-card" data-app-id="${app.id}">
+                    <img src="${app.icon_url || 'https://via.placeholder.com/80'}" alt="${app.name}" class="app-icon">
+                    <div class="app-info">
+                        <h3>${app.name}</h3>
+                        <p class="app-developer">${app.developer || 'مطور غير معروف'}</p>
+                        <div class="app-rating">
+                            <i class="fas fa-star"></i>
+                            <span>${app.rating || '0.0'}</span>
+                        </div>
+                        <p class="app-description">${app.description || ''}</p>
+                        <button class="download-btn" onclick="downloadApp('${app.id}')">
+                            <i class="fas fa-download"></i> تحميل
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // تحميل تطبيق
+        async function downloadApp(appId) {
+            try {
+                // يمكنك إضافة نظام تسجيل دخول هنا
+                // const userId = getCurrentUserId(); // احصل على معرف المستخدم الحالي
+                
+                await incrementDownloads(appId);
+                
+                const app = await fetchAppById(appId);
+                if (app && app.download_url) {
+                    window.open(app.download_url, '_blank');
+                } else {
+                    alert('رابط التحميل غير متوفر');
+                }
+            } catch (error) {
+                console.error('خطأ في التحميل:', error);
+                alert('حدث خطأ أثناء التحميل');
+            }
+        }
+        
+        // تحميل البيانات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('✅ Supabase متصل بنجاح!');
+            console.log('📦 جاري تحميل البيانات...');
+            
+            // تحميل التطبيقات إذا كان هناك container
+            if (document.getElementById('apps-container')) {
+                await displayApps();
+            }
+            
+            // تحميل الأقسام
+            const categories = await fetchCategories();
+            console.log('📂 الأقسام:', categories);
+            
+            console.log('✨ تم تحميل البيانات بنجاح!');
+        });
+        
+        // ==================== أمثلة للاستخدام ====================
+        
+        /*
+        // مثال: إضافة قسم جديد
+        addCategory('ألعاب', 'fa-gamepad', 'ألعاب ممتعة ومسلية');
+        
+        // مثال: إضافة تطبيق جديد
+        addApp({
+            name: 'تطبيق رائع',
+            description: 'وصف قصير للتطبيق',
+            long_description: 'وصف طويل ومفصل للتطبيق',
+            icon_url: 'https://example.com/icon.png',
+            category_id: 'uuid-of-category',
+            developer: 'اسم المطور',
+            version: '1.0.0',
+            size: '15 MB',
+            price: 0.00,
+            download_url: 'https://example.com/download',
+            is_featured: true,
+            is_new: true
+        });
+        
+        // مثال: البحث عن تطبيقات
+        searchApps('لعبة').then(apps => {
+            console.log('نتائج البحث:', apps);
+        });
+        
+        // مثال: إضافة تقييم
+        addReview('app-uuid', 'user-uuid', 5, 'تطبيق رائع جداً!');
+        */
+    </script>
+
 </body>
 </html>
