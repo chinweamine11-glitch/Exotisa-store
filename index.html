@@ -6,470 +6,653 @@
     <title>Exotisa Store - متجر التطبيقات المتكامل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* تحسينات وتحسينات للأداء */
+        /* === Reset & Variables === */
         :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #166088;
-            --accent-color: #17a2b8;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-            --gray-color: #6c757d;
+            --primary: #4a6fa5;
+            --primary-dark: #166088;
+            --secondary: #17a2b8;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
             --light-gray: #e9ecef;
             --border-radius: 12px;
-            --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --primary-gradient: linear-gradient(135deg, #4a6fa5 0%, #166088 100%);
-            --glass-effect: rgba(255, 255, 255, 0.15);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
 
         [data-theme="dark"] {
-            --primary-color: #5a8fd6;
-            --secondary-color: #2c7bb6;
-            --light-color: #1a1d28;
-            --dark-color: #f0f0f0;
-            --light-gray: #2d3748;
-            --gray-color: #a0aec0;
-            --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-            --glass-effect: rgba(0, 0, 0, 0.2);
+            --light: #121212;
+            --dark: #f8f9fa;
+            --light-gray: #2d2d2d;
+            --gray: #adb5bd;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
 
         body {
-            background: var(--light-color);
-            color: var(--dark-color);
-            transition: var(--transition);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
             line-height: 1.6;
-            min-height: 100vh;
+            transition: var(--transition);
         }
 
-        /* تحسينات الأداء للصور */
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* تحسينات التحميل */
-        .lazy-load {
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .lazy-load.loaded {
-            opacity: 1;
-        }
-
-        /* Header مع تأثير زجاجي */
-        .header {
-            background: var(--primary-gradient);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
+        /* === Layout === */
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        .header .container {
+        /* === Header === */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
-        /* تحسينات البطاقات */
-        .app-card {
-            background: var(--light-color);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 100%;
+        .logo {
             display: flex;
             flex-direction: column;
-            position: relative;
-            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .app-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        /* تحسينات التحميل التقدمي */
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary-color);
-            transform-origin: 0%;
-            z-index: 1001;
-            display: none;
-        }
-
-        .progress-bar.active {
-            display: block;
-            animation: progress 2s ease-in-out infinite;
-        }
-
-        @keyframes progress {
-            0% { transform: scaleX(0); }
-            50% { transform: scaleX(0.7); }
-            100% { transform: scaleX(1); }
-        }
-
-        /* تحسينات التحكم في التحميل */
-        .content-loader {
-            display: grid;
-            place-items: center;
-            min-height: 300px;
-        }
-
-        /* تحسينات البحث */
-        .search-input-container {
-            position: relative;
-            flex: 1;
-            max-width: 600px;
-        }
-
-        .search-input-container input {
-            width: 100%;
-            padding: 14px 50px 14px 20px;
-            border-radius: 50px;
-            border: 2px solid transparent;
-            background: var(--glass-effect);
-            color: white;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .search-input-container input:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        /* تحسينات البطاقة */
-        .app-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        .logo h1 {
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 32px;
-            overflow: hidden;
+            gap: 0.5rem;
         }
 
-        .app-icon img {
+        .logo small {
+            opacity: 0.9;
+            font-size: 0.85rem;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
         }
 
-        /* تحسينات الأزرار */
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* === Buttons === */
         .btn {
-            padding: 12px 28px;
-            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
             border: none;
-            font-weight: 600;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: all 0.3s;
+            font-weight: 600;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            font-size: 16px;
+            gap: 0.5rem;
         }
 
         .btn-primary {
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
         }
 
         .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(74, 111, 165, 0.3);
         }
 
-        /* تحسينات التنقل */
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-google {
+            background: white;
+            color: #444;
+            border: 1px solid #ddd;
+        }
+
+        .btn-google:hover {
+            background: #f5f5f5;
+        }
+
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* === Categories === */
         .categories {
             background: var(--light-gray);
-            padding: 15px 0;
+            padding: 1rem 0;
             position: sticky;
             top: 70px;
             z-index: 999;
         }
 
-        .category-list {
+        .categories-list {
             display: flex;
-            gap: 15px;
+            gap: 0.5rem;
             overflow-x: auto;
-            padding: 10px 0;
-            scrollbar-width: thin;
+            padding: 0.5rem 0;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .category-list::-webkit-scrollbar {
-            height: 6px;
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            border: none;
+            border-radius: 50px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .category-list::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 3px;
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
         }
 
-        /* تحسينات الاستجابة */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 15px;
-            }
-            
-            .header .container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .search-input-container {
-                max-width: 100%;
-            }
-            
-            .category-list {
-                gap: 10px;
-            }
-        }
-
-        /* تحسينات الحالة */
-        .status-badge {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-badge.active {
-            background: rgba(40, 167, 69, 0.15);
-            color: var(--success-color);
-        }
-
-        .status-badge.inactive {
-            background: rgba(220, 53, 69, 0.15);
-            color: var(--danger-color);
-        }
-
-        /* تحسينات الجدولة */
-        .grid-container {
+        /* === App Cards === */
+        .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
 
-        /* تحسينات الإحصائيات */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .stat-card {
-            background: var(--light-gray);
-            padding: 25px;
+        .app-card {
+            background: var(--light);
             border-radius: var(--border-radius);
-            text-align: center;
-            transition: transform 0.3s;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
-        .stat-card:hover {
+        .app-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .stat-card i {
-            font-size: 40px;
-            margin-bottom: 15px;
-            color: var(--primary-color);
+        .app-header {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
-        /* تحسينات النماذج */
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .app-info {
+            flex: 1;
+        }
+
+        .app-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .app-developer {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .app-body {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .app-description {
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .app-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rating-value {
+            font-weight: bold;
+            color: var(--warning);
+        }
+
+        .app-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .app-footer .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* === Modal === */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* === Forms === */
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 1rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 20px;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
             border-radius: var(--border-radius);
-            border: 2px solid var(--light-gray);
-            background: var(--light-color);
-            color: var(--dark-color);
-            font-size: 16px;
-            transition: all 0.3s;
+            background: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+            border-color: var(--primary);
         }
 
-        /* تحسينات الرسائل */
-        .alert {
-            padding: 15px 25px;
+        /* === Dashboard === */
+        .dashboard {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* === Stats === */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--light-gray);
+            padding: 1.5rem;
             border-radius: var(--border-radius);
-            margin: 20px 0;
-            border-left: 5px solid;
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* === User Menu === */
+        .user-menu {
+            position: relative;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            min-width: 200px;
+            margin-top: 0.5rem;
+            z-index: 1001;
+        }
+
+        .user-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            display: block;
+            width: 100%;
+            text-align: right;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-gray);
+        }
+
+        /* === Alerts === */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            color: white;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
         }
 
         .alert-success {
-            background: rgba(40, 167, 69, 0.1);
-            border-color: var(--success-color);
-            color: var(--success-color);
+            background: var(--success);
         }
 
         .alert-error {
-            background: rgba(220, 53, 69, 0.1);
-            border-color: var(--danger-color);
-            color: var(--danger-color);
+            background: var(--danger);
         }
 
-        /* تحسينات التحميل التدريجي */
-        .infinite-scroll-trigger {
-            height: 50px;
-            display: grid;
-            place-items: center;
-            margin: 30px 0;
+        .alert-info {
+            background: var(--secondary);
         }
 
-        /* تحسينات الذاكرة المؤقتة */
-        .cache-indicator {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            font-size: 14px;
-            display: none;
-            z-index: 1000;
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
-        /* تحسينات الوضع الليلي */
-        .theme-toggle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--glass-effect);
-            border: none;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: grid;
-            place-items: center;
+        /* === Footer === */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            background: var(--light-gray);
+            margin-top: 3rem;
         }
 
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: rotate(30deg);
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+            
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* === Utilities === */
+        .hidden {
+            display: none !important;
+        }
+
+        .section-title {
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
-    <!-- شريط التقدم -->
-    <div class="progress-bar" id="progressBar"></div>
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
 
-    <!-- مؤشر الذاكرة المؤقتة -->
-    <div class="cache-indicator" id="cacheIndicator">
-        <i class="fas fa-bolt"></i> تم التحميل من الذاكرة المؤقتة
-    </div>
-
-    <!-- الشريط العلوي -->
+    <!-- Header -->
     <header class="header">
         <div class="container">
-            <div class="logo">
-                <h1><i class="fas fa-store"></i> Exotisa Store</h1>
-                <small>المتجر المتكامل للتطبيقات</small>
-            </div>
-            
-            <div class="search-input-container">
-                <input type="text" id="searchInput" placeholder="🔍 ابحث عن تطبيق، فئة، أو مطور...">
-                <div id="searchResults" class="search-results"></div>
-            </div>
-            
-            <div class="header-controls">
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="btn btn-primary" id="authButton">
-                    <i class="fas fa-user"></i> تسجيل الدخول
-                </button>
+            <div class="header-content">
+                <div class="logo" onclick="app.scrollToTop()">
+                    <h1><i class="fas fa-store"></i> Exotisa Store</h1>
+                    <small>متجر التطبيقات المتكامل</small>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن تطبيق...">
+                </div>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="user-menu" id="userMenu">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- نافذة تسجيل الدخول -->
-    <div class="modal" id="loginModal" style="display: none;">
+    <!-- Categories -->
+    <nav class="categories">
+        <div class="container">
+            <div class="categories-list" id="categoriesList">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>تسجيل الدخول</h3>
-                <button class="close-btn">&times;</button>
+                <button class="modal-close" onclick="app.closeModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="loginForm">
                     <div class="form-group">
-                        <input type="email" class="form-control" id="loginEmail" 
-                               placeholder="البريد الإلكتروني" required>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="البريد الإلكتروني" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" id="loginPassword" 
-                               placeholder="كلمة المرور" required>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="كلمة المرور" required>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
                         <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                     </button>
                 </form>
+                <div style="text-align: center; margin: 1rem 0; color: var(--gray);">أو</div>
+                <button class="btn btn-google" style="width: 100%;" onclick="app.loginWithGoogle()">
+                    <i class="fab fa-google"></i> تسجيل الدخول بـ Google
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- لوحة التحكم -->
-    <div class="dashboard" id="dashboard" style="display: none;">
+    <!-- Dashboard -->
+    <main class="dashboard" id="dashboard">
         <div class="container">
             <div class="dashboard-header">
                 <h2><i class="fas fa-cogs"></i> لوحة التحكم</h2>
-                <button class="btn btn-secondary" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                <button class="btn btn-secondary" onclick="app.toggleDashboard()">
+                    <i class="fas fa-times"></i> إغلاق
                 </button>
             </div>
             
             <div class="dashboard-tabs">
                 <button class="tab-btn active" data-tab="stats">الإحصائيات</button>
-                <button class="tab-btn" data-tab="apps">التطبيقات</button>
-                <button class="tab-btn" data-tab="add">إضافة تطبيق</button>
-                <button class="tab-btn" data-tab="categories">الفئات</button>
+                <button class="tab-btn" data-tab="add-app">إضافة تطبيق</button>
+                <button class="tab-btn" data-tab="manage-apps">إدارة التطبيقات</button>
             </div>
             
             <div class="tab-content active" id="statsTab">
@@ -497,77 +680,69 @@
                 </div>
             </div>
             
-            <div class="tab-content" id="appsTab">
-                <div id="appsManagement"></div>
-            </div>
-            
-            <div class="tab-content" id="addTab">
+            <div class="tab-content" id="addAppTab">
                 <form id="addAppForm">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="appName" 
-                               placeholder="اسم التطبيق" required>
+                        <input type="text" class="form-control" id="appName" placeholder="اسم التطبيق" required>
                     </div>
                     <div class="form-group">
-                        <textarea class="form-control" id="appDescription" 
-                                  placeholder="وصف التطبيق" rows="3" required></textarea>
+                        <textarea class="form-control" id="appDescription" placeholder="وصف التطبيق" rows="3" required></textarea>
                     </div>
-                    <div class="form-row">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="appVersion" 
-                                   placeholder="الإصدار" required>
+                            <input type="text" class="form-control" id="appVersion" placeholder="الإصدار" required>
                         </div>
                         <div class="form-group">
-                            <input type="number" class="form-control" id="appSize" 
-                                   placeholder="الحجم (MB)" required>
+                            <input type="number" step="0.01" class="form-control" id="appSize" placeholder="الحجم (MB)" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
                         <i class="fas fa-plus"></i> إضافة تطبيق
                     </button>
                 </form>
             </div>
+            
+            <div class="tab-content" id="manageAppsTab">
+                <div id="appsManagement">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <!-- المحتوى الرئيسي -->
+    <!-- Main Content -->
     <main class="main-content" id="mainContent">
         <div class="container">
-            <!-- الفئات -->
-            <section class="categories" id="categoriesSection">
-                <div class="category-list" id="categoryList">
-                    <!-- سيتم ملؤه ديناميكياً -->
+            <!-- Featured Apps -->
+            <section>
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i> التطبيقات المميزة
+                </h2>
+                <div class="apps-grid" id="featuredApps">
+                    <!-- Dynamic content -->
                 </div>
             </section>
 
-            <!-- التطبيقات المميزة -->
-            <section class="featured-section">
-                <h2><i class="fas fa-star"></i> التطبيقات المميزة</h2>
-                <div class="grid-container" id="featuredApps">
-                    <!-- سيتم ملؤه ديناميكياً -->
-                </div>
-            </section>
-
-            <!-- جميع التطبيقات -->
-            <section class="all-apps-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-th"></i> جميع التطبيقات</h2>
+            <!-- All Apps -->
+            <section>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1rem;">
+                    <h2 class="section-title">
+                        <i class="fas fa-th"></i> جميع التطبيقات
+                    </h2>
                     <select class="form-control" id="sortSelect" style="width: auto;">
                         <option value="newest">الأحدث</option>
                         <option value="popular">الأكثر شعبية</option>
                         <option value="rating">الأعلى تقييمًا</option>
                     </select>
                 </div>
-                <div class="grid-container" id="appsGrid">
-                    <!-- سيتم ملؤه ديناميكياً -->
-                </div>
-                <div class="infinite-scroll-trigger" id="loadMoreTrigger">
-                    <i class="fas fa-spinner fa-spin"></i> جاري تحميل المزيد...
+                <div class="apps-grid" id="appsGrid">
+                    <!-- Dynamic content -->
                 </div>
             </section>
         </div>
     </main>
 
-    <!-- التذييل -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>© 2024 Exotisa Store. جميع الحقوق محفوظة.</p>
@@ -575,817 +750,714 @@
         </div>
     </footer>
 
-    <!-- Supabase Client -->
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ==================== تكوين Supabase ====================
-        const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // ==================== حالة التطبيق ====================
-        let appState = {
-            user: null,
-            apps: [],
-            categories: [],
-            featuredApps: [],
-            currentCategory: 'all',
-            sortBy: 'newest',
-            page: 1,
-            isLoading: false,
-            hasMore: true,
-            cache: {
-                apps: null,
-                lastFetch: null
-            }
-        };
-
-        // ==================== تهيئة التطبيق ====================
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 بدء تحميل Exotisa Store...');
+        // ==================== التطبيق الرئيسي ====================
+        const App = {
+            // الإعدادات
+            supabaseUrl: 'https://qjfpkwyglveukzfazmzo.supabase.co',
+            supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc',
             
-            try {
-                // تحميل التكوين
-                await loadConfig();
-                
-                // التحقق من جلسة المستخدم
-                await checkUserSession();
-                
-                // تحميل البيانات
-                await Promise.all([
-                    loadCategories(),
-                    loadFeaturedApps(),
-                    loadApps()
-                ]);
-                
-                // تهيئة الأحداث
-                initEventListeners();
-                
-                // تحديث الواجهة
-                updateUI();
-                
-                console.log('✅ تم تحميل التطبيق بنجاح!');
-                showSuccess('مرحبًا بك في Exotisa Store!');
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحميل التطبيق:', error);
-                showError('حدث خطأ في تحميل التطبيق. يرجى تحديث الصفحة.');
-            }
-        });
+            // الحالة
+            state: {
+                user: null,
+                apps: [],
+                categories: [],
+                featuredApps: [],
+                currentCategory: 'all',
+                sortBy: 'newest',
+                page: 1,
+                isLoading: false
+            },
 
-        // ==================== وظائف Supabase ====================
+            // تهيئة Supabase
+            supabase: null,
 
-        async function loadConfig() {
-            try {
-                const { data, error } = await supabase
-                    .from('config')
-                    .select('*')
-                    .single();
-                
-                if (error) throw error;
-                
-                if (data) {
-                    localStorage.setItem('app_config', JSON.stringify(data));
-                }
-            } catch (error) {
-                console.warn('⚠️  لا يوجد تكوين في قاعدة البيانات');
-            }
-        }
-
-        async function checkUserSession() {
-            try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                
-                if (error) throw error;
-                
-                if (session) {
-                    appState.user = session.user;
-                    console.log('👤 تم تسجيل الدخول:', appState.user.email);
-                    
-                    // إذا كان المستخدم هو المسؤول، إظهار لوحة التحكم
-                    if (appState.user.email === 'chinweamine11@gmail.com') {
-                        showDashboard();
-                    }
-                }
-            } catch (error) {
-                console.error('❌ خطأ في جلسة المستخدم:', error);
-            }
-        }
-
-        async function loadCategories() {
-            try {
-                const cacheKey = 'categories_cache';
-                const cached = localStorage.getItem(cacheKey);
-                
-                if (cached) {
-                    const { data, timestamp } = JSON.parse(cached);
-                    if (Date.now() - timestamp < 3600000) { // ساعة واحدة
-                        appState.categories = data;
-                        renderCategories();
-                        showCacheIndicator();
-                        return;
-                    }
-                }
-                
-                const { data, error } = await supabase
-                    .from('categories')
-                    .select('*')
-                    .order('name');
-                
-                if (error) throw error;
-                
-                appState.categories = data || [];
-                
-                // حفظ في الذاكرة المؤقتة
-                localStorage.setItem(cacheKey, JSON.stringify({
-                    data: appState.categories,
-                    timestamp: Date.now()
-                }));
-                
-                renderCategories();
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحميل الفئات:', error);
-                appState.categories = [];
-            }
-        }
-
-        async function loadFeaturedApps() {
-            try {
-                const { data, error } = await supabase
-                    .from('apps')
-                    .select('*')
-                    .eq('is_featured', true)
-                    .eq('is_active', true)
-                    .order('created_at', { ascending: false })
-                    .limit(4);
-                
-                if (error) throw error;
-                
-                appState.featuredApps = data || [];
-                renderFeaturedApps();
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحميل التطبيقات المميزة:', error);
-                appState.featuredApps = [];
-            }
-        }
-
-        async function loadApps(loadMore = false) {
-            if (appState.isLoading || (!loadMore && !appState.hasMore)) return;
-            
-            appState.isLoading = true;
-            showProgressBar();
-            
-            try {
-                let query = supabase
-                    .from('apps')
-                    .select('*, categories(name), reviews(rating)')
-                    .eq('is_active', true);
-                
-                // تصفية حسب الفئة
-                if (appState.currentCategory !== 'all') {
-                    query = query.eq('category_id', appState.currentCategory);
-                }
-                
-                // الترتيب
-                switch (appState.sortBy) {
-                    case 'popular':
-                        query = query.order('downloads', { ascending: false });
-                        break;
-                    case 'rating':
-                        query = query.order('average_rating', { ascending: false });
-                        break;
-                    default:
-                        query = query.order('created_at', { ascending: false });
-                }
-                
-                // التحميل التدريجي
-                const from = (appState.page - 1) * 12;
-                const to = from + 11;
-                
-                query = query.range(from, to);
-                
-                const { data, error, count } = await query;
-                
-                if (error) throw error;
-                
-                if (data) {
-                    if (loadMore) {
-                        appState.apps = [...appState.apps, ...data];
-                    } else {
-                        appState.apps = data;
-                    }
-                    
-                    // التحقق إذا كان هناك المزيد من البيانات
-                    appState.hasMore = data.length === 12;
-                    
-                    // زيادة رقم الصفحة إذا كان هناك المزيد
-                    if (appState.hasMore) {
-                        appState.page++;
-                    }
-                    
-                    renderApps();
-                }
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحميل التطبيقات:', error);
-                showError('حدث خطأ في تحميل التطبيقات');
-            } finally {
-                appState.isLoading = false;
-                hideProgressBar();
-            }
-        }
-
-        async function searchApps(query) {
-            if (!query.trim()) {
-                loadApps();
-                return;
-            }
-            
-            showProgressBar();
-            
-            try {
-                const { data, error } = await supabase
-                    .from('apps')
-                    .select('*, categories(name)')
-                    .or(`name.ilike.%${query}%,description.ilike.%${query}%,developer.ilike.%${query}%`)
-                    .eq('is_active', true)
-                    .limit(20);
-                
-                if (error) throw error;
-                
-                appState.apps = data || [];
-                renderApps();
-                
-            } catch (error) {
-                console.error('❌ خطأ في البحث:', error);
-                showError('حدث خطأ في البحث');
-            } finally {
-                hideProgressBar();
-            }
-        }
-
-        // ==================== وظائف لوحة التحكم ====================
-
-        async function loadDashboardStats() {
-            try {
-                // إجمالي التطبيقات
-                const { count: totalApps } = await supabase
-                    .from('apps')
-                    .select('*', { count: 'exact', head: true });
-                
-                // إجمالي التحميلات
-                const { data: downloadsData } = await supabase
-                    .from('apps')
-                    .select('downloads');
-                const totalDownloads = downloadsData?.reduce((sum, app) => sum + (app.downloads || 0), 0) || 0;
-                
-                // إجمالي المستخدمين
-                const { count: totalUsers } = await supabase
-                    .from('users')
-                    .select('*', { count: 'exact', head: true });
-                
-                // متوسط التقييم
-                const { data: ratingData } = await supabase
-                    .from('apps')
-                    .select('average_rating');
-                const avgRating = ratingData?.length 
-                    ? (ratingData.reduce((sum, app) => sum + (app.average_rating || 0), 0) / ratingData.length).toFixed(1)
-                    : '0.0';
-                
-                // تحديث الواجهة
-                document.getElementById('totalApps').textContent = totalApps || 0;
-                document.getElementById('totalDownloads').textContent = totalDownloads.toLocaleString();
-                document.getElementById('totalUsers').textContent = totalUsers || 0;
-                document.getElementById('avgRating').textContent = avgRating;
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحميل الإحصائيات:', error);
-            }
-        }
-
-        async function addNewApp(appData) {
-            try {
-                const { data, error } = await supabase
-                    .from('apps')
-                    .insert([{
-                        name: appData.name,
-                        description: appData.description,
-                        version: appData.version,
-                        size: appData.size,
-                        category_id: appData.categoryId,
-                        developer: appData.developer,
-                        icon_url: appData.iconUrl,
-                        download_url: appData.downloadUrl,
-                        is_featured: appData.isFeatured || false,
-                        is_active: true,
-                        created_at: new Date().toISOString()
-                    }])
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                return data;
-                
-            } catch (error) {
-                console.error('❌ خطأ في إضافة التطبيق:', error);
-                throw error;
-            }
-        }
-
-        async function updateApp(appId, updates) {
-            try {
-                const { data, error } = await supabase
-                    .from('apps')
-                    .update(updates)
-                    .eq('id', appId)
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                return data;
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحديث التطبيق:', error);
-                throw error;
-            }
-        }
-
-        async function deleteApp(appId) {
-            try {
-                const { error } = await supabase
-                    .from('apps')
-                    .delete()
-                    .eq('id', appId);
-                
-                if (error) throw error;
-                
-            } catch (error) {
-                console.error('❌ خطأ في حذف التطبيق:', error);
-                throw error;
-            }
-        }
-
-        // ==================== وظائف العرض ====================
-
-        function renderCategories() {
-            const container = document.getElementById('categoryList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            // زر الكل
-            const allButton = createCategoryButton('all', 'الكل', 'fas fa-th-large');
-            allButton.classList.add('active');
-            container.appendChild(allButton);
-            
-            // الفئات من قاعدة البيانات
-            appState.categories.forEach(category => {
-                const button = createCategoryButton(category.id, category.name, category.icon);
-                container.appendChild(button);
-            });
-            
-            // إضافة أحداث النقر
-            container.querySelectorAll('.category-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // إزالة النشاط من جميع الأزرار
-                    container.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                    // إضافة النشاط للزر المحدد
-                    btn.classList.add('active');
-                    
-                    // تحديث الفئة الحالية وإعادة تحميل التطبيقات
-                    appState.currentCategory = btn.dataset.categoryId;
-                    appState.page = 1;
-                    appState.hasMore = true;
-                    loadApps();
-                });
-            });
-        }
-
-        function createCategoryButton(id, name, icon) {
-            const button = document.createElement('button');
-            button.className = 'category-btn';
-            button.dataset.categoryId = id;
-            button.innerHTML = `
-                ${icon ? `<i class="${icon}"></i>` : ''}
-                <span>${name}</span>
-            `;
-            return button;
-        }
-
-        function renderFeaturedApps() {
-            const container = document.getElementById('featuredApps');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (appState.featuredApps.length === 0) {
-                container.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-star fa-3x"></i>
-                        <p>لا توجد تطبيقات مميزة حالياً</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            appState.featuredApps.forEach(app => {
-                const card = createAppCard(app, true);
-                container.appendChild(card);
-            });
-        }
-
-        function renderApps() {
-            const container = document.getElementById('appsGrid');
-            if (!container) return;
-            
-            // إذا كان تحميل جديد، تنظيف الحاوية
-            if (appState.page === 1) {
-                container.innerHTML = '';
-            }
-            
-            if (appState.apps.length === 0) {
-                container.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-box-open fa-3x"></i>
-                        <p>لا توجد تطبيقات متاحة</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            appState.apps.forEach(app => {
-                const card = createAppCard(app);
-                container.appendChild(card);
-            });
-        }
-
-        function createAppCard(app, isFeatured = false) {
-            const card = document.createElement('div');
-            card.className = `app-card ${isFeatured ? 'featured' : ''}`;
-            card.dataset.appId = app.id;
-            
-            // حساب متوسط التقييم
-            const averageRating = app.average_rating || 
-                (app.reviews?.length ? 
-                 app.reviews.reduce((sum, r) => sum + r.rating, 0) / app.reviews.length : 0);
-            
-            card.innerHTML = `
-                <div class="app-card-header">
-                    <div class="app-icon">
-                        ${app.icon_url ? 
-                          `<img src="${app.icon_url}" alt="${app.name}" loading="lazy">` : 
-                          `<i class="fas fa-mobile-alt"></i>`}
-                    </div>
-                    <div class="app-info">
-                        <h3 class="app-title">${app.name}</h3>
-                        <p class="app-developer">${app.developer}</p>
-                        <div class="app-meta">
-                            <span><i class="fas fa-code-branch"></i> ${app.version}</span>
-                            <span><i class="fas fa-weight-hanging"></i> ${app.size}MB</span>
-                            <span><i class="fas fa-download"></i> ${formatNumber(app.downloads || 0)}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="app-card-body">
-                    <p class="app-description">${app.description || 'لا يوجد وصف'}</p>
-                    <div class="app-rating">
-                        ${createStarsHTML(averageRating)}
-                        <span class="rating-value">${averageRating.toFixed(1)}</span>
-                    </div>
-                </div>
-                <div class="app-card-footer">
-                    <button class="btn btn-primary download-btn" data-app-id="${app.id}">
-                        <i class="fas fa-download"></i> تحميل
-                    </button>
-                    <button class="btn btn-secondary preview-btn" data-app-id="${app.id}">
-                        <i class="fas fa-eye"></i> معاينة
-                    </button>
-                </div>
-            `;
-            
-            // إضافة الأحداث
-            card.querySelector('.download-btn').addEventListener('click', () => downloadApp(app.id));
-            card.querySelector('.preview-btn').addEventListener('click', () => previewApp(app.id));
-            
-            return card;
-        }
-
-        function createStarsHTML(rating) {
-            let stars = '';
-            for (let i = 1; i <= 5; i++) {
-                if (i <= Math.floor(rating)) {
-                    stars += '<i class="fas fa-star"></i>';
-                } else if (i === Math.ceil(rating) && rating % 1 >= 0.5) {
-                    stars += '<i class="fas fa-star-half-alt"></i>';
-                } else {
-                    stars += '<i class="far fa-star"></i>';
-                }
-            }
-            return stars;
-        }
-
-        // ==================== وظائف المساعدة ====================
-
-        function formatNumber(num) {
-            return num.toLocaleString('ar-EG');
-        }
-
-        function showProgressBar() {
-            document.getElementById('progressBar').classList.add('active');
-        }
-
-        function hideProgressBar() {
-            document.getElementById('progressBar').classList.remove('active');
-        }
-
-        function showSuccess(message) {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-success';
-            alert.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                ${message}
-            `;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.remove(), 3000);
-        }
-
-        function showError(message) {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-error';
-            alert.innerHTML = `
-                <i class="fas fa-exclamation-circle"></i>
-                ${message}
-            `;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.remove(), 5000);
-        }
-
-        function showCacheIndicator() {
-            const indicator = document.getElementById('cacheIndicator');
-            indicator.style.display = 'block';
-            setTimeout(() => {
-                indicator.style.display = 'none';
-            }, 2000);
-        }
-
-        function showDashboard() {
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('mainContent').style.display = 'none';
-            loadDashboardStats();
-        }
-
-        function hideDashboard() {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-        }
-
-        // ==================== تهيئة الأحداث ====================
-
-        function initEventListeners() {
-            // البحث
-            const searchInput = document.getElementById('searchInput');
-            let searchTimeout;
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    searchApps(e.target.value);
-                }, 500);
-            });
-            
-            // الفرز
-            document.getElementById('sortSelect').addEventListener('change', (e) => {
-                appState.sortBy = e.target.value;
-                appState.page = 1;
-                appState.hasMore = true;
-                loadApps();
-            });
-            
-            // التمرير اللانهائي
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && !appState.isLoading && appState.hasMore) {
-                    loadApps(true);
-                }
-            }, { threshold: 0.5 });
-            
-            observer.observe(document.getElementById('loadMoreTrigger'));
-            
-            // زر تسجيل الدخول
-            document.getElementById('authButton').addEventListener('click', () => {
-                if (appState.user) {
-                    // إذا كان مسجلاً دخول، إظهار لوحة التحكم أو تسجيل الخروج
-                    if (appState.user.email === 'chinweamine11@gmail.com') {
-                        showDashboard();
-                    } else {
-                        logout();
-                    }
-                } else {
-                    // إظهار نافذة تسجيل الدخول
-                    document.getElementById('loginModal').style.display = 'flex';
-                }
-            });
-            
-            // تسجيل الدخول
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
+            // ==================== التهيئة ====================
+            async init() {
+                console.log('🚀 بدء تحميل Exotisa Store...');
                 
                 try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
+                    // تهيئة Supabase
+                    this.supabase = window.supabase.createClient(this.supabaseUrl, this.supabaseKey);
+                    
+                    // تطبيق الوضع المحفوظ
+                    this.applyTheme();
+                    
+                    // التحقق من الجلسة
+                    await this.checkSession();
+                    
+                    // تحميل البيانات
+                    await this.loadData();
+                    
+                    // تهيئة الأحداث
+                    this.initEvents();
+                    
+                    // تحديث الواجهة
+                    this.updateUI();
+                    
+                    console.log('✅ التطبيق جاهز!');
+                    this.showAlert('مرحبًا بك في Exotisa Store!', 'success');
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في التهيئة:', error);
+                    this.showAlert('حدث خطأ في تحميل التطبيق', 'error');
+                }
+            },
+
+            // ==================== إدارة البيانات ====================
+            async loadData() {
+                try {
+                    await Promise.all([
+                        this.loadCategories(),
+                        this.loadFeaturedApps(),
+                        this.loadApps()
+                    ]);
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل البيانات:', error);
+                    throw error;
+                }
+            },
+
+            async loadCategories() {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('categories')
+                        .select('*')
+                        .order('name');
+                    
+                    if (error) throw error;
+                    
+                    this.state.categories = data || [];
+                    this.renderCategories();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل الفئات:', error);
+                    this.state.categories = [];
+                }
+            },
+
+            async loadFeaturedApps() {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('apps')
+                        .select('*, categories(name)')
+                        .eq('is_featured', true)
+                        .eq('is_active', true)
+                        .order('created_at', { ascending: false })
+                        .limit(4);
+                    
+                    if (error) throw error;
+                    
+                    this.state.featuredApps = data || [];
+                    this.renderFeaturedApps();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل التطبيقات المميزة:', error);
+                    this.state.featuredApps = [];
+                }
+            },
+
+            async loadApps() {
+                if (this.state.isLoading) return;
+                
+                this.state.isLoading = true;
+                
+                try {
+                    let query = this.supabase
+                        .from('apps')
+                        .select('*, categories(name)')
+                        .eq('is_active', true);
+                    
+                    // التصفية حسب الفئة
+                    if (this.state.currentCategory !== 'all') {
+                        query = query.eq('category_id', this.state.currentCategory);
+                    }
+                    
+                    // الترتيب
+                    switch (this.state.sortBy) {
+                        case 'popular':
+                            query = query.order('downloads', { ascending: false });
+                            break;
+                        case 'rating':
+                            query = query.order('average_rating', { ascending: false });
+                            break;
+                        default:
+                            query = query.order('created_at', { ascending: false });
+                    }
+                    
+                    const { data, error } = await query;
+                    
+                    if (error) throw error;
+                    
+                    this.state.apps = data || [];
+                    this.renderApps();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل التطبيقات:', error);
+                    this.showAlert('حدث خطأ في تحميل التطبيقات', 'error');
+                } finally {
+                    this.state.isLoading = false;
+                }
+            },
+
+            async searchApps(query) {
+                if (!query.trim()) {
+                    await this.loadApps();
+                    return;
+                }
+                
+                try {
+                    const { data, error } = await this.supabase
+                        .from('apps')
+                        .select('*, categories(name)')
+                        .or(`name.ilike.%${query}%,description.ilike.%${query}%,developer.ilike.%${query}%`)
+                        .eq('is_active', true)
+                        .limit(20);
+                    
+                    if (error) throw error;
+                    
+                    this.state.apps = data || [];
+                    this.renderApps();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في البحث:', error);
+                    this.showAlert('حدث خطأ في البحث', 'error');
+                }
+            },
+
+            // ==================== العرض ====================
+            renderCategories() {
+                const container = document.getElementById('categoriesList');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                // زر الكل
+                const allBtn = this.createCategoryBtn('all', 'الكل', 'fas fa-th-large');
+                allBtn.classList.add('active');
+                container.appendChild(allBtn);
+                
+                // الفئات
+                this.state.categories.forEach(category => {
+                    const btn = this.createCategoryBtn(category.id, category.name, category.icon || 'fas fa-folder');
+                    container.appendChild(btn);
+                });
+            },
+
+            createCategoryBtn(id, name, icon) {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.innerHTML = `<i class="${icon}"></i> ${name}`;
+                
+                btn.addEventListener('click', () => {
+                    // تحديث الأزرار النشطة
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // تحديث الحالة
+                    this.state.currentCategory = id;
+                    this.state.page = 1;
+                    
+                    // إعادة تحميل التطبيقات
+                    this.loadApps();
+                });
+                
+                return btn;
+            },
+
+            renderFeaturedApps() {
+                const container = document.getElementById('featuredApps');
+                if (!container) return;
+                
+                if (this.state.featuredApps.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-star"></i>
+                            <p>لا توجد تطبيقات مميزة حالياً</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = this.state.featuredApps.map(app => this.createAppCard(app)).join('');
+            },
+
+            renderApps() {
+                const container = document.getElementById('appsGrid');
+                if (!container) return;
+                
+                if (this.state.apps.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>لا توجد تطبيقات متاحة</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = this.state.apps.map(app => this.createAppCard(app)).join('');
+            },
+
+            createAppCard(app) {
+                const rating = app.average_rating || 0;
+                const stars = this.createStars(rating);
+                
+                return `
+                    <div class="app-card" data-app-id="${app.id}">
+                        <div class="app-header">
+                            <div class="app-icon">
+                                ${app.icon_url ? 
+                                  `<img src="${app.icon_url}" alt="${app.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-mobile-alt\\'></i>';">` : 
+                                  '<i class="fas fa-mobile-alt"></i>'}
+                            </div>
+                            <div class="app-info">
+                                <h3 class="app-title">${app.name}</h3>
+                                <p class="app-developer">${app.developer}</p>
+                                <div class="app-meta">
+                                    <span><i class="fas fa-code-branch"></i> ${app.version}</span>
+                                    <span><i class="fas fa-weight-hanging"></i> ${app.size}MB</span>
+                                    <span><i class="fas fa-download"></i> ${app.downloads || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-body">
+                            <p class="app-description">${app.description || 'لا يوجد وصف'}</p>
+                            <div class="app-rating">
+                                ${stars}
+                                <span class="rating-value">${rating.toFixed(1)}</span>
+                            </div>
+                        </div>
+                        <div class="app-footer">
+                            <button class="btn btn-primary" onclick="App.downloadApp('${app.id}')">
+                                <i class="fas fa-download"></i> تحميل
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            createStars(rating) {
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= Math.floor(rating)) {
+                        stars += '<i class="fas fa-star"></i>';
+                    } else if (i === Math.ceil(rating) && rating % 1 >= 0.5) {
+                        stars += '<i class="fas fa-star-half-alt"></i>';
+                    } else {
+                        stars += '<i class="far fa-star"></i>';
+                    }
+                }
+                return stars;
+            },
+
+            // ==================== المصادقة ====================
+            async checkSession() {
+                try {
+                    const { data: { session }, error } = await this.supabase.auth.getSession();
+                    
+                    if (error) throw error;
+                    
+                    if (session) {
+                        this.state.user = session.user;
+                        console.log('👤 المستخدم مسجل:', this.state.user.email);
+                    }
+                } catch (error) {
+                    console.error('❌ خطأ في جلسة المستخدم:', error);
+                }
+            },
+
+            async loginWithEmail(email, password) {
+                try {
+                    const { data, error } = await this.supabase.auth.signInWithPassword({
                         email,
                         password
                     });
                     
                     if (error) throw error;
                     
-                    appState.user = data.user;
-                    document.getElementById('loginModal').style.display = 'none';
+                    this.state.user = data.user;
+                    this.closeModal();
+                    this.updateUI();
+                    this.showAlert('تم تسجيل الدخول بنجاح!', 'success');
                     
-                    if (appState.user.email === 'chinweamine11@gmail.com') {
-                        showDashboard();
-                        showSuccess('مرحبًا بك في لوحة التحكم!');
-                    } else {
-                        showSuccess('تم تسجيل الدخول بنجاح!');
+                    return true;
+                } catch (error) {
+                    console.error('❌ خطأ في تسجيل الدخول:', error);
+                    this.showAlert('فشل تسجيل الدخول: ' + error.message, 'error');
+                    return false;
+                }
+            },
+
+            async loginWithGoogle() {
+                try {
+                    const { error } = await this.supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin
+                        }
+                    });
+                    
+                    if (error) throw error;
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تسجيل الدخول بـ Google:', error);
+                    this.showAlert('فشل تسجيل الدخول بـ Google', 'error');
+                }
+            },
+
+            async logout() {
+                try {
+                    await this.supabase.auth.signOut();
+                    this.state.user = null;
+                    this.updateUI();
+                    this.toggleDashboard(false);
+                    this.showAlert('تم تسجيل الخروج بنجاح!', 'success');
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تسجيل الخروج:', error);
+                    this.showAlert('فشل تسجيل الخروج', 'error');
+                }
+            },
+
+            // ==================== لوحة التحكم ====================
+            async loadDashboardStats() {
+                try {
+                    // إجمالي التطبيقات
+                    const { count: totalApps } = await this.supabase
+                        .from('apps')
+                        .select('*', { count: 'exact', head: true });
+                    
+                    // إجمالي التحميلات
+                    const { data: downloadsData } = await this.supabase
+                        .from('apps')
+                        .select('downloads');
+                    
+                    const totalDownloads = downloadsData?.reduce((sum, app) => sum + (app.downloads || 0), 0) || 0;
+                    
+                    // تحديث الواجهة
+                    document.getElementById('totalApps').textContent = totalApps || 0;
+                    document.getElementById('totalDownloads').textContent = totalDownloads.toLocaleString();
+                    document.getElementById('totalUsers').textContent = '0';
+                    document.getElementById('avgRating').textContent = '0.0';
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل الإحصائيات:', error);
+                }
+            },
+
+            async addNewApp(appData) {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('apps')
+                        .insert([{
+                            ...appData,
+                            is_featured: false,
+                            is_active: true,
+                            downloads: 0,
+                            average_rating: 0
+                        }])
+                        .select()
+                        .single();
+                    
+                    if (error) throw error;
+                    
+                    return data;
+                } catch (error) {
+                    console.error('❌ خطأ في إضافة التطبيق:', error);
+                    throw error;
+                }
+            },
+
+            // ==================== الأحداث ====================
+            initEvents() {
+                // البحث
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', this.debounce((e) => {
+                    this.searchApps(e.target.value);
+                }, 500));
+                
+                // الفرز
+                document.getElementById('sortSelect').addEventListener('change', (e) => {
+                    this.state.sortBy = e.target.value;
+                    this.loadApps();
+                });
+                
+                // تسجيل الدخول
+                document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    await this.loginWithEmail(email, password);
+                });
+                
+                // إضافة تطبيق
+                document.getElementById('addAppForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const appData = {
+                        name: document.getElementById('appName').value,
+                        description: document.getElementById('appDescription').value,
+                        version: document.getElementById('appVersion').value,
+                        size: parseFloat(document.getElementById('appSize').value),
+                        developer: 'Exotisa Store',
+                        icon_url: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png',
+                        download_url: '#'
+                    };
+                    
+                    try {
+                        await this.addNewApp(appData);
+                        
+                        document.getElementById('addAppForm').reset();
+                        await this.loadApps();
+                        await this.loadFeaturedApps();
+                        
+                        this.showAlert('تم إضافة التطبيق بنجاح!', 'success');
+                        this.switchTab('stats');
+                        
+                    } catch (error) {
+                        this.showAlert('فشل إضافة التطبيق', 'error');
+                    }
+                });
+                
+                // تغيير التبويبات
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.switchTab(btn.dataset.tab);
+                    });
+                });
+                
+                // استماع لتغيرات المصادقة
+                this.supabase.auth.onAuthStateChange((event, session) => {
+                    console.log('🔐 حالة المصادقة تغيرت:', event);
+                    
+                    if (event === 'SIGNED_IN') {
+                        this.state.user = session.user;
+                        this.updateUI();
+                        
+                        if (this.state.user.email === 'chinweamine11@gmail.com') {
+                            this.loadDashboardStats();
+                        }
+                        
+                    } else if (event === 'SIGNED_OUT') {
+                        this.state.user = null;
+                        this.updateUI();
+                        this.toggleDashboard(false);
+                    }
+                });
+            },
+
+            // ==================== الوظائف المساعدة ====================
+            updateUI() {
+                const userMenu = document.getElementById('userMenu');
+                
+                if (this.state.user) {
+                    const isAdmin = this.state.user.email === 'chinweamine11@gmail.com';
+                    const userName = this.state.user.email.split('@')[0];
+                    
+                    userMenu.innerHTML = `
+                        <button class="btn btn-primary" onclick="App.toggleUserMenu()">
+                            <i class="fas fa-user"></i> ${userName}
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            ${isAdmin ? `
+                                <button class="dropdown-item" onclick="App.toggleDashboard()">
+                                    <i class="fas fa-cogs"></i> لوحة التحكم
+                                </button>
+                            ` : ''}
+                            <button class="dropdown-item" onclick="App.logout()">
+                                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    userMenu.innerHTML = `
+                        <button class="btn btn-primary" onclick="App.openLoginModal()">
+                            <i class="fas fa-user"></i> تسجيل الدخول
+                        </button>
+                    `;
+                }
+            },
+
+            toggleUserMenu() {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown) {
+                    dropdown.classList.toggle('show');
+                }
+            },
+
+            openLoginModal() {
+                document.getElementById('loginModal').style.display = 'flex';
+            },
+
+            closeModal() {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            },
+
+            toggleDashboard(show) {
+                const dashboard = document.getElementById('dashboard');
+                const mainContent = document.getElementById('mainContent');
+                
+                if (show === undefined) {
+                    show = dashboard.style.display === 'none';
+                }
+                
+                if (show && this.state.user?.email === 'chinweamine11@gmail.com') {
+                    dashboard.style.display = 'block';
+                    mainContent.style.display = 'none';
+                    this.loadDashboardStats();
+                } else {
+                    dashboard.style.display = 'none';
+                    mainContent.style.display = 'block';
+                }
+            },
+
+            switchTab(tabName) {
+                // تحديث الأزرار
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                
+                // تحديث المحتوى
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                document.getElementById(`${tabName}Tab`).classList.add('active');
+            },
+
+            async downloadApp(appId) {
+                try {
+                    // زيادة عدد التحميلات
+                    const { data: app } = await this.supabase
+                        .from('apps')
+                        .select('downloads')
+                        .eq('id', appId)
+                        .single();
+                    
+                    if (app) {
+                        await this.supabase
+                            .from('apps')
+                            .update({ downloads: (app.downloads || 0) + 1 })
+                            .eq('id', appId);
+                        
+                        // إعادة تحميل التطبيقات
+                        await this.loadApps();
+                        await this.loadFeaturedApps();
+                        
+                        this.showAlert('تم بدء تحميل التطبيق!', 'success');
                     }
                     
-                    updateUI();
-                    
                 } catch (error) {
-                    showError('فشل تسجيل الدخول: ' + error.message);
+                    console.error('❌ خطأ في التحميل:', error);
+                    this.showAlert('حدث خطأ في تحميل التطبيق', 'error');
                 }
-            });
-            
-            // تسجيل الخروج
-            document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-                await logout();
-            });
-            
-            // إضافة تطبيق جديد
-            document.getElementById('addAppForm')?.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            },
+
+            applyTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
                 
-                const appData = {
-                    name: document.getElementById('appName').value,
-                    description: document.getElementById('appDescription').value,
-                    version: document.getElementById('appVersion').value,
-                    size: parseFloat(document.getElementById('appSize').value),
-                    categoryId: 'default',
-                    developer: 'Exotisa Store',
-                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png',
-                    downloadUrl: '#',
-                    isFeatured: false
-                };
-                
-                try {
-                    const newApp = await addNewApp(appData);
-                    showSuccess('تم إضافة التطبيق بنجاح!');
-                    e.target.reset();
-                    
-                    // تحديث القائمة
-                    appState.apps.unshift(newApp);
-                    renderApps();
-                    
-                } catch (error) {
-                    showError('فشل إضافة التطبيق: ' + error.message);
+                const icon = document.querySelector('#themeToggle i');
+                if (icon) {
+                    icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
                 }
-            });
-            
-            // تبديل علامات التبويب في لوحة التحكم
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tabId = btn.dataset.tab + 'Tab';
-                    
-                    // إخفاء جميع المحتويات
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // إزالة النشاط من جميع الأزرار
-                    document.querySelectorAll('.tab-btn').forEach(b => {
-                        b.classList.remove('active');
-                    });
-                    
-                    // إظهار المحتوى المحدد
-                    document.getElementById(tabId).classList.add('active');
-                    btn.classList.add('active');
-                });
-            });
-            
-            // إغلاق نافذة تسجيل الدخول
-            document.querySelector('.close-btn')?.addEventListener('click', () => {
-                document.getElementById('loginModal').style.display = 'none';
-            });
-            
-            // النقر خارج نافذة تسجيل الدخول لإغلاقها
-            window.addEventListener('click', (e) => {
-                const modal = document.getElementById('loginModal');
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-            
-            // تبديل الوضع الليلي
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-        }
+            },
 
-        async function logout() {
-            try {
-                await supabase.auth.signOut();
-                appState.user = null;
-                hideDashboard();
-                updateUI();
-                showSuccess('تم تسجيل الخروج بنجاح!');
-            } catch (error) {
-                showError('فشل تسجيل الخروج: ' + error.message);
-            }
-        }
-
-        async function downloadApp(appId) {
-            try {
-                // زيادة عدد التحميلات
-                const { data: app } = await supabase
-                    .from('apps')
-                    .select('downloads')
-                    .eq('id', appId)
-                    .single();
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
-                if (app) {
-                    await supabase
-                        .from('apps')
-                        .update({ downloads: (app.downloads || 0) + 1 })
-                        .eq('id', appId);
-                }
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
                 
-                // محاكاة التحميل
-                showProgressBar();
-                setTimeout(() => {
-                    hideProgressBar();
-                    showSuccess('بدأ تحميل التطبيق!');
-                }, 1000);
+                const icon = document.querySelector('#themeToggle i');
+                icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
                 
-            } catch (error) {
-                console.error('❌ خطأ في التحميل:', error);
-                showError('حدث خطأ في تحميل التطبيق');
-            }
-        }
+                this.showAlert(`تم تفعيل الوضع ${newTheme === 'dark' ? 'الليلي' : 'النهاري'}`, 'success');
+            },
 
-        function previewApp(appId) {
-            const app = appState.apps.find(a => a.id === appId);
-            if (!app) return;
-            
-            alert(`معاينة: ${app.name}\n\n${app.description}`);
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            const icon = document.querySelector('#themeToggle i');
-            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            
-            showSuccess(`تم تفعيل الوضع ${newTheme === 'dark' ? 'الليلي' : 'النهاري'}`);
-        }
-
-        function updateUI() {
-            const authButton = document.getElementById('authButton');
-            if (appState.user) {
-                authButton.innerHTML = `
-                    <i class="fas fa-user-check"></i> 
-                    ${appState.user.email === 'chinweamine11@gmail.com' ? 'لوحة التحكم' : 'حسابي'}
+            showAlert(message, type = 'info') {
+                const container = document.getElementById('alertContainer');
+                
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    ${message}
                 `;
-            } else {
-                authButton.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
+                
+                container.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
+            },
+
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        };
+
+        // ==================== تهيئة التطبيق ====================
+        document.addEventListener('DOMContentLoaded', () => App.init());
+
+        // ==================== أحداث عالمية ====================
+        document.addEventListener('click', (e) => {
+            // إغلاق قائمة المستخدم عند النقر خارجها
+            const userDropdown = document.getElementById('userDropdown');
+            const userMenu = document.getElementById('userMenu');
+            
+            if (userDropdown && userMenu && 
+                !userDropdown.contains(e.target) && 
+                !userMenu.contains(e.target)) {
+                userDropdown.classList.remove('show');
             }
             
-            // تطبيق الوضع المحفوظ
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            const themeIcon = document.querySelector('#themeToggle i');
-            themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
-        // ==================== الاستماع لتغيرات المصادقة ====================
-        supabase.auth.onAuthStateChange((event, session) => {
-            appState.user = session?.user || null;
-            updateUI();
-            
-            if (event === 'SIGNED_IN' && appState.user?.email === 'chinweamine11@gmail.com') {
-                showDashboard();
-            } else if (event === 'SIGNED_OUT') {
-                hideDashboard();
+            // إغلاق النافذة المنبثقة عند النقر خارجها
+            const modal = document.getElementById('loginModal');
+            if (modal && e.target === modal) {
+                App.closeModal();
             }
         });
 
-        console.log('✨ تم تحميل Exotisa Store بنجاح!');
+        // إغلاق النافذة بالزر ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                App.closeModal();
+                
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // ربط حدث الوضع الليلي
+        document.getElementById('themeToggle').addEventListener('click', () => App.toggleTheme());
     </script>
 </body>
                     </html>
