@@ -3421,83 +3421,104 @@
     </script>
 
 <script>
-// Google OAuth - نسخة بسيطة جداً (بدون createSession)
+// Google OAuth - حل بسيط ومستقل
 (function() {
     const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    let supabaseClient = null;
+    let googleAuthClient = null;
     
     window.addEventListener('DOMContentLoaded', function() {
-        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        googleAuthClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // إضافة زر Google
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             const googleBtn = document.createElement('button');
             googleBtn.type = 'button';
-            googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; cursor: pointer; border-radius: 5px; margin-top: 15px;';
-            googleBtn.innerHTML = '<span>🔐 تسجيل الدخول عبر Google</span>';
+            googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; margin-top: 15px; font-weight: bold;';
+            googleBtn.textContent = '🔐 تسجيل الدخول عبر Google';
             googleBtn.onclick = function() {
-                supabaseClient.auth.signInWithOAuth({
+                googleAuthClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
                         redirectTo: 'https://exotisa-store.vercel.app'
                     }
-                }).catch(err => alert('خطأ: ' + err.message));
+                });
             };
             
             loginForm.appendChild(googleBtn);
         }
         
-        // معالجة العودة - النسخة البسيطة
-        handleCallback();
+        // معالجة العودة من Google - نسخة مباشرة
+        checkGoogleAuth();
     });
     
-    async function handleCallback() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+    async function checkGoogleAuth() {
+        const { data: { session } } = await googleAuthClient.auth.getSession();
         
         if (session && session.user) {
-            alert('مرحباً ' + session.user.email + '!\nسنحفظ بياناتك...');
+            // مستخدم Google مسجل!
+            const googleUser = session.user;
             
-            try {
-                // حفظ في جدول users فقط
-                const googleUser = session.user;
-                
-                const { data: existing } = await supabaseClient
-                    .from('users')
-                    .select('id')
-                    .eq('email', googleUser.email)
-                    .limit(1);
-                
-                if (!existing || existing.length === 0) {
-                    const { error } = await supabaseClient
-                        .from('users')
-                        .insert({
-                            email: googleUser.email,
-                            full_name: googleUser.user_metadata?.full_name || 'مستخدم',
-                            password: null,
-                            is_active: true,
-                            role: 'user'
-                        });
-                    
-                    if (error) {
-                        alert('خطأ في الحفظ: ' + error.message);
-                        return;
-                    }
-                }
-                
-                alert('تم تسجيل الدخول بنجاح!\nسنعيد تحميل الصفحة...');
-                
-                // إعادة تحميل بسيطة
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 1000);
-                
-            } catch (error) {
-                alert('خطأ: ' + error.message);
-            }
+            // حفظ بيانات بسيطة في localStorage
+            localStorage.setItem('google_user', JSON.stringify({
+                id: googleUser.id,
+                email: googleUser.email,
+                name: googleUser.user_metadata?.full_name || googleUser.email,
+                avatar: googleUser.user_metadata?.avatar_url,
+                isGoogleUser: true
+            }));
+            
+            alert('مرحباً ' + googleUser.email + '!\nتم تسجيل الدخول بنجاح!');
+            
+            // إعادة تحميل الصفحة
+            window.location.href = '/';
         }
     }
+    
+    // تعديل App.checkSession لدعم مستخدمي Google
+    const originalCheckSession = App.checkSession;
+    App.checkSession = async function() {
+        // تحقق من مستخدم Google أولاً
+        const googleUserData = localStorage.getItem('google_user');
+        if (googleUserData) {
+            try {
+                const googleUser = JSON.parse(googleUserData);
+                this.state.user = {
+                    id: googleUser.id,
+                    email: googleUser.email,
+                    full_name: googleUser.name,
+                    role: 'user',
+                    is_active: true,
+                    isGoogleUser: true
+                };
+                this.state.isAdmin = false;
+                return;
+            } catch (e) {
+                // إذا فشل، امسح البيانات وابدأ من جديد
+                localStorage.removeItem('google_user');
+            }
+        }
+        
+        // إذا لم يكن مستخدم Google، استخدم الطريقة الأصلية
+        await originalCheckSession.call(this);
+    };
+    
+    // إضافة زر logout لمستخدمي Google
+    const originalLogout = App.logout;
+    App.logout = async function() {
+        const googleUserData = localStorage.getItem('google_user');
+        if (googleUserData) {
+            // تسجيل خروج من Google
+            await googleAuthClient.auth.signOut();
+            localStorage.removeItem('google_user');
+            this.state.user = null;
+            location.reload();
+        } else {
+            // تسجيل خروج عادي
+            await originalLogout.call(this);
+        }
+    };
 })();
 </script>
 
