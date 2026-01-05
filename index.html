@@ -3421,118 +3421,79 @@
     </script>
 
 <script>
-// Google OAuth - نسخة مستقلة
+// Google OAuth - نسخة بسيطة جداً (بدون createSession)
 (function() {
-    // إنشاء Supabase client خاص بهذا الكود
     const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    
     let supabaseClient = null;
     
     window.addEventListener('DOMContentLoaded', function() {
-        // تهيئة Supabase client
         supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // إضافة زر Google
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
-            const divider = document.createElement('div');
-            divider.style.cssText = 'text-align: center; margin: 20px 0; color: #666; position: relative;';
-            divider.innerHTML = '<span style="background: white; padding: 0 10px; position: relative; z-index: 1;">أو</span><hr style="position: absolute; top: 50%; left: 0; right: 0; margin: 0; border: none; border-top: 1px solid #ddd; z-index: 0;">';
-            
             const googleBtn = document.createElement('button');
             googleBtn.type = 'button';
-            googleBtn.style.cssText = 'width: 100%; background: #fff; color: #444; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; cursor: pointer; border-radius: 5px;';
-            googleBtn.innerHTML = `
-                <svg width="18" height="18" viewBox="0 0 18 18">
-                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
-                    <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.335z"/>
-                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-                </svg>
-                <span>تسجيل الدخول عبر Google</span>
-            `;
-            googleBtn.onclick = handleGoogleSignIn;
+            googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; cursor: pointer; border-radius: 5px; margin-top: 15px;';
+            googleBtn.innerHTML = '<span>🔐 تسجيل الدخول عبر Google</span>';
+            googleBtn.onclick = function() {
+                supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: 'https://exotisa-store.vercel.app'
+                    }
+                }).catch(err => alert('خطأ: ' + err.message));
+            };
             
-            loginForm.appendChild(divider);
             loginForm.appendChild(googleBtn);
         }
         
-        // معالجة العودة من Google
-        handleGoogleCallback();
+        // معالجة العودة - النسخة البسيطة
+        handleCallback();
     });
     
-    async function handleGoogleSignIn() {
-        try {
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: 'https://exotisa-store.vercel.app'
-                }
-            });
+    async function handleCallback() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        if (session && session.user) {
+            alert('مرحباً ' + session.user.email + '!\nسنحفظ بياناتك...');
             
-            if (error) {
-                alert('خطأ: ' + error.message);
-            }
-        } catch (error) {
-            alert('خطأ في تسجيل الدخول: ' + error.message);
-        }
-    }
-    
-    async function handleGoogleCallback() {
-        try {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            
-            if (session && session.user) {
+            try {
+                // حفظ في جدول users فقط
                 const googleUser = session.user;
                 
-                // البحث عن المستخدم في جدولك
-                let { data: existingUsers } = await supabaseClient
+                const { data: existing } = await supabaseClient
                     .from('users')
-                    .select('*')
+                    .select('id')
                     .eq('email', googleUser.email)
                     .limit(1);
                 
-                let user;
-                if (!existingUsers || existingUsers.length === 0) {
-                    // إنشاء مستخدم جديد
-                    const { data: newUser, error: insertError } = await supabaseClient
+                if (!existing || existing.length === 0) {
+                    const { error } = await supabaseClient
                         .from('users')
                         .insert({
                             email: googleUser.email,
-                            full_name: googleUser.user_metadata?.full_name || googleUser.email.split('@')[0],
+                            full_name: googleUser.user_metadata?.full_name || 'مستخدم',
                             password: null,
                             is_active: true,
                             role: 'user'
-                        })
-                        .select()
-                        .single();
+                        });
                     
-                    if (insertError) {
-                        alert('خطأ في حفظ المستخدم: ' + insertError.message);
+                    if (error) {
+                        alert('خطأ في الحفظ: ' + error.message);
                         return;
                     }
-                    
-                    user = newUser;
-                } else {
-                    user = existingUsers[0];
                 }
                 
-                if (user) {
-                    // حفظ في state
-                    if (window.App) {
-                        App.state.user = user;
-                        App.state.isAdmin = user.role === 'admin';
-                        await App.createSession(user.id);
-                    }
-                    
-                    // إعادة التوجيه
+                alert('تم تسجيل الدخول بنجاح!\nسنعيد تحميل الصفحة...');
+                
+                // إعادة تحميل بسيطة
+                setTimeout(() => {
                     window.location.href = '/';
-                }
-            }
-        } catch (error) {
-            console.error('Callback error:', error);
-            if (error.message) {
+                }, 1000);
+                
+            } catch (error) {
                 alert('خطأ: ' + error.message);
             }
         }
