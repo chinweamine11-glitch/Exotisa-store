@@ -3421,110 +3421,139 @@
     </script>
 
 <!-- Lock Screen -->
-<div id="authLockScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
+<div id="lockScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
     <div style="text-align: center; color: white;">
-        <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
-        <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
-        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <h1 style="font-size: 36px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px;">يرجى تسجيل الدخول</p>
     </div>
 </div>
 
 <style>
-#authLockScreen.unlocked { display: none !important; }
-.modal { z-index: 9999999 !important; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+#lockScreen.hidden { display: none !important; }
+.modal { z-index: 99999999 !important; }
 header { padding: 12px 20px !important; }
-.hide-when-logged-in { transition: opacity 0.3s; }
-.hide-when-logged-in.hidden { display: none !important; }
+.hide-after-login { display: inline-block; }
+.hide-after-login.hidden { display: none !important; }
 </style>
 
 <script>
 // ========================================
-// نظام بسيط وموثوق
+// نظام شامل بسيط
 // ========================================
 (function() {
-    let userLoggedIn = false;
+    const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+    let googleClient = null;
+    let isLoggedIn = false;
     
-    function checkAndUpdateAuth() {
+    function updateUI() {
+        const lockScreen = document.getElementById('lockScreen');
         const hasUser = (App && App.state && App.state.user) || localStorage.getItem('google_user');
-        const lockScreen = document.getElementById('authLockScreen');
         
-        if (hasUser && !userLoggedIn) {
-            // تسجيل دخول ناجح
-            userLoggedIn = true;
-            if (lockScreen) lockScreen.classList.add('unlocked');
+        if (hasUser) {
+            isLoggedIn = true;
+            if (lockScreen) lockScreen.classList.add('hidden');
             
             // إخفاء أزرار التسجيل
             document.querySelectorAll('button, a').forEach(el => {
                 const text = (el.textContent || '').toLowerCase();
-                const onclick = (el.getAttribute('onclick') || '').toLowerCase();
+                const onclick = (el.getAttribute('onclick') || '');
                 if (text.includes('تسجيل الدخول') || text.includes('إنشاء حساب') ||
-                    onclick.includes('loginmodal') || onclick.includes('registermodal')) {
-                    el.classList.add('hide-when-logged-in', 'hidden');
+                    onclick.includes('loginModal') || onclick.includes('registerModal')) {
+                    el.style.display = 'none';
                 }
             });
             
-            // إغلاق النوافذ
             if (App) {
                 App.closeModal('loginModal');
                 App.closeModal('registerModal');
             }
-            
-            console.log('✅ تم تسجيل الدخول بنجاح!');
-        } else if (!hasUser && userLoggedIn) {
-            // تسجيل خروج
-            userLoggedIn = false;
-            if (lockScreen) lockScreen.classList.remove('unlocked');
-            location.reload();
-        } else if (!hasUser) {
-            // غير مسجل - افتح نافذة الدخول
-            setTimeout(() => {
-                if (App && App.openModal) App.openModal('loginModal');
-            }, 500);
+        } else {
+            isLoggedIn = false;
+            if (lockScreen) lockScreen.classList.remove('hidden');
+            setTimeout(() => App && App.openModal && App.openModal('loginModal'), 300);
         }
     }
     
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkAndUpdateAuth, 800);
-        setInterval(checkAndUpdateAuth, 2000);
-    });
-    
-    // Hook على login/register للتحديث الفوري
-    setTimeout(() => {
-        const origLogin = App?.login;
-        if (origLogin) {
-            App.login = async function(...args) {
-                await origLogin.apply(this, args);
-                setTimeout(() => {
-                    checkAndUpdateAuth();
-                    location.reload();
-                }, 300);
+    window.addEventListener('DOMContentLoaded', async function() {
+        googleClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // معالجة Google callback
+        const { data: { session } } = await googleClient.auth.getSession();
+        if (session && session.user) {
+            const user = {
+                id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.email,
+                role: 'user',
+                is_active: true
             };
+            
+            localStorage.setItem('google_user', JSON.stringify(user));
+            if (App && App.state) App.state.user = user;
+            
+            updateUI();
+            return; // خروج - لا تفتح نافذة تسجيل الدخول
         }
         
-        const origRegister = App?.register;
-        if (origRegister) {
-            App.register = async function(...args) {
-                await origRegister.apply(this, args);
-                setTimeout(() => {
-                    checkAndUpdateAuth();
-                    location.reload();
-                }, 300);
-            };
-        }
+        // إضافة زر Google واحد فقط
+        setTimeout(() => {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm && !document.getElementById('finalGoogleBtn')) {
+                const googleBtn = document.createElement('button');
+                googleBtn.id = 'finalGoogleBtn';
+                googleBtn.type = 'button';
+                googleBtn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;';
+                googleBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/>
+                        <path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/>
+                        <path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/>
+                        <path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/>
+                    </svg>
+                    <span>تسجيل الدخول عبر Google</span>
+                `;
+                
+                googleBtn.onclick = function() {
+                    googleClient.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: 'https://exotisa-store.vercel.app' }
+                    });
+                };
+                
+                loginForm.appendChild(googleBtn);
+            }
+        }, 1500);
+        
+        updateUI();
+        setInterval(updateUI, 3000);
+    });
+    
+    // Hook login/register
+    setTimeout(() => {
+        ['login', 'register'].forEach(m => {
+            const orig = App?.[m];
+            if (orig) {
+                App[m] = async function(...args) {
+                    await orig.apply(this, args);
+                    setTimeout(() => {
+                        updateUI();
+                        location.reload();
+                    }, 300);
+                };
+            }
+        });
     }, 500);
 })();
 
-// ========================================
-// نظام التقييم بالنجوم
-// ========================================
+// نظام التقييم
 setTimeout(function() {
     if (!App) return;
     
-    const origLoad = App.loadAppDetails;
-    if (origLoad) {
+    const orig = App.loadAppDetails;
+    if (orig) {
         App.loadAppDetails = async function(appId) {
-            await origLoad.call(this, appId);
+            await orig.call(this, appId);
             
             setTimeout(() => {
                 if (!this.state?.user) return;
@@ -3535,56 +3564,42 @@ setTimeout(function() {
                     box.id = 'ratingBox';
                     box.style.cssText = 'margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; color: white;';
                     box.innerHTML = `
-                        <h3 style="margin: 0 0 15px 0;">⭐ قيّم التطبيق</h3>
+                        <h3>⭐ قيّم التطبيق</h3>
                         <div id="stars" style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
                             ${[1,2,3,4,5].map(i => `<span class="star" data-val="${i}" style="font-size: 40px; cursor: pointer; color: rgba(255,255,255,0.3);">☆</span>`).join('')}
                         </div>
-                        <textarea id="comment" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: none; border-radius: 8px; min-height: 70px;"></textarea>
-                        <button id="sendBtn" style="width: 100%; margin-top: 15px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                            📤 إرسال التقييم
-                        </button>
+                        <textarea id="cmt" placeholder="تعليق (اختياري)" style="width: 100%; padding: 12px; border: none; border-radius: 8px; min-height: 60px;"></textarea>
+                        <button id="send" style="width: 100%; margin-top: 15px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">إرسال</button>
                     `;
                     modal.appendChild(box);
                     
-                    let rating = 0;
-                    document.querySelectorAll('#stars .star').forEach(star => {
-                        star.onclick = function() {
-                            rating = parseInt(this.dataset.val);
-                            document.querySelectorAll('#stars .star').forEach((s, i) => {
-                                s.textContent = i < rating ? '★' : '☆';
-                                s.style.color = i < rating ? '#ffc107' : 'rgba(255,255,255,0.3)';
+                    let r = 0;
+                    document.querySelectorAll('#stars .star').forEach(s => {
+                        s.onclick = function() {
+                            r = parseInt(this.dataset.val);
+                            document.querySelectorAll('#stars .star').forEach((st, i) => {
+                                st.textContent = i < r ? '★' : '☆';
+                                st.style.color = i < r ? '#ffc107' : 'rgba(255,255,255,0.3)';
                             });
                         };
                     });
                     
-                    document.getElementById('sendBtn').onclick = async function() {
-                        if (rating === 0) { alert('اختر تقييمك'); return; }
+                    document.getElementById('send').onclick = async function() {
+                        if (r === 0) { alert('اختر تقييمك'); return; }
                         
                         App.showLoading();
                         try {
-                            await App.supabase.from('ratings').delete()
-                                .eq('app_id', appId).eq('user_id', App.state.user.id);
-                            
-                            await App.supabase.from('ratings').insert({
-                                app_id: appId,
-                                user_id: App.state.user.id,
-                                rating: rating,
-                                comment: document.getElementById('comment').value || null
-                            });
-                            
+                            await App.supabase.from('ratings').delete().eq('app_id', appId).eq('user_id', App.state.user.id);
+                            await App.supabase.from('ratings').insert({ app_id: appId, user_id: App.state.user.id, rating: r, comment: document.getElementById('cmt').value || null });
                             const { data } = await App.supabase.from('ratings').select('rating').eq('app_id', appId);
                             if (data) {
-                                const avg = data.reduce((s, r) => s + r.rating, 0) / data.length;
-                                await App.supabase.from('apps').update({
-                                    average_rating: avg,
-                                    rating_count: data.length
-                                }).eq('id', appId);
+                                const avg = data.reduce((s, x) => s + x.rating, 0) / data.length;
+                                await App.supabase.from('apps').update({ average_rating: avg, rating_count: data.length }).eq('id', appId);
                             }
-                            
-                            alert('شكراً لتقييمك! ⭐');
+                            alert('شكراً! ⭐');
                             document.getElementById('ratingBox').remove();
                         } catch (e) {
-                            alert('خطأ في التقييم');
+                            alert('خطأ');
                         } finally {
                             App.hideLoading();
                         }
@@ -3594,138 +3609,6 @@ setTimeout(function() {
         };
     }
 }, 2000);
-</script>
-
-
-<script>
-// ========================================
-// Google OAuth
-// ========================================
-(function() {
-    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    let googleClient = null;
-    
-    window.addEventListener('DOMContentLoaded', async function() {
-        googleClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // إضافة زر Google في نموذج تسجيل الدخول
-        setTimeout(() => {
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm && !document.getElementById('googleBtn')) {
-                const googleBtn = document.createElement('button');
-                googleBtn.id = 'googleBtn';
-                googleBtn.type = 'button';
-                googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;';
-                googleBtn.innerHTML = '<span style="font-size: 20px;">🔐</span> <span>تسجيل الدخول عبر Google</span>';
-                googleBtn.onclick = function() {
-                    googleClient.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: { redirectTo: 'https://exotisa-store.vercel.app' }
-                    });
-                };
-                loginForm.appendChild(googleBtn);
-                console.log('✅ زر Google مُضاف');
-            }
-        }, 1500);
-        
-        // معالجة العودة من Google
-        const { data: { session } } = await googleClient.auth.getSession();
-        if (session && session.user) {
-            console.log('✅ Google session found!');
-            
-            const user = {
-                id: session.user.id,
-                email: session.user.email,
-                full_name: session.user.user_metadata?.full_name || session.user.email,
-                role: 'user',
-                is_active: true
-            };
-            
-            localStorage.setItem('google_user', JSON.stringify(user));
-            
-            if (App && App.state) {
-                App.state.user = user;
-            }
-            
-            // إخفاء Lock Screen
-            const lockScreen = document.getElementById('authLockScreen');
-            if (lockScreen) lockScreen.classList.add('unlocked');
-            
-            // إغلاق نوافذ
-            if (App) {
-                App.closeModal('loginModal');
-                App.closeModal('registerModal');
-            }
-            
-            alert('مرحباً ' + user.email + '! تم تسجيل الدخول بنجاح عبر Google ✅');
-        }
-    });
-})();
-</script>
-
-
-<script>
-// Google OAuth - نسخة محسّنة
-(function() {
-    window.addEventListener('DOMContentLoaded', function() {
-        setTimeout(() => {
-            const loginForm = document.getElementById('loginForm');
-            if (!loginForm || document.getElementById('googleAuthBtn')) return;
-            
-            const googleBtn = document.createElement('button');
-            googleBtn.id = 'googleAuthBtn';
-            googleBtn.type = 'button';
-            googleBtn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);';
-            googleBtn.innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                    <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/>
-                    <path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/>
-                    <path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/>
-                    <path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/>
-                </svg>
-                <span>تسجيل الدخول عبر Google</span>
-            `;
-            
-            googleBtn.onclick = async function(e) {
-                e.preventDefault();
-                console.log('🔵 محاولة تسجيل الدخول عبر Google...');
-                
-                try {
-                    // إنشاء Supabase client
-                    if (!window.supabase) {
-                        throw new Error('Supabase library not loaded');
-                    }
-                    
-                    const supabase = window.supabase.createClient(
-                        'https://qjfpkwyglveukzfazmzo.supabase.co',
-                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc'
-                    );
-                    
-                    const { data, error } = await supabase.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: 'https://exotisa-store.vercel.app'
-                        }
-                    });
-                    
-                    if (error) {
-                        console.error('❌ خطأ Google:', error);
-                        alert('خطأ: ' + error.message);
-                    } else {
-                        console.log('✅ إعادة توجيه إلى Google...');
-                    }
-                } catch (error) {
-                    console.error('❌ خطأ:', error);
-                    alert('خطأ في تسجيل الدخول: ' + error.message);
-                }
-            };
-            
-            loginForm.appendChild(googleBtn);
-            console.log('✅ زر Google OAuth جاهز');
-        }, 2000);
-    });
-})();
 </script>
 
 </body>
