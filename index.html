@@ -92,7 +92,7 @@
                 rgba(79, 70, 229, 0.95) 100%);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 1.25rem 0;
+            padding: 0.75rem 0;
             position: fixed;
             top: 0;
             left: 0;
@@ -112,7 +112,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .logo {
@@ -127,17 +127,17 @@
         }
 
         .logo h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             font-weight: 800;
             letter-spacing: -0.5px;
         }
 
         .logo small {
             opacity: 0.9;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 300;
         }
 
@@ -155,14 +155,14 @@
 
         .search-input {
             width: 100%;
-            padding: 1rem 1.5rem;
-            padding-right: 4rem;
+            padding: 0.75rem 1.25rem;
+            padding-right: 3.5rem;
             border: none;
             border-radius: 50px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             color: white;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
             transition: var(--transition);
             box-shadow: var(--shadow-sm);
@@ -181,16 +181,16 @@
 
         .search-btn {
             position: absolute;
-            left: 1rem;
+            left: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: white;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -224,10 +224,10 @@
         }
 
         .suggestion-item {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1.25rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             cursor: pointer;
             transition: var(--transition);
             border-bottom: 1px solid var(--gray-200);
@@ -241,12 +241,12 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .theme-toggle {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -256,7 +256,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             transition: var(--transition);
         }
 
@@ -266,12 +266,12 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.625rem 1.25rem;
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
@@ -327,21 +327,21 @@
         }
 
         .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
         }
 
         .btn-lg {
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
         }
 
         .btn-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             padding: 0;
             border-radius: 50%;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         /* === صورة المستخدم === */
@@ -380,7 +380,7 @@
         }
 
         .profile-header {
-            padding: 1rem;
+            padding: 0.875rem;
             border-bottom: 1px solid var(--gray-200);
             display: flex;
             align-items: center;
@@ -418,7 +418,7 @@
 
         .dropdown-item {
             width: 100%;
-            padding: 1rem 1.5rem;
+            padding: 0.875rem 1.25rem;
             background: none;
             border: none;
             text-align: right;
@@ -442,9 +442,9 @@
         /* === الفئات === */
         .categories {
             background: var(--gray-50);
-            padding: 1rem 0;
+            padding: 0.75rem 0;
             position: sticky;
-            top: 80px;
+            top: 70px;
             z-index: 999;
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--gray-200);
@@ -474,7 +474,7 @@
         }
 
         .category-btn {
-            padding: 0.75rem 1.25rem;
+            padding: 0.625rem 1rem;
             background: var(--light);
             border: 2px solid transparent;
             border-radius: 50px;
@@ -503,9 +503,9 @@
         /* === بطاقات التطبيقات === */
         .apps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
 
         .app-card {
@@ -531,7 +531,7 @@
         }
 
         .app-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-8px) scale(1.02);
             box-shadow: var(--shadow-xl);
         }
 
@@ -558,11 +558,11 @@
 
         .featured-badge {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.75rem;
+            right: 0.75rem;
             background: var(--accent);
             color: white;
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.625rem;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 600;
@@ -573,23 +573,23 @@
         }
 
         .app-header {
-            padding: 1.75rem;
+            padding: 1.5rem;
             display: flex;
-            gap: 1.25rem;
+            gap: 1rem;
             align-items: center;
             position: relative;
         }
 
         .app-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
+            font-size: 1.75rem;
             flex-shrink: 0;
             box-shadow: var(--shadow);
             transition: var(--transition);
@@ -604,7 +604,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 18px;
+            border-radius: 16px;
         }
 
         .app-info {
@@ -612,7 +612,7 @@
         }
 
         .app-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
             color: var(--dark);
@@ -621,7 +621,7 @@
 
         .app-developer {
             color: var(--gray-500);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
@@ -630,8 +630,8 @@
 
         .app-meta {
             display: flex;
-            gap: 1.25rem;
-            font-size: 0.85rem;
+            gap: 1rem;
+            font-size: 0.8rem;
             color: var(--gray-500);
         }
 
@@ -642,11 +642,11 @@
         }
 
         .app-body {
-            padding: 0 1.75rem 1.75rem;
+            padding: 0 1.5rem 1.5rem;
         }
 
         .app-description {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
             color: var(--gray-600);
             line-height: 1.7;
             display: -webkit-box;
@@ -659,7 +659,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .stars {
@@ -669,37 +669,37 @@
 
         .stars i {
             color: var(--accent);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .rating-value {
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--accent);
         }
 
         .rating-count {
             color: var(--gray-500);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .app-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .app-tag {
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.625rem;
             background: var(--gray-100);
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gray-600);
         }
 
         .app-footer {
-            padding: 1.25rem 1.75rem;
+            padding: 1rem 1.5rem;
             border-top: 1px solid var(--gray-200);
             display: flex;
             gap: 0.75rem;
@@ -744,7 +744,7 @@
         }
 
         .modal-header {
-            padding: 1.75rem;
+            padding: 1.5rem;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             display: flex;
@@ -756,11 +756,11 @@
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             cursor: pointer;
             padding: 0;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -774,14 +774,14 @@
         }
 
         .modal-body {
-            padding: 2rem;
+            padding: 1.5rem;
             max-height: 70vh;
             overflow-y: auto;
         }
 
         /* === النماذج === */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-label {
@@ -793,12 +793,12 @@
 
         .form-control {
             width: 100%;
-            padding: 1rem 1.25rem;
+            padding: 0.875rem 1rem;
             border: 2px solid var(--gray-300);
             border-radius: var(--border-radius);
             background: var(--light);
             color: var(--dark);
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: var(--transition);
         }
 
@@ -809,7 +809,7 @@
         }
 
         .form-textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
         }
 
@@ -848,8 +848,8 @@
         }
 
         .floating-btn {
-            width: 56px;
-            height: 56px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
@@ -859,7 +859,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             transition: var(--transition);
         }
 
@@ -901,8 +901,8 @@
         }
 
         .loading-spinner {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
             border-radius: 50%;
             border-top-color: var(--primary);
@@ -926,7 +926,7 @@
         }
 
         .alert {
-            padding: 1.25rem 1.5rem;
+            padding: 1rem 1.25rem;
             border-radius: var(--border-radius);
             color: white;
             animation: slideIn 0.3s ease;
@@ -972,7 +972,7 @@
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 1rem;
             }
             
             .search-container {
@@ -986,16 +986,10 @@
             }
             
             .apps-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
             
             .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .apps-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -1005,9 +999,26 @@
             }
             
             .floating-btn {
-                width: 50px;
-                height: 50px;
+                width: 45px;
+                height: 45px;
                 font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating-buttons {
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            .floating-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
             }
         }
 
@@ -1015,9 +1026,9 @@
         .footer {
             background: var(--gray-900);
             color: white;
-            padding: 3rem 0;
+            padding: 2rem 0;
             text-align: center;
-            margin-top: 4rem;
+            margin-top: 3rem;
         }
 
         .footer p {
@@ -1035,7 +1046,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 1rem;
+            padding: 0.875rem;
             background: var(--gray-100);
             border: 2px dashed var(--gray-300);
             border-radius: var(--border-radius);
@@ -1054,18 +1065,18 @@
             align-items: center;
             gap: 0.5rem;
             margin-top: 0.5rem;
-            padding: 0.75rem;
+            padding: 0.625rem;
             background: var(--gray-100);
             border-radius: var(--border-radius-sm);
         }
 
         .file-name {
             flex: 1;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .file-size {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gray-500);
         }
 
@@ -1076,8 +1087,8 @@
             cursor: pointer;
             padding: 0.25rem;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1086,6 +1097,124 @@
 
         .remove-file:hover {
             background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* === Lock Screen === */
+        #authLock {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.98);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #authLock.unlocked {
+            display: none !important;
+        }
+
+        /* === Tab Styles === */
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--gray-100);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-700);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-200);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: var(--gray-50);
+            padding: 1rem;
+            text-align: right;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        /* === Rating Modal === */
+        .rating-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rating-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 2rem 0;
+        }
+
+        .rating-star {
+            font-size: 48px;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s;
+        }
+
+        .rating-star.active {
+            color: #ffc107;
+        }
+
+        .rating-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            min-height: 100px;
+            font-family: inherit;
+            margin-bottom: 1rem;
+            resize: vertical;
         }
     </style>
 </head>
@@ -1098,15 +1227,24 @@
     <!-- تنبيهات -->
     <div class="alert-container" id="alertContainer"></div>
 
+    <!-- Lock Screen -->
+    <div id="authLock">
+        <div style="text-align: center; color: white;">
+            <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
+            <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
+            <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        </div>
+    </div>
+
     <!-- أزرار عائمة -->
     <div class="floating-buttons">
-        <button class="floating-btn home" onclick="App.scrollToTop()" title="الصفحة الرئيسية">
+        <button class="floating-btn home" onclick="ExotisaApp.scrollToTop()" title="الصفحة الرئيسية">
             <i class="fas fa-home"></i>
         </button>
-        <button class="floating-btn add" onclick="App.openAddAppModal()" title="إضافة تطبيق" style="display: none;">
+        <button class="floating-btn add" onclick="ExotisaApp.openAddAppModal()" title="إضافة تطبيق" style="display: none;">
             <i class="fas fa-plus"></i>
         </button>
-        <button class="floating-btn theme" onclick="App.toggleTheme()" title="تبديل الوضع">
+        <button class="floating-btn theme" onclick="ExotisaApp.toggleTheme()" title="تبديل الوضع">
             <i class="fas fa-moon"></i>
         </button>
     </div>
@@ -1115,7 +1253,7 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="logo" onclick="App.goToHome()">
+                <div class="logo" onclick="ExotisaApp.goToHome()">
                     <h1>
                         <i class="fas fa-store"></i>
                         Exotisa Store
@@ -1126,7 +1264,7 @@
                 <div class="search-container">
                     <div class="search-wrapper">
                         <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن تطبيق أو فئة...">
-                        <button class="search-btn" onclick="App.performSearch()">
+                        <button class="search-btn" onclick="ExotisaApp.performSearch()">
                             <i class="fas fa-search"></i>
                         </button>
                         <div class="suggestions-box" id="suggestionsBox">
@@ -1143,7 +1281,7 @@
                     <!-- زر المستخدم -->
                     <div class="user-profile" id="userProfile">
                         <div style="position: relative;">
-                            <div class="user-avatar" id="userAvatar" onclick="App.toggleProfileMenu()">
+                            <div class="user-avatar" id="userAvatar" onclick="ExotisaApp.toggleProfileMenu()">
                                 <i class="fas fa-user"></i>
                             </div>
                             <div class="profile-dropdown" id="profileDropdown">
@@ -1156,10 +1294,10 @@
                                         <div class="profile-email">غير مسجل</div>
                                     </div>
                                 </div>
-                                <button class="dropdown-item" onclick="App.showLoginModal()">
+                                <button class="dropdown-item" onclick="ExotisaApp.showLoginModal()">
                                     <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                                 </button>
-                                <button class="dropdown-item" onclick="App.showRegisterModal()">
+                                <button class="dropdown-item" onclick="ExotisaApp.showRegisterModal()">
                                     <i class="fas fa-user-plus"></i> إنشاء حساب
                                 </button>
                             </div>
@@ -1183,16 +1321,16 @@
     <main class="main-content" id="mainContent">
         <div class="container">
             <!-- قسم الترحيب -->
-            <section class="hero-section" style="margin-top: 120px; text-align: center; padding: 3rem 0;">
-                <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);">مرحباً بك في Exotisa Store</h1>
-                <p style="font-size: 1.2rem; color: var(--gray-500); max-width: 600px; margin: 0 auto 2rem;">
+            <section class="hero-section" style="margin-top: 100px; text-align: center; padding: 2rem 0;">
+                <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary);">مرحباً بك في Exotisa Store</h1>
+                <p style="font-size: 1.1rem; color: var(--gray-500); max-width: 600px; margin: 0 auto 1.5rem;">
                     اكتشف أفضل التطبيقات والأدوات لتطوير أعمالك وتحسين إنتاجيتك
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn btn-primary btn-lg" onclick="App.scrollToApps()">
+                    <button class="btn btn-primary btn-lg" onclick="ExotisaApp.scrollToApps()">
                         <i class="fas fa-rocket"></i> استكشاف التطبيقات
                     </button>
-                    <button class="btn btn-outline btn-lg" onclick="App.showLoginModal()">
+                    <button class="btn btn-outline btn-lg" onclick="ExotisaApp.showLoginModal()">
                         <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                     </button>
                 </div>
@@ -1200,7 +1338,7 @@
 
             <!-- التطبيقات المميزة -->
             <section id="featuredSection">
-                <h2 class="section-title" style="margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 1rem; font-size: 1.75rem;">
+                <h2 class="section-title" style="margin: 2.5rem 0 1.25rem; display: flex; align-items: center; gap: 1rem; font-size: 1.5rem;">
                     <i class="fas fa-crown"></i> التطبيقات المميزة
                 </h2>
                 <div class="apps-grid" id="featuredApps">
@@ -1210,18 +1348,18 @@
 
             <!-- جميع التطبيقات -->
             <section id="allAppsSection">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1.5rem;">
-                    <h2 class="section-title" style="display: flex; align-items: center; gap: 1rem; font-size: 1.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 2.5rem 0 1.25rem;">
+                    <h2 class="section-title" style="display: flex; align-items: center; gap: 1rem; font-size: 1.5rem;">
                         <i class="fas fa-th"></i> جميع التطبيقات
                     </h2>
                     <div style="display: flex; gap: 1rem; align-items: center;">
-                        <select class="form-control" id="sortSelect" style="width: auto; min-width: 180px;">
+                        <select class="form-control" id="sortSelect" style="width: auto; min-width: 160px;">
                             <option value="newest">الأحدث</option>
                             <option value="popular">الأكثر شعبية</option>
                             <option value="rating">الأعلى تقييمًا</option>
                             <option value="downloads">الأكثر تحميلاً</option>
                         </select>
-                        <button class="btn btn-secondary btn-icon" onclick="App.refreshApps()">
+                        <button class="btn btn-secondary btn-icon" onclick="ExotisaApp.refreshApps()">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
@@ -1229,8 +1367,8 @@
                 <div class="apps-grid" id="appsGrid">
                     <!-- سيتم تعبئته ديناميكياً -->
                 </div>
-                <div style="text-align: center; margin: 3rem 0;">
-                    <button class="btn btn-primary btn-lg" id="loadMoreBtn" onclick="App.loadMoreApps()" style="display: none;">
+                <div style="text-align: center; margin: 2.5rem 0;">
+                    <button class="btn btn-primary btn-lg" id="loadMoreBtn" onclick="ExotisaApp.loadMoreApps()" style="display: none;">
                         <i class="fas fa-spinner fa-spin" id="loadMoreSpinner" style="display: none;"></i>
                         <span id="loadMoreText">تحميل المزيد</span>
                     </button>
@@ -1244,7 +1382,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>تسجيل الدخول</h3>
-                <button class="modal-close" onclick="App.closeModal('loginModal')">&times;</button>
+                <button class="modal-close" onclick="ExotisaApp.closeModal('loginModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="loginForm">
@@ -1256,7 +1394,7 @@
                         <label class="form-label">كلمة المرور</label>
                         <div class="password-wrapper">
                             <input type="password" class="form-control" id="loginPassword" placeholder="أدخل كلمة المرور" required>
-                            <button type="button" class="toggle-password" onclick="App.togglePassword('loginPassword')">
+                            <button type="button" class="toggle-password" onclick="ExotisaApp.togglePassword('loginPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -1267,7 +1405,7 @@
                 </form>
                 <div style="text-align: center; margin-top: 1.5rem;">
                     <p style="color: var(--gray-500); margin-bottom: 1rem;">ليس لديك حساب؟</p>
-                    <button class="btn btn-outline" style="width: 100%;" onclick="App.showRegisterModal()">
+                    <button class="btn btn-outline" style="width: 100%;" onclick="ExotisaApp.showRegisterModal()">
                         <i class="fas fa-user-plus"></i> إنشاء حساب جديد
                     </button>
                 </div>
@@ -1280,7 +1418,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>إنشاء حساب جديد</h3>
-                <button class="modal-close" onclick="App.closeModal('registerModal')">&times;</button>
+                <button class="modal-close" onclick="ExotisaApp.closeModal('registerModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="registerForm">
@@ -1296,7 +1434,7 @@
                         <label class="form-label">كلمة المرور *</label>
                         <div class="password-wrapper">
                             <input type="password" class="form-control" id="registerPassword" placeholder="6 أحرف على الأقل" required>
-                            <button type="button" class="toggle-password" onclick="App.togglePassword('registerPassword')">
+                            <button type="button" class="toggle-password" onclick="ExotisaApp.togglePassword('registerPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -1308,7 +1446,7 @@
                         <label class="form-label">تأكيد كلمة المرور *</label>
                         <div class="password-wrapper">
                             <input type="password" class="form-control" id="registerConfirmPassword" placeholder="أعد إدخال كلمة المرور" required>
-                            <button type="button" class="toggle-password" onclick="App.togglePassword('registerConfirmPassword')">
+                            <button type="button" class="toggle-password" onclick="ExotisaApp.togglePassword('registerConfirmPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -1319,7 +1457,7 @@
                 </form>
                 <div style="text-align: center; margin-top: 1.5rem;">
                     <p style="color: var(--gray-500); margin-bottom: 1rem;">هل لديك حساب بالفعل؟</p>
-                    <button class="btn btn-outline" style="width: 100%;" onclick="App.showLoginModal()">
+                    <button class="btn btn-outline" style="width: 100%;" onclick="ExotisaApp.showLoginModal()">
                         <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                     </button>
                 </div>
@@ -1332,7 +1470,7 @@
         <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
                 <h3 id="appModalTitle">إضافة تطبيق جديد</h3>
-                <button class="modal-close" onclick="App.closeModal('appModal')">&times;</button>
+                <button class="modal-close" onclick="ExotisaApp.closeModal('appModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="appForm">
@@ -1397,7 +1535,7 @@
                                     <i class="fas fa-file-alt" id="apkFileIcon"></i>
                                     <div class="file-name" id="apkFileName"></div>
                                     <div class="file-size" id="apkFileSize"></div>
-                                    <button type="button" class="remove-file" onclick="App.removeApkFile()">
+                                    <button type="button" class="remove-file" onclick="ExotisaApp.removeApkFile()">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
@@ -1422,14 +1560,14 @@
                                     <i class="fas fa-image" id="iconFileIcon"></i>
                                     <div class="file-name" id="iconFileName"></div>
                                     <div class="file-size" id="iconFileSize"></div>
-                                    <button type="button" class="remove-file" onclick="App.removeIconFile()">
+                                    <button type="button" class="remove-file" onclick="ExotisaApp.removeIconFile()">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div id="iconPreview" style="margin-top: 1rem; text-align: center;">
-                            <img id="iconPreviewImage" style="width: 100px; height: 100px; border-radius: 20px; object-fit: cover; border: 2px solid var(--gray-300); display: none;">
+                            <img id="iconPreviewImage" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 2px solid var(--gray-300); display: none;">
                         </div>
                         <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
                             <i class="fas fa-info-circle"></i> صورة PNG أو JPG، الحجم المثالي: 512x512 بكسل، الحد الأقصى: 5MB
@@ -1441,7 +1579,7 @@
                         <div id="tagsContainer" style="margin-bottom: 0.5rem;"></div>
                         <div style="display: flex; gap: 0.5rem;">
                             <input type="text" class="form-control" id="tagInput" placeholder="أدخل كلمة مفتاحية">
-                            <button type="button" class="btn btn-secondary" onclick="App.addTag()">
+                            <button type="button" class="btn btn-secondary" onclick="ExotisaApp.addTag()">
                                 <i class="fas fa-plus"></i> إضافة
                             </button>
                         </div>
@@ -1455,7 +1593,7 @@
                     </div>
                     
                     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="App.closeModal('appModal')">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="ExotisaApp.closeModal('appModal')">
                             إلغاء
                         </button>
                         <button type="submit" class="btn btn-primary" style="flex: 1;">
@@ -1472,7 +1610,7 @@
         <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
                 <h3>تفاصيل التطبيق</h3>
-                <button class="modal-close" onclick="App.closeModal('appDetailsModal')">&times;</button>
+                <button class="modal-close" onclick="ExotisaApp.closeModal('appDetailsModal')">&times;</button>
             </div>
             <div class="modal-body" id="appDetailsContent">
                 <!-- سيتم تعبئته ديناميكياً -->
@@ -1480,12 +1618,41 @@
         </div>
     </div>
 
+    <!-- نافذة التقييم -->
+    <div class="modal" id="ratingModal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>تقييم التطبيق</h3>
+                <button class="modal-close" onclick="ExotisaApp.closeModal('ratingModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="ratingAppInfo" style="text-align: center; margin-bottom: 1.5rem;">
+                    <h4 id="ratingAppName"></h4>
+                </div>
+                <div class="rating-stars" id="ratingStars">
+                    <span class="rating-star" data-value="1">☆</span>
+                    <span class="rating-star" data-value="2">☆</span>
+                    <span class="rating-star" data-value="3">☆</span>
+                    <span class="rating-star" data-value="4">☆</span>
+                    <span class="rating-star" data-value="5">☆</span>
+                </div>
+                <div style="text-align: center; margin: 1rem 0; font-size: 1.2rem;">
+                    <span id="ratingValue">0</span> / 5
+                </div>
+                <textarea class="rating-textarea" id="ratingComment" placeholder="تعليقك (اختياري)"></textarea>
+                <button class="btn btn-primary" style="width: 100%;" onclick="ExotisaApp.submitRating()">
+                    <i class="fas fa-star"></i> إرسال التقييم
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- لوحة التحكم -->
-    <main class="dashboard" id="dashboard" style="display: none; padding: 100px 0 40px; min-height: 100vh;">
+    <main class="dashboard" id="dashboard" style="display: none; padding: 80px 0 40px; min-height: 100vh;">
         <div class="container">
             <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--gray-200);">
                 <h2><i class="fas fa-cogs"></i> لوحة التحكم</h2>
-                <button class="btn btn-secondary" onclick="App.toggleDashboard(false)">
+                <button class="btn btn-secondary" onclick="ExotisaApp.toggleDashboard(false)">
                     <i class="fas fa-times"></i> إغلاق
                 </button>
             </div>
@@ -1499,33 +1666,33 @@
             
             <div class="tab-content active" id="statsTab">
                 <h3>نظرة عامة على الإحصائيات</h3>
-                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
-                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-                        <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                        <h3 id="totalApps" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
-                        <p style="color: var(--gray-500); font-size: 1rem;">إجمالي التطبيقات</p>
+                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div class="stat-card" style="background: var(--light); padding: 1.5rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-mobile-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
+                        <h3 id="totalApps" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
+                        <p style="color: var(--gray-500); font-size: 0.9rem;">إجمالي التطبيقات</p>
                     </div>
-                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-                        <i class="fas fa-download" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                        <h3 id="totalDownloads" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
-                        <p style="color: var(--gray-500); font-size: 1rem;">إجمالي التحميلات</p>
+                    <div class="stat-card" style="background: var(--light); padding: 1.5rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-download" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
+                        <h3 id="totalDownloads" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
+                        <p style="color: var(--gray-500); font-size: 0.9rem;">إجمالي التحميلات</p>
                     </div>
-                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-                        <i class="fas fa-users" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                        <h3 id="totalUsers" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
-                        <p style="color: var(--gray-500); font-size: 1rem;">المستخدمون</p>
+                    <div class="stat-card" style="background: var(--light); padding: 1.5rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-users" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
+                        <h3 id="totalUsers" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
+                        <p style="color: var(--gray-500); font-size: 0.9rem;">المستخدمون</p>
                     </div>
-                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-                        <i class="fas fa-star" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                        <h3 id="avgRating" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0.0</h3>
-                        <p style="color: var(--gray-500); font-size: 1rem;">متوسط التقييم</p>
+                    <div class="stat-card" style="background: var(--light); padding: 1.5rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-star" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.75rem;"></i>
+                        <h3 id="avgRating" style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--dark);">0.0</h3>
+                        <p style="color: var(--gray-500); font-size: 0.9rem;">متوسط التقييم</p>
                     </div>
                 </div>
             </div>
             
             <div class="tab-content" id="addAppTab" style="display: none;">
                 <div style="text-align: center; padding: 2rem;">
-                    <button class="btn btn-primary btn-lg" onclick="App.openAddAppModal()">
+                    <button class="btn btn-primary btn-lg" onclick="ExotisaApp.openAddAppModal()">
                         <i class="fas fa-plus"></i> إضافة تطبيق جديد
                     </button>
                 </div>
@@ -1535,20 +1702,20 @@
                 <h3>إدارة التطبيقات</h3>
                 <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
                     <input type="text" class="form-control" id="manageSearch" placeholder="ابحث في التطبيقات...">
-                    <button class="btn btn-secondary" onclick="App.searchManageApps()">
+                    <button class="btn btn-secondary" onclick="ExotisaApp.searchManageApps()">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <div class="table-responsive" style="overflow-x: auto; border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
-                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                <div class="table-responsive">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">اسم التطبيق</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">المطور</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">التنزيلات</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">التقييم</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الحالة</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الإجراءات</th>
+                                <th>اسم التطبيق</th>
+                                <th>المطور</th>
+                                <th>التنزيلات</th>
+                                <th>التقييم</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="manageAppsTableBody">
@@ -1560,15 +1727,15 @@
             
             <div class="tab-content" id="manageUsersTab" style="display: none;">
                 <h3>إدارة المستخدمين</h3>
-                <div class="table-responsive" style="overflow-x: auto; border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
-                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                <div class="table-responsive">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الاسم</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">البريد الإلكتروني</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الدور</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">التسجيل</th>
-                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الإجراءات</th>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الدور</th>
+                                <th>التسجيل</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="manageUsersTableBody">
@@ -1592,7 +1759,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ==================== التطبيق الرئيسي ====================
-        const App = {
+        const ExotisaApp = {
             // معلومات Supabase
             config: {
                 supabaseUrl: 'https://qjfpkwyglveukzfazmzo.supabase.co',
@@ -1618,7 +1785,9 @@
                 sessionToken: null,
                 currentApkFile: null,
                 currentIconFile: null,
-                editingAppId: null
+                editingAppId: null,
+                ratingAppId: null,
+                selectedRating: 0
             },
 
             // تهيئة Supabase
@@ -1651,6 +1820,11 @@
                     // تحديث الواجهة
                     this.updateUI();
                     
+                    // إخفاء شاشة القفل إذا كان المستخدم مسجل
+                    if (this.state.user) {
+                        document.getElementById('authLock').classList.add('unlocked');
+                    }
+                    
                     console.log('✅ التطبيق جاهز!');
                     
                     // تحميل التطبيقات
@@ -1666,12 +1840,24 @@
 
             // ==================== التحقق من الجلسة ====================
             async checkSession() {
+                // التحقق من Google user أولاً
+                const googleUser = localStorage.getItem('google_user');
+                if (googleUser) {
+                    try {
+                        this.state.user = JSON.parse(googleUser);
+                        this.state.isAdmin = this.state.user.role === 'admin';
+                        return;
+                    } catch (e) {
+                        console.log('Google user غير صالح');
+                    }
+                }
+                
+                // التحقق من الجلسة الداخلية
                 const token = localStorage.getItem('session_token');
                 const userId = localStorage.getItem('user_id');
                 
                 if (token && userId) {
                     try {
-                        // التحقق من صحة الجلسة
                         const { data: session, error } = await this.supabase
                             .from('sessions')
                             .select('*, users(*)')
@@ -1697,6 +1883,7 @@
             clearSession() {
                 localStorage.removeItem('session_token');
                 localStorage.removeItem('user_id');
+                localStorage.removeItem('google_user');
                 this.state.user = null;
                 this.state.sessionToken = null;
                 this.state.isAdmin = false;
@@ -1705,12 +1892,10 @@
             // ==================== إنشاء جلسة ====================
             async createSession(userId) {
                 try {
-                    // إنشاء رمز جلسة عشوائي
                     const token = this.generateToken(64);
                     const expiresAt = new Date();
                     expiresAt.setDate(expiresAt.getDate() + 30);
                     
-                    // حفظ الجلسة في قاعدة البيانات
                     const { error } = await this.supabase
                         .from('sessions')
                         .insert({
@@ -1721,7 +1906,6 @@
                     
                     if (error) throw error;
                     
-                    // حفظ الجلسة محلياً
                     localStorage.setItem('session_token', token);
                     localStorage.setItem('user_id', userId);
                     
@@ -1740,7 +1924,6 @@
                 this.showLoading();
                 
                 try {
-                    // استدعاء دالة تسجيل الدخول
                     const { data, error } = await this.supabase
                         .rpc('login_user', {
                             p_email: email,
@@ -1755,7 +1938,6 @@
                     
                     const user = data[0];
                     
-                    // التحقق من نشاط الحساب
                     if (!user.is_active) {
                         throw new Error('الحساب غير نشط. الرجاء التواصل مع الإدارة');
                     }
@@ -1763,14 +1945,13 @@
                     this.state.user = user;
                     this.state.isAdmin = user.role === 'admin';
                     
-                    // إنشاء جلسة جديدة
                     await this.createSession(user.id);
                     
                     this.closeModal('loginModal');
                     this.updateUI();
+                    document.getElementById('authLock').classList.add('unlocked');
                     this.showAlert(`مرحباً بك ${user.full_name || user.email}`, 'success');
                     
-                    // إعادة تحميل البيانات
                     await this.loadApps();
                     
                     return user;
@@ -1789,18 +1970,15 @@
                 this.showLoading();
                 
                 try {
-                    // التحقق من تطابق كلمات المرور
                     const confirmPassword = document.getElementById('registerConfirmPassword').value;
                     if (password !== confirmPassword) {
                         throw new Error('كلمتا المرور غير متطابقتين');
                     }
                     
-                    // التحقق من قوة كلمة المرور
                     if (password.length < 6) {
                         throw new Error('يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل');
                     }
                     
-                    // استدعاء دالة إنشاء الحساب
                     const { data, error } = await this.supabase
                         .rpc('create_user', {
                             p_email: email,
@@ -1819,11 +1997,11 @@
                     this.state.user = user;
                     this.state.isAdmin = false;
                     
-                    // إنشاء جلسة جديدة
                     await this.createSession(user.id);
                     
                     this.closeModal('registerModal');
                     this.updateUI();
+                    document.getElementById('authLock').classList.add('unlocked');
                     this.showAlert('تم إنشاء حسابك بنجاح! مرحباً بك في Exotisa Store', 'success');
                     
                     return user;
@@ -1837,10 +2015,27 @@
                 }
             },
 
+            // ==================== تسجيل الدخول عبر Google ====================
+            async loginWithGoogle() {
+                try {
+                    const { error } = await this.supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin
+                        }
+                    });
+                    
+                    if (error) throw error;
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تسجيل الدخول عبر Google:', error);
+                    this.showAlert('حدث خطأ في تسجيل الدخول عبر Google', 'error');
+                }
+            },
+
             // ==================== تسجيل الخروج ====================
             async logout() {
                 try {
-                    // حذف الجلسة من قاعدة البيانات
                     if (this.state.sessionToken) {
                         await this.supabase
                             .from('sessions')
@@ -1848,13 +2043,14 @@
                             .eq('token', this.state.sessionToken);
                     }
                     
-                    // مسح البيانات المحلية
                     this.clearSession();
                     
                     this.updateUI();
                     this.hideProfileMenu();
-                    this.showAlert('تم تسجيل الخروج بنجاح', 'success');
                     this.toggleDashboard(false);
+                    document.getElementById('authLock').classList.remove('unlocked');
+                    
+                    this.showAlert('تم تسجيل الخروج بنجاح', 'success');
                     
                 } catch (error) {
                     console.error('❌ خطأ في تسجيل الخروج:', error);
@@ -1865,7 +2061,6 @@
             // ==================== تحميل البيانات الأولية ====================
             async loadInitialData() {
                 try {
-                    // تحميل الفئات
                     const { data: categories, error: categoriesError } = await this.supabase
                         .from('categories')
                         .select('*')
@@ -1874,7 +2069,6 @@
                     if (categoriesError) throw categoriesError;
                     this.state.categories = categories || [];
                     
-                    // تحميل التطبيقات المميزة
                     const { data: featuredApps, error: featuredError } = await this.supabase
                         .from('apps')
                         .select('*, categories(name, color)')
@@ -1886,7 +2080,6 @@
                     if (featuredError) throw featuredError;
                     this.state.featuredApps = featuredApps || [];
                     
-                    // تحميل الاقتراحات للبحث
                     await this.loadSearchSuggestions();
                     
                 } catch (error) {
@@ -1986,11 +2179,9 @@
                 
                 container.innerHTML = '';
                 
-                // زر الكل
                 const allBtn = this.createCategoryBtn('all', 'الكل', 'fas fa-th-large', this.state.currentCategory === 'all');
                 container.appendChild(allBtn);
                 
-                // الفئات
                 this.state.categories.forEach(category => {
                     const isActive = this.state.currentCategory === category.id;
                     const btn = this.createCategoryBtn(category.id, category.name, category.icon || 'fas fa-folder', isActive);
@@ -2022,8 +2213,8 @@
                 
                 if (this.state.featuredApps.length === 0) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 4rem 2rem; color: var(--gray-500); grid-column: 1 / -1;">
-                            <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                        <div style="text-align: center; padding: 3rem 1.5rem; color: var(--gray-500); grid-column: 1 / -1;">
+                            <i class="fas fa-star" style="font-size: 2.5rem; margin-bottom: 1rem; display: block;"></i>
                             <h3>لا توجد تطبيقات مميزة حالياً</h3>
                             <p>يمكنك إضافة تطبيقات مميزة من لوحة التحكم</p>
                         </div>
@@ -2040,8 +2231,8 @@
                 
                 if (this.state.apps.length === 0) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 4rem 2rem; color: var(--gray-500); grid-column: 1 / -1;">
-                            <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                        <div style="text-align: center; padding: 3rem 1.5rem; color: var(--gray-500); grid-column: 1 / -1;">
+                            <i class="fas fa-box-open" style="font-size: 2.5rem; margin-bottom: 1rem; display: block;"></i>
                             <h3>لا توجد تطبيقات متاحة</h3>
                             <p>جرب البحث بكلمات أخرى أو اختر فئة مختلفة</p>
                         </div>
@@ -2097,17 +2288,17 @@
                         </div>
                         
                         <div class="app-footer">
-                            <button class="btn btn-primary" onclick="App.openAppDetails('${app.id}')">
+                            <button class="btn btn-primary" onclick="ExotisaApp.openAppDetails('${app.id}')">
                                 <i class="fas fa-eye"></i> معاينة
                             </button>
-                            <button class="btn btn-success" onclick="App.downloadApp('${app.id}')">
+                            <button class="btn btn-success" onclick="ExotisaApp.downloadApp('${app.id}')">
                                 <i class="fas fa-download"></i> تحميل
                             </button>
                             ${this.state.isAdmin ? `
-                                <button class="btn btn-warning" onclick="App.editApp('${app.id}')">
+                                <button class="btn btn-warning" onclick="ExotisaApp.editApp('${app.id}')">
                                     <i class="fas fa-edit"></i> تعديل
                                 </button>
-                                <button class="btn btn-danger" onclick="App.deleteApp('${app.id}')">
+                                <button class="btn btn-danger" onclick="ExotisaApp.deleteApp('${app.id}')">
                                     <i class="fas fa-trash"></i> حذف
                                 </button>
                             ` : ''}
@@ -2148,12 +2339,12 @@
                     
                     const content = document.getElementById('appDetailsContent');
                     content.innerHTML = `
-                        <div style="padding: 2rem;">
-                            <div style="display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                        <div style="padding: 1.5rem;">
+                            <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
                                 <div style="flex: 0 0 auto;">
-                                    <div class="app-icon" style="width: 120px; height: 120px; border-radius: 24px; font-size: 3rem; background: linear-gradient(135deg, ${app.categories?.color || '#4a6fa5'}, ${this.lightenColor(app.categories?.color || '#4a6fa5', 20)})">
+                                    <div class="app-icon" style="width: 100px; height: 100px; border-radius: 20px; font-size: 2.5rem; background: linear-gradient(135deg, ${app.categories?.color || '#4a6fa5'}, ${this.lightenColor(app.categories?.color || '#4a6fa5', 20)})">
                                         ${app.icon_url ? 
-                                            `<img src="${app.icon_url}" alt="${app.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 24px;">` : 
+                                            `<img src="${app.icon_url}" alt="${app.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">` : 
                                             '<i class="fas fa-mobile-alt"></i>'}
                                     </div>
                                 </div>
@@ -2162,27 +2353,27 @@
                                     <p style="color: var(--gray-500); margin-bottom: 1rem;">
                                         <i class="fas fa-user-tie"></i> ${app.developer}
                                     </p>
-                                    <div style="display: flex; gap: 1.5rem; color: var(--gray-500); margin-bottom: 1.5rem;">
+                                    <div style="display: flex; gap: 1.25rem; color: var(--gray-500); margin-bottom: 1.25rem;">
                                         <span><i class="fas fa-code-branch"></i> ${app.version}</span>
                                         <span><i class="fas fa-weight-hanging"></i> ${app.size}MB</span>
                                         <span><i class="fas fa-download"></i> ${this.formatNumber(app.downloads || 0)}</span>
                                         <span><i class="fas fa-folder"></i> ${app.categories?.name || 'غير مصنف'}</span>
                                     </div>
                                     <div class="app-rating">
-                                        <div class="stars" style="font-size: 1.5rem;">${stars}</div>
-                                        <span class="rating-value" style="font-size: 2rem;">${rating.toFixed(1)}</span>
+                                        <div class="stars" style="font-size: 1.25rem;">${stars}</div>
+                                        <span class="rating-value" style="font-size: 1.75rem;">${rating.toFixed(1)}</span>
                                         <span class="rating-count">(${app.rating_count || 0} تقييم)</span>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div style="margin-bottom: 2rem;">
+                            <div style="margin-bottom: 1.5rem;">
                                 <h3 style="margin-bottom: 1rem;">عن التطبيق</h3>
                                 <p style="line-height: 1.8; color: var(--gray-600); white-space: pre-line;">${app.description}</p>
                             </div>
                             
                             ${app.tags?.length > 0 ? `
-                                <div style="margin-bottom: 2rem;">
+                                <div style="margin-bottom: 1.5rem;">
                                     <h3 style="margin-bottom: 1rem;">الكلمات المفتاحية</h3>
                                     <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                                         ${app.tags.map(tag => `<span class="app-tag">${tag}</span>`).join('')}
@@ -2190,14 +2381,19 @@
                                 </div>
                             ` : ''}
                             
-                            <div style="margin-bottom: 2rem;">
+                            <div style="margin-bottom: 1.5rem;">
                                 <h3 style="margin-bottom: 1rem;">الإجراءات</h3>
                                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                                    <button class="btn btn-success btn-lg" onclick="App.downloadApp('${app.id}')">
+                                    <button class="btn btn-success btn-lg" onclick="ExotisaApp.downloadApp('${app.id}')">
                                         <i class="fas fa-download"></i> تحميل التطبيق
                                     </button>
+                                    ${this.state.user ? `
+                                        <button class="btn btn-warning" onclick="ExotisaApp.showRatingModal('${app.id}', '${app.name.replace(/'/g, "\\'")}')">
+                                            <i class="fas fa-star"></i> تقييم
+                                        </button>
+                                    ` : ''}
                                     ${this.state.isAdmin ? `
-                                        <button class="btn btn-warning" onclick="App.editApp('${app.id}')">
+                                        <button class="btn btn-warning" onclick="ExotisaApp.editApp('${app.id}')">
                                             <i class="fas fa-edit"></i> تعديل
                                         </button>
                                     ` : ''}
@@ -2221,7 +2417,6 @@
                 this.showLoading();
                 
                 try {
-                    // الحصول على رابط التحميل
                     const { data: app, error } = await this.supabase
                         .from('apps')
                         .select('download_url, name, version')
@@ -2234,10 +2429,8 @@
                         throw new Error('رابط التحميل غير متوفر');
                     }
                     
-                    // زيادة عداد التنزيلات
                     await this.supabase.rpc('increment_downloads', { app_id: appId });
                     
-                    // تسجيل التنزيل إذا كان المستخدم مسجلاً
                     if (this.state.user) {
                         await this.supabase
                             .from('downloads')
@@ -2247,7 +2440,6 @@
                             });
                     }
                     
-                    // فتح رابط التحميل
                     window.open(app.download_url, '_blank');
                     
                     this.showAlert('جاري تحميل التطبيق...', 'success');
@@ -2310,7 +2502,7 @@
                 }
                 
                 suggestionsBox.innerHTML = filtered.map(item => `
-                    <div class="suggestion-item" onclick="App.selectSuggestion('${item.name}')">
+                    <div class="suggestion-item" onclick="ExotisaApp.selectSuggestion('${item.name.replace(/'/g, "\\'")}')">
                         <i class="fas fa-search"></i>
                         <div>
                             <div>${item.name}</div>
@@ -2335,26 +2527,113 @@
                 this.performSearch();
             },
 
+            // ==================== نظام التقييم ====================
+            showRatingModal(appId, appName) {
+                if (!this.state.user) {
+                    this.showAlert('يجب تسجيل الدخول لتقييم التطبيق', 'error');
+                    return;
+                }
+                
+                this.state.ratingAppId = appId;
+                this.state.selectedRating = 0;
+                
+                document.getElementById('ratingAppName').textContent = appName;
+                document.getElementById('ratingValue').textContent = '0';
+                
+                const stars = document.querySelectorAll('#ratingStars .rating-star');
+                stars.forEach(star => {
+                    star.textContent = '☆';
+                    star.classList.remove('active');
+                });
+                
+                this.openModal('ratingModal');
+                
+                this.initRatingStars();
+            },
+
+            initRatingStars() {
+                const stars = document.querySelectorAll('#ratingStars .rating-star');
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        const value = parseInt(star.getAttribute('data-value'));
+                        this.state.selectedRating = value;
+                        document.getElementById('ratingValue').textContent = value;
+                        
+                        stars.forEach((s, i) => {
+                            if (i < value) {
+                                s.textContent = '★';
+                                s.classList.add('active');
+                            } else {
+                                s.textContent = '☆';
+                                s.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+            },
+
+            async submitRating() {
+                if (!this.state.ratingAppId || this.state.selectedRating === 0) {
+                    this.showAlert('الرجاء اختيار تقييم', 'error');
+                    return;
+                }
+                
+                this.showLoading();
+                
+                try {
+                    const comment = document.getElementById('ratingComment').value.trim();
+                    
+                    await this.supabase.from('ratings').delete()
+                        .eq('app_id', this.state.ratingAppId)
+                        .eq('user_id', this.state.user.id);
+                    
+                    await this.supabase.from('ratings').insert({
+                        app_id: this.state.ratingAppId,
+                        user_id: this.state.user.id,
+                        rating: this.state.selectedRating,
+                        comment: comment || null
+                    });
+                    
+                    const { data: allRatings } = await this.supabase
+                        .from('ratings')
+                        .select('rating')
+                        .eq('app_id', this.state.ratingAppId);
+                    
+                    if (allRatings && allRatings.length > 0) {
+                        const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
+                        await this.supabase.from('apps').update({
+                            average_rating: avg,
+                            rating_count: allRatings.length
+                        }).eq('id', this.state.ratingAppId);
+                    }
+                    
+                    this.closeModal('ratingModal');
+                    this.showAlert('شكراً لتقييمك! ⭐', 'success');
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في إرسال التقييم:', error);
+                    this.showAlert('فشل إرسال التقييم', 'error');
+                } finally {
+                    this.hideLoading();
+                }
+            },
+
             // ==================== إدارة التطبيقات (CRUD) ====================
             async saveApp(appData) {
                 this.showLoading();
                 
                 try {
-                    // تحميل ملف APK إذا كان موجوداً
                     let apkUrl = null;
                     if (this.state.currentApkFile) {
                         apkUrl = await this.uploadFile(this.state.currentApkFile, 'apks', 'apk');
                     } else if (appData.id && this.state.currentApp?.download_url) {
-                        // الاحتفاظ بالملف الحالي إذا لم يتم تحميل ملف جديد
                         apkUrl = this.state.currentApp.download_url;
                     }
                     
-                    // تحميل صورة الأيقونة إذا كانت موجودة
                     let iconUrl = null;
                     if (this.state.currentIconFile) {
                         iconUrl = await this.uploadFile(this.state.currentIconFile, 'icons', 'image');
                     } else if (appData.id && this.state.currentApp?.icon_url) {
-                        // الاحتفاظ بالصورة الحالية إذا لم يتم تحميل صورة جديدة
                         iconUrl = this.state.currentApp.icon_url;
                     }
                     
@@ -2373,12 +2652,10 @@
                         updated_at: new Date().toISOString()
                     };
                     
-                    // إضافة رابط التحميل
                     if (apkUrl) {
                         appToSave.download_url = apkUrl;
                     }
                     
-                    // إضافة رابط الأيقونة
                     if (iconUrl) {
                         appToSave.icon_url = iconUrl;
                     }
@@ -2386,7 +2663,6 @@
                     let result;
                     
                     if (appData.id) {
-                        // تحديث تطبيق موجود
                         const { data, error } = await this.supabase
                             .from('apps')
                             .update(appToSave)
@@ -2399,7 +2675,6 @@
                         
                         this.showAlert('تم تحديث التطبيق بنجاح!', 'success');
                     } else {
-                        // إضافة تطبيق جديد
                         appToSave.created_by = this.state.user?.id || null;
                         appToSave.downloads = 0;
                         appToSave.average_rating = 0;
@@ -2417,13 +2692,11 @@
                         this.showAlert('تم إضافة التطبيق بنجاح!', 'success');
                     }
                     
-                    // إعادة تحميل البيانات
                     await Promise.all([
                         this.loadApps(),
                         this.loadSearchSuggestions()
                     ]);
                     
-                    // إغلاق النافذة
                     this.closeModal('appModal');
                     this.resetAppForm();
                     
@@ -2440,12 +2713,10 @@
 
             async uploadFile(file, folder, type) {
                 try {
-                    // إنشاء اسم ملف فريد
                     const fileExt = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                     const filePath = `${folder}/${fileName}`;
                     
-                    // تحميل الملف إلى Supabase Storage
                     const { data, error } = await this.supabase.storage
                         .from('apps')
                         .upload(filePath, file, {
@@ -2456,7 +2727,6 @@
                     
                     if (error) throw error;
                     
-                    // الحصول على رابط عام للملف
                     const { data: urlData } = this.supabase.storage
                         .from('apps')
                         .getPublicUrl(filePath);
@@ -2484,7 +2754,6 @@
                     
                     this.showAlert('تم حذف التطبيق بنجاح', 'success');
                     
-                    // إعادة تحميل البيانات
                     await Promise.all([
                         this.loadApps(),
                         this.loadSearchSuggestions()
@@ -2553,7 +2822,6 @@
                     document.getElementById('appDescription').value = app.description;
                     document.getElementById('appIsFeatured').checked = app.is_featured || false;
                     
-                    // إظهار رسالة أن الملفات الحالية سيتم الاحتفاظ بها
                     const apkUploadText = document.getElementById('apkUploadText');
                     const iconUploadText = document.getElementById('iconUploadText');
                     
@@ -2565,13 +2833,11 @@
                         iconUploadText.innerHTML = '<i class="fas fa-info-circle"></i> سيتم الاحتفاظ بالأيقونة الحالية إذا لم يتم اختيار صورة جديدة';
                     }
                     
-                    // إخفاء الحقل المطلوب عند التعديل
                     const apkFileInput = document.getElementById('appApkFile');
                     if (apkFileInput) {
                         apkFileInput.required = false;
                     }
                     
-                    // عرض معاينة الأيقونة إذا كانت موجودة
                     if (app.icon_url) {
                         const previewImage = document.getElementById('iconPreviewImage');
                         if (previewImage) {
@@ -2614,7 +2880,7 @@
                 container.innerHTML = this.state.tags.map((tag, index) => `
                     <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--gray-100); border-radius: 50px; font-size: 0.9rem; margin: 0.25rem;">
                         ${tag}
-                        <button type="button" style="background: none; border: none; padding: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-500); transition: var(--transition);" onclick="App.removeTag(${index})">
+                        <button type="button" style="background: none; border: none; padding: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray-500); transition: var(--transition);" onclick="ExotisaApp.removeTag(${index})">
                             <i class="fas fa-times"></i>
                         </button>
                     </span>
@@ -2643,18 +2909,15 @@
                 this.state.currentIconFile = null;
                 this.renderTags();
                 
-                // إعادة تعيين عرض الملفات
                 this.resetFileInput('apk');
                 this.resetFileInput('icon');
                 
-                // إعادة تعيين معاينة الصورة
                 const previewImage = document.getElementById('iconPreviewImage');
                 if (previewImage) {
                     previewImage.src = '';
                     previewImage.style.display = 'none';
                 }
                 
-                // إعادة تعيين نص الزر
                 const apkUploadText = document.getElementById('apkUploadText');
                 const iconUploadText = document.getElementById('iconUploadText');
                 
@@ -2666,7 +2929,6 @@
                     iconUploadText.textContent = 'اختر صورة الأيقونة';
                 }
                 
-                // إعادة تعيين الحقول المطلوبة
                 const apkFileInput = document.getElementById('appApkFile');
                 if (apkFileInput) {
                     apkFileInput.required = true;
@@ -2692,7 +2954,6 @@
                 
                 if (!file) return;
                 
-                // التحقق من نوع الملف
                 if (type === 'apk') {
                     if (!file.name.toLowerCase().endsWith('.apk')) {
                         this.showAlert('يرجى اختيار ملف APK صحيح', 'error');
@@ -2700,7 +2961,6 @@
                         return;
                     }
                     
-                    // التحقق من حجم الملف (50MB كحد أقصى)
                     if (file.size > 50 * 1024 * 1024) {
                         this.showAlert('حجم ملف APK يجب أن يكون أقل من 50MB', 'error');
                         input.value = '';
@@ -2718,7 +2978,6 @@
                         return;
                     }
                     
-                    // التحقق من حجم الملف (5MB كحد أقصى)
                     if (file.size > 5 * 1024 * 1024) {
                         this.showAlert('حجم صورة الأيقونة يجب أن يكون أقل من 5MB', 'error');
                         input.value = '';
@@ -2728,7 +2987,6 @@
                     this.state.currentIconFile = file;
                     this.showFileInfo('icon', file);
                     
-                    // عرض معاينة الصورة
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         const previewImage = document.getElementById('iconPreviewImage');
@@ -2800,7 +3058,6 @@
 
             async loadDashboardStats() {
                 try {
-                    // استدعاء دالة الإحصائيات
                     const { data, error } = await this.supabase
                         .rpc('get_system_stats');
                     
@@ -2842,8 +3099,8 @@
                 if (apps.length === 0) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 3rem;">
-                                <i class="fas fa-box-open" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem; display: block;"></i>
+                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-box-open" style="font-size: 2.5rem; color: var(--gray-400); margin-bottom: 1rem; display: block;"></i>
                                 <p>لا توجد تطبيقات</p>
                             </td>
                         </tr>
@@ -2852,8 +3109,8 @@
                 }
                 
                 tbody.innerHTML = apps.map(app => `
-                    <tr style="border-bottom: 1px solid var(--gray-200);">
-                        <td style="padding: 1rem;">
+                    <tr>
+                        <td>
                             <div style="display: flex; align-items: center; gap: 1rem;">
                                 <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; color: white;">
                                     ${app.icon_url ? 
@@ -2866,25 +3123,25 @@
                                 </div>
                             </div>
                         </td>
-                        <td style="padding: 1rem;">${app.developer}</td>
-                        <td style="padding: 1rem;">${this.formatNumber(app.downloads || 0)}</td>
-                        <td style="padding: 1rem;">
+                        <td>${app.developer}</td>
+                        <td>${this.formatNumber(app.downloads || 0)}</td>
+                        <td>
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 ${this.createStars(app.average_rating || 0)}
                                 <span>${(app.average_rating || 0).toFixed(1)}</span>
                             </div>
                         </td>
-                        <td style="padding: 1rem;">
+                        <td>
                             ${app.is_active ? 
                                 '<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fas fa-check"></i> نشط</span>' : 
                                 '<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: rgba(239, 68, 68, 0.1); color: var(--danger);"><i class="fas fa-times"></i> غير نشط</span>'}
                         </td>
-                        <td style="padding: 1rem;">
+                        <td>
                             <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-sm btn-primary" onclick="App.editApp('${app.id}')">
+                                <button class="btn btn-sm btn-primary" onclick="ExotisaApp.editApp('${app.id}')">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="App.deleteApp('${app.id}')">
+                                <button class="btn btn-sm btn-danger" onclick="ExotisaApp.deleteApp('${app.id}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -2916,8 +3173,8 @@
                 if (users.length === 0) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 3rem;">
-                                <i class="fas fa-users" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem; display: block;"></i>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-users" style="font-size: 2.5rem; color: var(--gray-400); margin-bottom: 1rem; display: block;"></i>
                                 <p>لا يوجد مستخدمون</p>
                             </td>
                         </tr>
@@ -2926,8 +3183,8 @@
                 }
                 
                 tbody.innerHTML = users.map(user => `
-                    <tr style="border-bottom: 1px solid var(--gray-200);">
-                        <td style="padding: 1rem;">
+                    <tr>
+                        <td>
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 <div class="user-avatar" style="width: 32px; height: 32px;">
                                     ${user.full_name?.charAt(0) || user.email.charAt(0).toUpperCase()}
@@ -2935,17 +3192,17 @@
                                 ${user.full_name || user.email.split('@')[0]}
                             </div>
                         </td>
-                        <td style="padding: 1rem;">${user.email}</td>
-                        <td style="padding: 1rem;">
+                        <td>${user.email}</td>
+                        <td>
                             ${user.role === 'admin' ? 
                                 '<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: rgba(239, 68, 68, 0.1); color: var(--danger);"><i class="fas fa-crown"></i> مدير</span>' : 
                                 '<span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fas fa-user"></i> مستخدم</span>'}
                         </td>
-                        <td style="padding: 1rem;">${this.formatDate(user.created_at)}</td>
-                        <td style="padding: 1rem;">
+                        <td>${this.formatDate(user.created_at)}</td>
+                        <td>
                             <div style="display: flex; gap: 0.5rem;">
                                 ${this.state.isAdmin && user.role !== 'admin' ? `
-                                    <button class="btn btn-sm btn-warning" onclick="App.promoteUser('${user.id}', 'admin')">
+                                    <button class="btn btn-sm btn-warning" onclick="ExotisaApp.promoteUser('${user.id}', 'admin')">
                                         <i class="fas fa-user-shield"></i> ترقية لمدير
                                     </button>
                                 ` : ''}
@@ -2983,10 +3240,8 @@
                     const userName = this.state.user.full_name || this.state.user.email.split('@')[0];
                     const userInitial = userName.charAt(0).toUpperCase();
                     
-                    // تحديث صورة المستخدم
                     userAvatar.innerHTML = userInitial;
                     
-                    // تحديث القائمة المنسدلة
                     let profileHTML = `
                         <div class="profile-header">
                             <div class="user-avatar" style="width: 48px; height: 48px; font-size: 1.2rem;">${userInitial}</div>
@@ -3003,27 +3258,25 @@
                     
                     if (this.state.isAdmin) {
                         profileHTML += `
-                            <button class="dropdown-item" onclick="App.toggleDashboard()">
+                            <button class="dropdown-item" onclick="ExotisaApp.toggleDashboard()">
                                 <i class="fas fa-cogs"></i> لوحة التحكم
                             </button>
                         `;
                     }
                     
                     profileHTML += `
-                        <button class="dropdown-item" onclick="App.logout()">
+                        <button class="dropdown-item" onclick="ExotisaApp.logout()">
                             <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
                         </button>
                     `;
                     
                     profileDropdown.innerHTML = profileHTML;
                     
-                    // إظهار زر إضافة التطبيق للمسؤول فقط
                     if (floatingAddBtn) {
                         floatingAddBtn.style.display = this.state.isAdmin ? 'flex' : 'none';
                     }
                     
                 } else {
-                    // حالة عدم تسجيل الدخول
                     userAvatar.innerHTML = '<i class="fas fa-user"></i>';
                     profileDropdown.innerHTML = `
                         <div class="profile-header">
@@ -3035,15 +3288,14 @@
                                 <div class="profile-email">غير مسجل</div>
                             </div>
                         </div>
-                        <button class="dropdown-item" onclick="App.showLoginModal()">
+                        <button class="dropdown-item" onclick="ExotisaApp.showLoginModal()">
                             <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                         </button>
-                        <button class="dropdown-item" onclick="App.showRegisterModal()">
+                        <button class="dropdown-item" onclick="ExotisaApp.showRegisterModal()">
                             <i class="fas fa-user-plus"></i> إنشاء حساب
                         </button>
                     `;
                     
-                    // إخفاء زر إضافة التطبيق
                     if (floatingAddBtn) {
                         floatingAddBtn.style.display = 'none';
                     }
@@ -3250,7 +3502,6 @@
                     }
                 });
                 
-                // النقر خارج مربع الاقتراحات
                 document.addEventListener('click', (e) => {
                     if (!e.target.closest('.search-container')) {
                         this.hideSuggestions();
@@ -3333,7 +3584,6 @@
                     this.handleFileUpload('appIconFile', 'icon');
                 });
                 
-                // النقر على تسميات التحميل
                 document.getElementById('apkUploadLabel').addEventListener('click', (e) => {
                     e.preventDefault();
                     document.getElementById('appApkFile').click();
@@ -3354,7 +3604,6 @@
                 
                 // إغلاق القوائم والنوافذ
                 document.addEventListener('click', (e) => {
-                    // إغلاق قائمة الملف الشخصي
                     const profileDropdown = document.getElementById('profileDropdown');
                     const userProfile = document.querySelector('.user-profile');
                     
@@ -3363,8 +3612,7 @@
                         this.hideProfileMenu();
                     }
                     
-                    // إغلاق النوافذ المنبثقة
-                    const modals = ['loginModal', 'registerModal', 'appModal', 'appDetailsModal'];
+                    const modals = ['loginModal', 'registerModal', 'appModal', 'appDetailsModal', 'ratingModal'];
                     modals.forEach(modalId => {
                         const modal = document.getElementById(modalId);
                         if (modal && e.target === modal) {
@@ -3376,7 +3624,7 @@
                 // إغلاق بالزر ESC
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
-                        const modals = ['loginModal', 'registerModal', 'appModal', 'appDetailsModal'];
+                        const modals = ['loginModal', 'registerModal', 'appModal', 'appDetailsModal', 'ratingModal'];
                         modals.forEach(modalId => {
                             this.closeModal(modalId);
                         });
@@ -3385,6 +3633,36 @@
                         this.hideProfileMenu();
                     }
                 });
+                
+                // Google OAuth Callback
+                this.handleGoogleAuthCallback();
+            },
+
+            handleGoogleAuthCallback() {
+                const hash = window.location.hash;
+                if (hash.includes('access_token')) {
+                    this.supabase.auth.getSession().then(({ data: { session } }) => {
+                        if (session?.user) {
+                            const user = {
+                                id: session.user.id,
+                                email: session.user.email,
+                                full_name: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+                                role: 'user',
+                                is_active: true
+                            };
+                            
+                            localStorage.setItem('google_user', JSON.stringify(user));
+                            this.state.user = user;
+                            this.state.isAdmin = false;
+                            
+                            this.updateUI();
+                            document.getElementById('authLock').classList.add('unlocked');
+                            this.showAlert(`مرحباً بك ${user.full_name}`, 'success');
+                            
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                        }
+                    });
+                }
             },
 
             debounce(func, wait) {
@@ -3414,598 +3692,10 @@
         };
 
         // ==================== تهيئة التطبيق ====================
-        document.addEventListener('DOMContentLoaded', () => App.init());
+        document.addEventListener('DOMContentLoaded', () => ExotisaApp.init());
 
-        // جعل App متاحاً عالمياً
-        window.App = App;
+        // جعل ExotisaApp متاحاً عالمياً
+        window.ExotisaApp = ExotisaApp;
     </script>
-
-<!-- ============================================= -->
-<!-- Exotisa Store - Enhanced Features -->
-<!-- ملف منظم مع جميع الوظائف العاملة -->
-<!-- ============================================= -->
-
-<!-- Lock Screen -->
-<div id="authLock" style="position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
-    <div style="text-align: center; color: white;">
-        <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
-        <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
-        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-    </div>
-</div>
-
-<style>
-/* Lock Screen */
-#authLock.unlocked { display: none !important; }
-.modal { z-index: 999999999 !important; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Header */
-header, .header { padding: 12px 20px !important; }
-
-/* Responsive */
-@media (max-width: 768px) {
-    header, .header { padding: 10px 15px !important; }
-    .modal-content { width: 95% !important; }
-}
-</style>
-
-<script>
-// ============================================= 
-// 1. Authentication System
-// ============================================= 
-(function() {
-    const SB_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    let googleAuth = null;
-    
-    window.addEventListener('DOMContentLoaded', async () => {
-        googleAuth = window.supabase.createClient(SB_URL, SB_KEY);
-        
-        // Check Google session
-        const { data: { session } } = await googleAuth.auth.getSession();
-        if (session && session.user) {
-            const u = {
-                id: session.user.id,
-                email: session.user.email,
-                full_name: session.user.user_metadata?.full_name || session.user.email,
-                role: 'user',
-                is_active: true
-            };
-            localStorage.setItem('google_user', JSON.stringify(u));
-            if (App && App.state) App.state.user = u;
-            updateAuthUI();
-            return;
-        }
-        
-        // Add Google button
-        setTimeout(addGoogleBtn, 1500);
-        
-        // Update UI
-        setTimeout(updateAuthUI, 800);
-        setInterval(updateAuthUI, 3000);
-        
-        // Hook login/register
-        setTimeout(hookAuth, 500);
-    });
-    
-    function addGoogleBtn() {
-        const form = document.getElementById('loginForm');
-        if (form && !document.getElementById('gBtn')) {
-            const btn = document.createElement('button');
-            btn.id = 'gBtn';
-            btn.type = 'button';
-            btn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;';
-            btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20"><path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/><path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/><path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/><path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/></svg><span>تسجيل الدخول عبر Google</span>`;
-            btn.onclick = () => googleAuth.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://exotisa-store.vercel.app' } });
-            form.appendChild(btn);
-        }
-    }
-    
-    function updateAuthUI() {
-        const lock = document.getElementById('authLock');
-        const hasUser = (App && App.state && App.state.user) || localStorage.getItem('google_user');
-        
-        if (hasUser) {
-            if (lock) lock.classList.add('unlocked');
-            document.querySelectorAll('button, a').forEach(el => {
-                const t = (el.textContent || '').toLowerCase();
-                if ((t.includes('تسجيل الدخول') || t.includes('إنشاء حساب')) && el.id !== 'gBtn') {
-                    el.style.display = 'none';
-                }
-            });
-            if (App) { App.closeModal('loginModal'); App.closeModal('registerModal'); }
-        } else {
-            if (lock) lock.classList.remove('unlocked');
-            addGoogleBtn(); // Re-add if missing
-            setTimeout(() => App && App.openModal && App.openModal('loginModal'), 300);
-        }
-    }
-    
-    function hookAuth() {
-        ['login', 'register'].forEach(m => {
-            const o = App?.[m];
-            if (o) {
-                App[m] = async function(...args) {
-                    await o.apply(this, args);
-                    setTimeout(() => { updateAuthUI(); location.reload(); }, 300);
-                };
-            }
-        });
-    }
-})();
-
-// ============================================= 
-// 2. Rating System
-// ============================================= 
-setTimeout(() => {
-    if (!App || !App.loadAppDetails) return;
-    
-    App.showRatingModal = function(appId, appName) {
-        if (!this.state?.user) { alert('يجب تسجيل الدخول'); return; }
-        
-        const m = document.createElement('div');
-        m.className = 'modal';
-        m.style.cssText = 'display: block; z-index: 9999999999;';
-        m.innerHTML = `<div class="modal-content" style="max-width: 500px;"><span class="close" onclick="this.closest('.modal').remove()">&times;</span><div style="padding: 20px;"><h2>⭐ قيّم: ${appName}</h2><div id="stars" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">${[1,2,3,4,5].map(i => `<span class="s" data-r="${i}" style="font-size: 50px; cursor: pointer; color: #ddd;">☆</span>`).join('')}</div><textarea id="cmt" placeholder="تعليق (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px;"></textarea><button id="send" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">📤 إرسال</button></div></div>`;
-        document.body.appendChild(m);
-        
-        let r = 0;
-        m.querySelectorAll('.s').forEach(s => {
-            s.onclick = function() {
-                r = parseInt(this.dataset.r);
-                m.querySelectorAll('.s').forEach((st, i) => {
-                    st.textContent = i < r ? '★' : '☆';
-                    st.style.color = i < r ? '#ffc107' : '#ddd';
-                });
-            };
-        });
-        
-        m.querySelector('#send').onclick = async () => {
-            if (r === 0) { alert('اختر تقييمك'); return; }
-            App.showLoading();
-            try {
-                await App.supabase.from('ratings').delete().eq('app_id', appId).eq('user_id', App.state.user.id);
-                await App.supabase.from('ratings').insert({ app_id: appId, user_id: App.state.user.id, rating: r, comment: m.querySelector('#cmt').value || null });
-                const { data } = await App.supabase.from('ratings').select('rating').eq('app_id', appId);
-                if (data) {
-                    const avg = data.reduce((s, x) => s + x.rating, 0) / data.length;
-                    await App.supabase.from('apps').update({ average_rating: avg, rating_count: data.length }).eq('id', appId);
-                }
-                alert('شكراً لتقييمك! ⭐');
-                m.remove();
-            } catch (e) { alert('خطأ في التقييم'); } finally { App.hideLoading(); }
-        };
-    };
-    
-    // Add rating button
-    const o = App.loadAppDetails;
-    if (o) {
-        App.loadAppDetails = async function(appId) {
-            await o.call(this, appId);
-            setTimeout(() => {
-                if (!this.state?.user) return;
-                const mb = document.querySelector('.modal[style*="display: block"] .modal-body');
-                if (mb && !document.getElementById('rateBtn')) {
-                    const btn = document.createElement('button');
-                    btn.id = 'rateBtn';
-                    btn.style.cssText = 'width: 100%; margin-top: 20px; padding: 14px; background: #ff9800; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;';
-                    btn.textContent = '⭐ قيّم هذا التطبيق';
-                    btn.onclick = () => this.showRatingModal(appId, this.state.currentApp?.name || 'التطبيق');
-                    mb.appendChild(btn);
-                }
-            }, 700);
-        };
-    }
-}, 2000);
-</script>
-
-
-<script>
-// Fix: إعادة إضافة زر Google في كل مرة
-setTimeout(() => {
-    if (!App || !App.openModal) return;
-    
-    const origOpenModal = App.openModal;
-    App.openModal = function(modalId) {
-        origOpenModal.call(this, modalId);
-        
-        if (modalId === 'loginModal') {
-            // إضافة زر Google بعد فتح modal
-            setTimeout(() => {
-                const form = document.getElementById('loginForm');
-                const existingBtn = document.getElementById('gBtn');
-                
-                // حذف الزر القديم إن وُجد
-                if (existingBtn) existingBtn.remove();
-                
-                if (form) {
-                    const googleBtn = document.createElement('button');
-                    googleBtn.id = 'gBtn';
-                    googleBtn.type = 'button';
-                    googleBtn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;';
-                    googleBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20"><path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/><path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/><path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/><path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/></svg><span>تسجيل الدخول عبر Google</span>`;
-                    googleBtn.onclick = () => {
-                        const sb = window.supabase.createClient('https://qjfpkwyglveukzfazmzo.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc');
-                        sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://exotisa-store.vercel.app' } });
-                    };
-                    form.appendChild(googleBtn);
-                    console.log('✅ زر Google مُضاف');
-                }
-            }, 100);
-        }
-    };
-}, 1000);
-</script>
-
-
-<style>
-/* Responsive كامل */
-@media (max-width: 480px) {
-    body { font-size: 14px; }
-    h1 { font-size: 22px !important; }
-    .modal-content { width: 98% !important; padding: 15px !important; }
-    button, .btn { font-size: 14px; padding: 10px !important; }
-}
-@media (min-width: 481px) and (max-width: 768px) {
-    .modal-content { width: 90% !important; }
-}
-@media (min-width: 769px) {
-    .modal-content { max-width: 600px !important; }
-}
-</style>
-
-<script>
-// إغلاق كامل بعد تسجيل الخروج
-setTimeout(() => {
-    if (!App || !App.logout) return;
-    
-    const origLogout = App.logout;
-    App.logout = async function() {
-        await origLogout.call(this);
-        
-        // حذف بيانات Google
-        localStorage.removeItem('google_user');
-        
-        // إغلاق المحتوى بالكامل
-        document.body.style.display = 'none';
-        
-        // إعادة التحميل
-        location.reload();
-    };
-}, 1000);
-
-// إصلاح نظام التقييم - ضمان عمل النجوم
-setTimeout(() => {
-    if (!App || !App.showRatingModal) return;
-    
-    const origRating = App.showRatingModal;
-    App.showRatingModal = function(appId, appName) {
-        if (!this.state?.user) { alert('يجب تسجيل الدخول'); return; }
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.style.cssText = 'display: block !important; position: fixed; z-index: 99999999999; inset: 0; background: rgba(0,0,0,0.8);';
-        modal.innerHTML = `
-            <div style="position: relative; background: white; max-width: 500px; margin: 100px auto; padding: 30px; border-radius: 12px;">
-                <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 10px; left: 10px; background: #f44336; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px;">&times;</button>
-                <h2 style="margin: 0 0 20px 0; text-align: center;">⭐ قيّم: ${appName}</h2>
-                <div id="ratingStarsInput" style="display: flex; gap: 15px; justify-content: center; margin: 25px 0;">
-                    <span class="rating-star" data-value="1" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
-                    <span class="rating-star" data-value="2" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
-                    <span class="rating-star" data-value="3" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
-                    <span class="rating-star" data-value="4" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
-                    <span class="rating-star" data-value="5" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
-                </div>
-                <textarea id="ratingCommentInput" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px; font-family: inherit;"></textarea>
-                <button id="submitRatingBtn" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">📤 إرسال التقييم</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        let chosenRating = 0;
-        const stars = modal.querySelectorAll('.rating-star');
-        
-        stars.forEach((star, index) => {
-            star.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                chosenRating = parseInt(this.getAttribute('data-value'));
-                console.log('⭐ تم اختيار:', chosenRating);
-                
-                stars.forEach((s, i) => {
-                    if (i < chosenRating) {
-                        s.textContent = '★';
-                        s.style.color = '#ffc107';
-                    } else {
-                        s.textContent = '☆';
-                        s.style.color = '#ddd';
-                    }
-                });
-            });
-            
-            star.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                this.click();
-            });
-        });
-        
-        modal.querySelector('#submitRatingBtn').addEventListener('click', async function() {
-            if (chosenRating === 0) {
-                alert('⭐ الرجاء اختيار تقييمك من 1 إلى 5 نجوم');
-                return;
-            }
-            
-            const comment = modal.querySelector('#ratingCommentInput').value.trim();
-            
-            App.showLoading();
-            try {
-                // حذف التقييم القديم
-                await App.supabase.from('ratings').delete()
-                    .eq('app_id', appId)
-                    .eq('user_id', App.state.user.id);
-                
-                // إضافة التقييم الجديد
-                await App.supabase.from('ratings').insert({
-                    app_id: appId,
-                    user_id: App.state.user.id,
-                    rating: chosenRating,
-                    comment: comment || null
-                });
-                
-                // تحديث المتوسط
-                const { data: ratings } = await App.supabase
-                    .from('ratings')
-                    .select('rating')
-                    .eq('app_id', appId);
-                
-                if (ratings && ratings.length > 0) {
-                    const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
-                    await App.supabase.from('apps').update({
-                        average_rating: avg,
-                        rating_count: ratings.length
-                    }).eq('id', appId);
-                }
-                
-                alert('شكراً لتقييمك! ⭐✨');
-                modal.remove();
-            } catch (error) {
-                console.error('خطأ:', error);
-                alert('فشل إرسال التقييم. حاول مرة أخرى.');
-            } finally {
-                App.hideLoading();
-            }
-        });
-    };
-}, 2500);
-</script>
-
-
-<style>
-/* تصغير الشريط العلوي بشكل كبير */
-header, .header {
-    padding: 8px 15px !important;
-    min-height: 50px !important;
-}
-
-header h1, .header h1, header .logo {
-    font-size: 18px !important;
-    margin: 0 !important;
-}
-
-@media (max-width: 768px) {
-    header, .header {
-        padding: 6px 12px !important;
-        min-height: 45px !important;
-    }
-    header h1 {
-        font-size: 16px !important;
-    }
-}
-</style>
-
-<script>
-// ============================================= 
-// إصلاح 1: تسجيل الخروج
-// ============================================= 
-setTimeout(() => {
-    if (!App) return;
-    
-    // Hook على logout
-    const origLogout = App.logout;
-    if (origLogout) {
-        App.logout = async function() {
-            console.log('🔴 تسجيل خروج...');
-            
-            // تنفيذ logout الأصلي
-            await origLogout.call(this);
-            
-            // حذف Google user
-            localStorage.removeItem('google_user');
-            
-            // مسح state
-            this.state.user = null;
-            this.state.isAdmin = false;
-            
-            // إعادة تحميل الصفحة
-            window.location.href = '/';
-        };
-    }
-}, 1000);
-
-// ============================================= 
-// إصلاح 2: نظام التقييم - يعمل 100%
-// ============================================= 
-setTimeout(() => {
-    if (!App) return;
-    
-    // دالة التقييم الجديدة
-    App.showRatingDialog = function(appId, appName) {
-        if (!this.state?.user) { alert('يجب تسجيل الدخول أولاً'); return; }
-        
-        const modalHTML = `
-            <div class="modal" style="display: block !important; position: fixed; z-index: 999999999; inset: 0; background: rgba(0,0,0,0.85);">
-                <div style="position: relative; background: white; max-width: 500px; margin: 80px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                    <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 15px; left: 15px; background: #f44336; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 20px; font-weight: bold;">&times;</button>
-                    <h2 style="margin: 0 0 25px 0; text-align: center; color: #333;">⭐ قيّم: ${appName}</h2>
-                    <div id="starsContainer" style="display: flex; gap: 12px; justify-content: center; margin: 30px 0;">
-                        <span class="rate-star" data-rating="1" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                        <span class="rate-star" data-rating="2" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                        <span class="rate-star" data-rating="3" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                        <span class="rate-star" data-rating="4" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                        <span class="rate-star" data-rating="5" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                    </div>
-                    <textarea id="ratingComment" placeholder="شاركنا رأيك (اختياري)" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; min-height: 90px; font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
-                    <button id="submitRating" style="width: 100%; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 4px 15px rgba(76,175,80,0.3);">
-                        📤 إرسال التقييم
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = modalHTML;
-        const modalElement = tempDiv.firstElementChild;
-        document.body.appendChild(modalElement);
-        
-        let selectedRating = 0;
-        const stars = modalElement.querySelectorAll('.rate-star');
-        
-        // معالجة النقر على النجوم
-        stars.forEach((star, index) => {
-            star.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                selectedRating = parseInt(this.getAttribute('data-rating'));
-                console.log('✅ تم اختيار:', selectedRating, 'نجوم');
-                
-                // تحديث النجوم
-                stars.forEach((s, i) => {
-                    if (i < selectedRating) {
-                        s.textContent = '★';
-                        s.style.color = '#ffc107';
-                        s.style.transform = 'scale(1.1)';
-                    } else {
-                        s.textContent = '☆';
-                        s.style.color = '#ddd';
-                        s.style.transform = 'scale(1)';
-                    }
-                });
-            });
-            
-            star.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                this.click();
-            });
-        });
-        
-        // زر الإرسال
-        modalElement.querySelector('#submitRating').addEventListener('click', async function() {
-            if (selectedRating === 0) {
-                alert('⭐ الرجاء اختيار تقييمك (1-5 نجوم)');
-                return;
-            }
-            
-            const comment = modalElement.querySelector('#ratingComment').value.trim();
-            
-            App.showLoading();
-            try {
-                // حذف القديم
-                await App.supabase.from('ratings').delete()
-                    .eq('app_id', appId)
-                    .eq('user_id', App.state.user.id);
-                
-                // إضافة الجديد
-                await App.supabase.from('ratings').insert({
-                    app_id: appId,
-                    user_id: App.state.user.id,
-                    rating: selectedRating,
-                    comment: comment || null
-                });
-                
-                // تحديث المتوسط
-                const { data: allRatings } = await App.supabase
-                    .from('ratings')
-                    .select('rating')
-                    .eq('app_id', appId);
-                
-                if (allRatings && allRatings.length > 0) {
-                    const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
-                    await App.supabase.from('apps').update({
-                        average_rating: avg,
-                        rating_count: allRatings.length
-                    }).eq('id', appId);
-                }
-                
-                alert('شكراً لتقييمك! ⭐✨\nتم حفظ تقييمك بنجاح.');
-                modalElement.remove();
-                
-            } catch (error) {
-                console.error('خطأ في التقييم:', error);
-                alert('فشل إرسال التقييم. الرجاء المحاولة مرة أخرى.');
-            } finally {
-                App.hideLoading();
-            }
-        });
-    };
-}, 2500);
-</script>
-
-
-<script>
-// ============================================= 
-// إصلاح تسجيل الخروج - نهائي
-// ============================================= 
-(function() {
-    let isLoggingOut = false;
-    
-    setTimeout(() => {
-        if (!App || !App.logout) return;
-        
-        const originalLogout = App.logout;
-        App.logout = async function() {
-            if (isLoggingOut) return; // منع التكرار
-            isLoggingOut = true;
-            
-            console.log('🔴 بدء تسجيل الخروج...');
-            
-            try {
-                // تنفيذ logout الأصلي
-                await originalLogout.call(this);
-            } catch (e) {
-                console.error('خطأ في logout الأصلي:', e);
-            }
-            
-            // حذف بيانات Google
-            localStorage.removeItem('google_user');
-            
-            // مسح state
-            if (this.state) {
-                this.state.user = null;
-                this.state.isAdmin = false;
-            }
-            
-            // حذف جلسة Supabase إن وُجدت
-            try {
-                const googleClient = window.supabase?.createClient(
-                    'https://qjfpkwyglveukzfazmzo.supabase.co',
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc'
-                );
-                if (googleClient) {
-                    await googleClient.auth.signOut();
-                }
-            } catch (e) {
-                console.log('تم تسجيل الخروج من Google');
-            }
-            
-            // إعادة التحميل الكامل
-            window.location.href = '/';
-        };
-        
-        console.log('✅ نظام تسجيل الخروج جاهز');
-    }, 1000);
-})();
-</script>
-
 </body>
 </html>
