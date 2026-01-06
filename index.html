@@ -3606,5 +3606,162 @@ setTimeout(function() {
 }, 2000);
 </script>
 
+
+<script>
+// ========================================
+// Google OAuth - بدلاً من "نسيت كلمة السر"
+// ========================================
+(function() {
+    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+    let googleClient = null;
+    
+    window.addEventListener('DOMContentLoaded', function() {
+        googleClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // إضافة زر Google في نموذج تسجيل الدخول
+        setTimeout(() => {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm && !document.getElementById('googleLoginBtn')) {
+                const googleBtn = document.createElement('button');
+                googleBtn.id = 'googleLoginBtn';
+                googleBtn.type = 'button';
+                googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;';
+                googleBtn.textContent = '🔐 تسجيل الدخول عبر Google';
+                googleBtn.onclick = function() {
+                    googleClient.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: 'https://exotisa-store.vercel.app' }
+                    });
+                };
+                loginForm.appendChild(googleBtn);
+            }
+        }, 1500);
+    });
+})();
+
+// ========================================
+// إصلاح نظام التقييم - مُحسّن
+// ========================================
+setTimeout(function() {
+    if (!App || !App.loadAppDetails) return;
+    
+    const originalLoad = App.loadAppDetails;
+    App.loadAppDetails = async function(appId) {
+        await originalLoad.call(this, appId);
+        
+        setTimeout(() => {
+            if (!this.state || !this.state.user) {
+                console.log('⚠️ المستخدم غير مسجل - لا تقييم');
+                return;
+            }
+            
+            const modalBody = document.querySelector('.modal[style*="display: block"] .modal-body, .modal:not([style*="display: none"]) .modal-body');
+            
+            if (modalBody && !document.getElementById('appRatingSection')) {
+                const ratingSection = document.createElement('div');
+                ratingSection.id = 'appRatingSection';
+                ratingSection.style.cssText = 'margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;';
+                ratingSection.innerHTML = `
+                    <h3 style="margin: 0 0 15px 0; font-size: 20px;">⭐ قيّم التطبيق</h3>
+                    <div id="ratingStars" style="display: flex; gap: 10px; margin: 15px 0; justify-content: center;">
+                        ${[1,2,3,4,5].map(i => `<span class="rating-star" data-rating="${i}" style="font-size: 42px; cursor: pointer; color: rgba(255,255,255,0.3); transition: all 0.2s;">☆</span>`).join('')}
+                    </div>
+                    <textarea id="ratingComment" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: none; border-radius: 8px; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
+                    <button id="submitRating" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        📤 إرسال التقييم
+                    </button>
+                `;
+                modalBody.appendChild(ratingSection);
+                
+                let chosenRating = 0;
+                
+                // معالجة النقر على النجوم
+                document.querySelectorAll('#ratingStars .rating-star').forEach(star => {
+                    star.addEventListener('click', function() {
+                        chosenRating = parseInt(this.dataset.rating);
+                        document.querySelectorAll('#ratingStars .rating-star').forEach((s, idx) => {
+                            if (idx < chosenRating) {
+                                s.textContent = '★';
+                                s.style.color = '#ffc107';
+                                s.style.transform = 'scale(1.2)';
+                            } else {
+                                s.textContent = '☆';
+                                s.style.color = 'rgba(255,255,255,0.3)';
+                                s.style.transform = 'scale(1)';
+                            }
+                        });
+                    });
+                    
+                    // Hover effect
+                    star.addEventListener('mouseenter', function() {
+                        this.style.transform = 'scale(1.3)';
+                    });
+                    star.addEventListener('mouseleave', function() {
+                        const rating = parseInt(this.dataset.rating);
+                        this.style.transform = rating <= chosenRating ? 'scale(1.2)' : 'scale(1)';
+                    });
+                });
+                
+                // زر الإرسال
+                document.getElementById('submitRating').addEventListener('click', async function() {
+                    if (chosenRating === 0) {
+                        alert('⭐ اختر تقييمك من 1 إلى 5 نجوم');
+                        return;
+                    }
+                    
+                    const comment = document.getElementById('ratingComment').value.trim();
+                    
+                    App.showLoading();
+                    try {
+                        // حذف التقييم القديم
+                        await App.supabase.from('ratings').delete()
+                            .eq('app_id', appId)
+                            .eq('user_id', App.state.user.id);
+                        
+                        // إضافة التقييم الجديد
+                        const { error: insertError } = await App.supabase
+                            .from('ratings')
+                            .insert({
+                                app_id: appId,
+                                user_id: App.state.user.id,
+                                rating: chosenRating,
+                                comment: comment || null
+                            });
+                        
+                        if (insertError) throw insertError;
+                        
+                        // تحديث متوسط التقييم
+                        const { data: allRatings } = await App.supabase
+                            .from('ratings')
+                            .select('rating')
+                            .eq('app_id', appId);
+                        
+                        if (allRatings && allRatings.length > 0) {
+                            const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
+                            await App.supabase.from('apps').update({
+                                average_rating: avg,
+                                rating_count: allRatings.length
+                            }).eq('id', appId);
+                        }
+                        
+                        alert('شكراً لتقييمك! ⭐✨');
+                        document.getElementById('appRatingSection').remove();
+                        
+                    } catch (error) {
+                        console.error('خطأ في التقييم:', error);
+                        alert('فشل إرسال التقييم. حاول مرة أخرى.');
+                    } finally {
+                        App.hideLoading();
+                    }
+                });
+                
+                console.log('✅ نظام التقييم جاهز');
+            }
+        }, 800);
+    };
+}, 2500);
+</script>
+
 </body>
 </html>
