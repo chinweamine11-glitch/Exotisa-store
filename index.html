@@ -4184,5 +4184,173 @@
     };
     </script>
 
+
+    <script>
+    // إضافة قائمة لوحة تحكم الأدمن
+    (function() {
+        window.addEventListener('DOMContentLoaded', function() {
+            // إضافة زر لوحة التحكم في الهيدر للأدمن
+            setTimeout(function() {
+                if (App.state.isAdmin) {
+                    const header = document.querySelector('header') || document.querySelector('.header');
+                    if (header) {
+                        // إنشاء قائمة الأدمن
+                        const adminMenu = document.createElement('div');
+                        adminMenu.style.cssText = 'position: fixed; top: 70px; left: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 15px; z-index: 999; display: none;';
+                        adminMenu.id = 'adminMenu';
+                        adminMenu.innerHTML = `
+                            <h4 style="margin: 0 0 15px 0; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">👑 لوحة التحكم</h4>
+                            <button onclick="App.adminPages.showStatistics(); document.getElementById('adminMenu').style.display='none';" 
+                                    style="width: 100%; padding: 12px; margin-bottom: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; text-align: right;">
+                                📊 الإحصائيات
+                            </button>
+                            <button onclick="App.adminPages.showAppsManagement(); document.getElementById('adminMenu').style.display='none';" 
+                                    style="width: 100%; padding: 12px; margin-bottom: 10px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; cursor: pointer; text-align: right;">
+                                📱 إدارة التطبيقات
+                            </button>
+                            <button onclick="App.adminPages.showUsersManagement(); document.getElementById('adminMenu').style.display='none';" 
+                                    style="width: 100%; padding: 12px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border: none; border-radius: 8px; cursor: pointer; text-align: right;">
+                                👥 إدارة المستخدمين
+                            </button>
+                        `;
+                        document.body.appendChild(adminMenu);
+                        
+                        // إنشاء زر لفتح القائمة
+                        const adminBtn = document.createElement('button');
+                        adminBtn.style.cssText = 'background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-left: 15px;';
+                        adminBtn.innerHTML = '👑 لوحة التحكم';
+                        adminBtn.onclick = function() {
+                            const menu = document.getElementById('adminMenu');
+                            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+                        };
+                        
+                        header.appendChild(adminBtn);
+                        
+                        console.log('✅ تم إضافة قائمة لوحة التحكم');
+                    }
+                }
+            }, 1000);
+        });
+        
+        // إغلاق القائمة عند الضغط خارجها
+        document.addEventListener('click', function(event) {
+            const adminMenu = document.getElementById('adminMenu');
+            if (adminMenu && !event.target.closest('#adminMenu') && !event.target.closest('button[onclick*="adminMenu"]')) {
+                adminMenu.style.display = 'none';
+            }
+        });
+    })();
+    </script>
+
+    <script>
+    // إصلاح وتحسين نظام التقييم
+    (function() {
+        // إضافة نظام التقييم للتطبيقات
+        App.showRatingForm = function(appId) {
+            const ratingHTML = `
+                <div style="padding: 20px;">
+                    <h3>قيّم هذا التطبيق</h3>
+                    <div id="ratingStars" style="font-size: 36px; margin: 20px 0; cursor: pointer;"></div>
+                    <textarea id="ratingComment" placeholder="أضف تعليقك (اختياري)" 
+                             style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; min-height: 100px; font-family: inherit;"></textarea>
+                    <button onclick="App.submitRating('${appId}')" 
+                            style="width: 100%; margin-top: 15px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        إرسال التقييم
+                    </button>
+                </div>
+            `;
+            
+            // عرض في modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    ${ratingHTML}
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // تهيئة النجوم
+            initStarRating('ratingStars', 0, function(rating) {
+                App.currentRating = rating;
+            });
+        };
+        
+        App.submitRating = async function(appId) {
+            if (!this.currentRating) {
+                showToast('الرجاء اختيار تقييم بالنجوم', 'error');
+                return;
+            }
+            
+            const comment = document.getElementById('ratingComment').value;
+            
+            this.showLoading();
+            
+            try {
+                // حذف التقييم القديم إذا وجد
+                await this.supabase
+                    .from('ratings')
+                    .delete()
+                    .eq('app_id', appId)
+                    .eq('user_id', this.state.user.id);
+                
+                // إضافة التقييم الجديد
+                const { error } = await this.supabase
+                    .from('ratings')
+                    .insert({
+                        app_id: appId,
+                        user_id: this.state.user.id,
+                        rating: this.currentRating,
+                        comment: comment || null
+                    });
+                
+                if (error) throw error;
+                
+                // تحديث متوسط التقييم
+                await this.updateAppRating(appId);
+                
+                showToast('شكراً لتقييمك! ✨', 'success');
+                
+                // إغلاق النافذة
+                document.querySelector('.modal:last-child')?.remove();
+                
+                // إعادة تحميل البيانات
+                await this.loadAppDetails(appId);
+                
+            } catch (error) {
+                console.error(error);
+                showToast('فشل إرسال التقييم', 'error');
+            } finally {
+                this.hideLoading();
+            }
+        };
+        
+        App.updateAppRating = async function(appId) {
+            try {
+                const { data: ratings } = await this.supabase
+                    .from('ratings')
+                    .select('rating')
+                    .eq('app_id', appId);
+                
+                if (ratings && ratings.length > 0) {
+                    const avgRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+                    
+                    await this.supabase
+                        .from('apps')
+                        .update({
+                            average_rating: avgRating,
+                            rating_count: ratings.length
+                        })
+                        .eq('id', appId);
+                }
+            } catch (error) {
+                console.error('خطأ في تحديث التقييم:', error);
+            }
+        };
+    })();
+    </script>
+
 </body>
 </html>
