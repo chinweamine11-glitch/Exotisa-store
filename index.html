@@ -3801,5 +3801,229 @@ setTimeout(function() {
 }, 1500);
 </script>
 
+
+<script>
+// ==============================================
+// إصلاح 1: إلزامية تسجيل الدخول + إخفاء النافذة
+// ==============================================
+(function() {
+    let loginCheckDone = false;
+    
+    function enforceLogin() {
+        if (loginCheckDone) return;
+        
+        setTimeout(function() {
+            const isGoogleUser = localStorage.getItem('google_user');
+            const hasNormalUser = App && App.state && App.state.user;
+            
+            if (!hasNormalUser && !isGoogleUser) {
+                // لم يسجل دخول - افتح نافذة إجبارياً
+                if (App && App.openModal) {
+                    App.openModal('loginModal');
+                    showToast('يرجى تسجيل الدخول للمتابعة', 'info', 4000);
+                }
+            } else {
+                // مسجل - أغلق أي نوافذ مفتوحة
+                if (App && App.closeModal) {
+                    App.closeModal('loginModal');
+                    App.closeModal('registerModal');
+                }
+                loginCheckDone = true;
+            }
+        }, 1000);
+    }
+    
+    window.addEventListener('DOMContentLoaded', enforceLogin);
+    
+    // إعادة التحقق بعد تسجيل الدخول
+    const originalLogin = App?.login;
+    if (originalLogin) {
+        App.login = async function(...args) {
+            await originalLogin.apply(this, args);
+            loginCheckDone = true;
+            setTimeout(() => {
+                this.closeModal('loginModal');
+                this.closeModal('registerModal');
+            }, 500);
+        };
+    }
+})();
+
+// ==============================================
+// إصلاح 2: لوحة تحكم الأدمن - قابلة للنقر
+// ==============================================
+setTimeout(function() {
+    if (!App || !App.state || !App.state.isAdmin) return;
+    
+    console.log('🔧 إعداد لوحة تحكم الأدمن...');
+    
+    // التأكد من وجود الدوال
+    if (!App.adminDashboard) {
+        App.adminDashboard = {
+            stats: async function() {
+                App.showLoading();
+                try {
+                    const [apps, users, downloads, ratings] = await Promise.all([
+                        App.supabase.from('apps').select('*'),
+                        App.supabase.from('users').select('*'),
+                        App.supabase.from('downloads').select('*'),
+                        App.supabase.from('ratings').select('*')
+                    ]);
+                    
+                    const avgRating = ratings.data && ratings.data.length > 0 
+                        ? (ratings.data.reduce((sum, r) => sum + r.rating, 0) / ratings.data.length).toFixed(2)
+                        : 0;
+                    
+                    alert(`📊 إحصائيات المتجر:\n\n` +
+                          `📱 التطبيقات: ${apps.data?.length || 0}\n` +
+                          `👥 المستخدمون: ${users.data?.length || 0}\n` +
+                          `⬇️ التحميلات: ${downloads.data?.length || 0}\n` +
+                          `⭐ متوسط التقييم: ${avgRating}`);
+                } catch (error) {
+                    alert('خطأ: ' + error.message);
+                } finally {
+                    App.hideLoading();
+                }
+            },
+            
+            manageApps: async function() {
+                App.showLoading();
+                try {
+                    const { data: apps } = await App.supabase
+                        .from('apps')
+                        .select('name, developer, is_active, downloads')
+                        .order('created_at', { ascending: false })
+                        .limit(10);
+                    
+                    const list = apps.map(a => `• ${a.name} (${a.developer}) - ${a.is_active ? '✅' : '❌'} - ${a.downloads} تحميل`).join('\n');
+                    alert(`📱 آخر 10 تطبيقات:\n\n${list}`);
+                } catch (error) {
+                    alert('خطأ: ' + error.message);
+                } finally {
+                    App.hideLoading();
+                }
+            },
+            
+            manageUsers: async function() {
+                App.showLoading();
+                try {
+                    const { data: users } = await App.supabase
+                        .from('users')
+                        .select('email, role, is_active')
+                        .order('created_at', { ascending: false })
+                        .limit(10);
+                    
+                    const list = users.map(u => `• ${u.email} - ${u.role === 'admin' ? '👑' : '👤'} - ${u.is_active ? '✅' : '❌'}`).join('\n');
+                    alert(`👥 آخر 10 مستخدمين:\n\n${list}`);
+                } catch (error) {
+                    alert('خطأ: ' + error.message);
+                } finally {
+                    App.hideLoading();
+                }
+            }
+        };
+    }
+    
+    // إضافة زر لوحة التحكم
+    const header = document.querySelector('header') || document.querySelector('.header');
+    if (header && !document.getElementById('adminControlBtn')) {
+        const adminBtn = document.createElement('button');
+        adminBtn.id = 'adminControlBtn';
+        adminBtn.style.cssText = 'background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 0 10px; box-shadow: 0 2px 8px rgba(255,152,0,0.3);';
+        adminBtn.textContent = '👑 لوحة التحكم';
+        adminBtn.onclick = function(e) {
+            e.preventDefault();
+            const choice = prompt('اختر:\n1 = الإحصائيات\n2 = إدارة التطبيقات\n3 = إدارة المستخدمين');
+            if (choice === '1') App.adminDashboard.stats();
+            else if (choice === '2') App.adminDashboard.manageApps();
+            else if (choice === '3') App.adminDashboard.manageUsers();
+        };
+        header.appendChild(adminBtn);
+        console.log('✅ زر لوحة التحكم مضاف!');
+    }
+}, 2000);
+
+// ==============================================
+// إصلاح 3: نظام التقييم - يعمل بالكامل!
+// ==============================================
+setTimeout(function() {
+    if (!App) return;
+    
+    // دالة إظهار نموذج التقييم
+    App.rateApp = async function(appId, appName) {
+        if (!this.state.user) {
+            showToast('يجب تسجيل الدخول أولاً للتقييم', 'error');
+            return;
+        }
+        
+        const ratingStr = prompt(`قيّم "${appName}"\n\nأدخل تقييمك من 1 إلى 5:`);
+        if (!ratingStr) return;
+        
+        const rating = parseInt(ratingStr);
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            alert('الرجاء إدخال رقم من 1 إلى 5');
+            return;
+        }
+        
+        const comment = prompt('أضف تعليقك (اختياري، اضغط Cancel للتخطي):') || null;
+        
+        this.showLoading();
+        try {
+            // حذف التقييم القديم إن وُجد
+            await this.supabase
+                .from('ratings')
+                .delete()
+                .eq('app_id', appId)
+                .eq('user_id', this.state.user.id);
+            
+            // إضافة التقييم الجديد
+            const { error: insertError } = await this.supabase
+                .from('ratings')
+                .insert({
+                    app_id: appId,
+                    user_id: this.state.user.id,
+                    rating: rating,
+                    comment: comment
+                });
+            
+            if (insertError) throw insertError;
+            
+            // تحديث متوسط التقييم
+            const { data: allRatings } = await this.supabase
+                .from('ratings')
+                .select('rating')
+                .eq('app_id', appId);
+            
+            if (allRatings && allRatings.length > 0) {
+                const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
+                await this.supabase
+                    .from('apps')
+                    .update({
+                        average_rating: avg,
+                        rating_count: allRatings.length
+                    })
+                    .eq('id', appId);
+            }
+            
+            showToast('شكراً لتقييمك! ⭐', 'success');
+            
+            // إعادة تحميل التطبيق إذا كانت صفحة التفاصيل مفتوحة
+            if (this.state.currentApp && this.state.currentApp.id === appId) {
+                await this.loadAppDetails(appId);
+            }
+            
+        } catch (error) {
+            console.error(error);
+            showToast('فشل إرسال التقييم: ' + error.message, 'error');
+        } finally {
+            this.hideLoading();
+        }
+    };
+    
+    console.log('✅ نظام التقييم جاهز!');
+    console.log('📝 استخدم: App.rateApp(appId, appName)');
+}, 1500);
+</script>
+
 </body>
 </html>
