@@ -4352,5 +4352,176 @@
     })();
     </script>
 
+
+    <script>
+    // ========================================
+    // إصلاح 1: لوحة التحكم
+    // ========================================
+    (function() {
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (App && App.state && App.state.isAdmin) {
+                    // التأكد من وجود دوال الأدمن
+                    if (!App.adminPages) {
+                        console.error('⚠️ Admin pages not loaded!');
+                        return;
+                    }
+                    
+                    console.log('✅ Admin detected, adding dashboard button...');
+                    
+                    // البحث عن الهيدر
+                    const header = document.querySelector('header') || document.querySelector('.header') || document.querySelector('nav');
+                    if (header) {
+                        // زر لوحة التحكم
+                        const adminBtn = document.createElement('button');
+                        adminBtn.id = 'adminDashboardBtn';
+                        adminBtn.style.cssText = 'background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 0 10px;';
+                        adminBtn.innerHTML = '👑 لوحة التحكم';
+                        adminBtn.onclick = function(e) {
+                            e.preventDefault();
+                            const menu = document.getElementById('adminMenu');
+                            if (menu) {
+                                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+                            }
+                        };
+                        
+                        header.appendChild(adminBtn);
+                        console.log('✅ Admin button added!');
+                    }
+                }
+            }, 1500);
+        });
+    })();
+    
+    // ========================================
+    // إصلاح 2: زر التقييم للمستخدمين
+    // ========================================
+    // إضافة زر التقييم في صفحة تفاصيل التطبيق
+    const originalLoadAppDetails = App.loadAppDetails;
+    if (originalLoadAppDetails) {
+        App.loadAppDetails = async function(appId) {
+            await originalLoadAppDetails.call(this, appId);
+            
+            // إضافة زر التقييم
+            setTimeout(function() {
+                const appDetails = document.querySelector('.app-details') || document.querySelector('.modal-body');
+                if (appDetails && App.state.user) {
+                    // البحث عن زر موجود
+                    if (!document.getElementById('rateAppBtn')) {
+                        const rateBtn = document.createElement('button');
+                        rateBtn.id = 'rateAppBtn';
+                        rateBtn.className = 'btn btn-primary';
+                        rateBtn.style.cssText = 'width: 100%; margin-top: 15px; padding: 12px; background: #ff9800; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;';
+                        rateBtn.innerHTML = '⭐ قيّم هذا التطبيق';
+                        rateBtn.onclick = function() {
+                            App.showRatingForm(appId);
+                        };
+                        
+                        appDetails.appendChild(rateBtn);
+                    }
+                }
+            }, 500);
+        };
+    }
+    
+    // ========================================
+    // إصلاح 3: مشكلة "البريد مستخدم"
+    // ========================================
+    const originalRegister = App.register;
+    if (originalRegister) {
+        App.register = async function(email, password, fullName = null) {
+            this.showLoading();
+            
+            try {
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                if (password !== confirmPassword) {
+                    throw new Error('كلمتا المرور غير متطابقتين');
+                }
+                
+                if (password.length < 6) {
+                    throw new Error('يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل');
+                }
+                
+                // التحقق من وجود البريد أولاً
+                const { data: existingUsers } = await this.supabase
+                    .from('users')
+                    .select('id')
+                    .eq('email', email)
+                    .limit(1);
+                
+                if (existingUsers && existingUsers.length > 0) {
+                    throw new Error('هذا البريد الإلكتروني مستخدم بالفعل. الرجاء تسجيل الدخول أو استخدام بريد آخر.');
+                }
+                
+                // محاولة إنشاء الحساب
+                try {
+                    const { data, error } = await this.supabase
+                        .rpc('create_user', {
+                            p_email: email,
+                            p_password: password,
+                            p_full_name: fullName
+                        });
+                    
+                    if (error) {
+                        // إذا فشل RPC، جرب INSERT مباشر
+                        throw error;
+                    }
+                    
+                    if (!data || data.length === 0) {
+                        throw new Error('فشل إنشاء الحساب');
+                    }
+                    
+                    const user = data[0];
+                    this.state.user = user;
+                    this.state.isAdmin = user.role === 'admin';
+                    await this.createSession(user.id);
+                    
+                    showToast('تم إنشاء الحساب بنجاح! مرحباً بك 🎉', 'success');
+                    this.closeModal('registerModal');
+                    location.reload();
+                    
+                } catch (rpcError) {
+                    console.warn('RPC failed, trying direct insert:', rpcError);
+                    
+                    // محاولة INSERT مباشر
+                    const { data: newUser, error: insertError } = await this.supabase
+                        .from('users')
+                        .insert({
+                            email: email,
+                            password: null, // سيتم تشفيره في trigger
+                            full_name: fullName || email.split('@')[0],
+                            is_active: true,
+                            role: 'user'
+                        })
+                        .select()
+                        .single();
+                    
+                    if (insertError) throw insertError;
+                    
+                    // تحديث كلمة السر
+                    await this.supabase.rpc('update_user_password', {
+                        p_user_id: newUser.id,
+                        p_new_password: password
+                    });
+                    
+                    this.state.user = newUser;
+                    this.state.isAdmin = newUser.role === 'admin';
+                    await this.createSession(newUser.id);
+                    
+                    showToast('تم إنشاء الحساب بنجاح! مرحباً بك 🎉', 'success');
+                    this.closeModal('registerModal');
+                    location.reload();
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في التسجيل:', error);
+                showToast(error.message || 'فشل إنشاء الحساب. حاول مرة أخرى.', 'error');
+            } finally {
+                this.hideLoading();
+            }
+        };
+    }
+    </script>
+
 </body>
 </html>
