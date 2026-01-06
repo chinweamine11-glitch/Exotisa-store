@@ -4339,5 +4339,89 @@ setTimeout(function() {
 }, 1500);
 </script>
 
+
+<script>
+// ================================================
+// إصلاح تسجيل الدخول - النسخة البسيطة
+// ================================================
+setTimeout(function() {
+    // إخفاء Lock Screen بعد تسجيل الدخول الناجح
+    const originalLogin = App?.login;
+    if (originalLogin) {
+        App.login = async function(email, password) {
+            console.log('🔵 محاولة تسجيل الدخول...');
+            
+            // استدعاء الدالة الأصلية
+            try {
+                await originalLogin.call(this, email, password);
+                
+                // إذا نجح، أخفِ Lock Screen
+                setTimeout(() => {
+                    const lockScreen = document.getElementById('loginLockScreen');
+                    if (lockScreen) {
+                        lockScreen.classList.add('hidden');
+                    }
+                    this.closeModal('loginModal');
+                    console.log('✅ تم تسجيل الدخول بنجاح!');
+                }, 500);
+                
+            } catch (error) {
+                console.error('❌ خطأ في تسجيل الدخول:', error);
+                throw error;
+            }
+        };
+    }
+    
+    // نفس الشيء للتسجيل
+    const originalRegister = App?.register;
+    if (originalRegister) {
+        App.register = async function(email, password, fullName) {
+            console.log('🔵 محاولة إنشاء حساب...');
+            
+            try {
+                await originalRegister.call(this, email, password, fullName);
+                
+                setTimeout(() => {
+                    const lockScreen = document.getElementById('loginLockScreen');
+                    if (lockScreen) {
+                        lockScreen.classList.add('hidden');
+                    }
+                    this.closeModal('registerModal');
+                    console.log('✅ تم إنشاء الحساب بنجاح!');
+                }, 500);
+                
+            } catch (error) {
+                console.error('❌ خطأ في التسجيل:', error);
+                throw error;
+            }
+        };
+    }
+}, 1500);
+
+// ================================================
+// نسيت كلمة السر - نسخة مبسطة بدون Resend
+// ================================================
+// حذف نظام Resend المعطل وإضافة نسخة بسيطة
+setTimeout(function() {
+    const loginForm = document.getElementById('loginForm');
+    const existingLink = document.getElementById('forgotPasswordLink');
+    
+    if (loginForm && !existingLink) {
+        const forgotLink = document.createElement('div');
+        forgotLink.style.cssText = 'text-align: center; margin-top: 15px;';
+        forgotLink.innerHTML = '<a href="#" id="forgotPasswordLink" style="color: #4CAF50; text-decoration: none;">نسيت كلمة السر؟</a>';
+        loginForm.appendChild(forgotLink);
+        
+        document.getElementById('forgotPasswordLink').onclick = function(e) {
+            e.preventDefault();
+            alert('نظام إعادة تعيين كلمة السر:\n\n' +
+                  '1. تواصل مع الدعم على: support@exotisa.com\n' +
+                  '2. أو أنشئ حساب جديد ببريد آخر\n\n' +
+                  '(نظام الإيميل التلقائي قيد التطوير)');
+        };
+    }
+}, 2000);
+</script>
+
 </body>
 </html>
