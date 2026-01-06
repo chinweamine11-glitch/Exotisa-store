@@ -3596,5 +3596,73 @@ setTimeout(function() {
 }, 2000);
 </script>
 
+
+<script>
+// ========================================
+// Google OAuth
+// ========================================
+(function() {
+    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+    let googleClient = null;
+    
+    window.addEventListener('DOMContentLoaded', async function() {
+        googleClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // إضافة زر Google في نموذج تسجيل الدخول
+        setTimeout(() => {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm && !document.getElementById('googleBtn')) {
+                const googleBtn = document.createElement('button');
+                googleBtn.id = 'googleBtn';
+                googleBtn.type = 'button';
+                googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;';
+                googleBtn.innerHTML = '<span style="font-size: 20px;">🔐</span> <span>تسجيل الدخول عبر Google</span>';
+                googleBtn.onclick = function() {
+                    googleClient.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: 'https://exotisa-store.vercel.app' }
+                    });
+                };
+                loginForm.appendChild(googleBtn);
+                console.log('✅ زر Google مُضاف');
+            }
+        }, 1500);
+        
+        // معالجة العودة من Google
+        const { data: { session } } = await googleClient.auth.getSession();
+        if (session && session.user) {
+            console.log('✅ Google session found!');
+            
+            const user = {
+                id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.email,
+                role: 'user',
+                is_active: true
+            };
+            
+            localStorage.setItem('google_user', JSON.stringify(user));
+            
+            if (App && App.state) {
+                App.state.user = user;
+            }
+            
+            // إخفاء Lock Screen
+            const lockScreen = document.getElementById('authLockScreen');
+            if (lockScreen) lockScreen.classList.add('unlocked');
+            
+            // إغلاق نوافذ
+            if (App) {
+                App.closeModal('loginModal');
+                App.closeModal('registerModal');
+            }
+            
+            alert('مرحباً ' + user.email + '! تم تسجيل الدخول بنجاح عبر Google ✅');
+        }
+    });
+})();
+</script>
+
 </body>
 </html>
