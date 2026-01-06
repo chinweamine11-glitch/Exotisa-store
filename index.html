@@ -3780,5 +3780,176 @@ setTimeout(() => {
 }, 2500);
 </script>
 
+
+<style>
+/* تصغير الشريط العلوي بشكل كبير */
+header, .header {
+    padding: 8px 15px !important;
+    min-height: 50px !important;
+}
+
+header h1, .header h1, header .logo {
+    font-size: 18px !important;
+    margin: 0 !important;
+}
+
+@media (max-width: 768px) {
+    header, .header {
+        padding: 6px 12px !important;
+        min-height: 45px !important;
+    }
+    header h1 {
+        font-size: 16px !important;
+    }
+}
+</style>
+
+<script>
+// ============================================= 
+// إصلاح 1: تسجيل الخروج
+// ============================================= 
+setTimeout(() => {
+    if (!App) return;
+    
+    // Hook على logout
+    const origLogout = App.logout;
+    if (origLogout) {
+        App.logout = async function() {
+            console.log('🔴 تسجيل خروج...');
+            
+            // تنفيذ logout الأصلي
+            await origLogout.call(this);
+            
+            // حذف Google user
+            localStorage.removeItem('google_user');
+            
+            // مسح state
+            this.state.user = null;
+            this.state.isAdmin = false;
+            
+            // إعادة تحميل الصفحة
+            window.location.href = '/';
+        };
+    }
+}, 1000);
+
+// ============================================= 
+// إصلاح 2: نظام التقييم - يعمل 100%
+// ============================================= 
+setTimeout(() => {
+    if (!App) return;
+    
+    // دالة التقييم الجديدة
+    App.showRatingDialog = function(appId, appName) {
+        if (!this.state?.user) { alert('يجب تسجيل الدخول أولاً'); return; }
+        
+        const modalHTML = `
+            <div class="modal" style="display: block !important; position: fixed; z-index: 999999999; inset: 0; background: rgba(0,0,0,0.85);">
+                <div style="position: relative; background: white; max-width: 500px; margin: 80px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 15px; left: 15px; background: #f44336; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 20px; font-weight: bold;">&times;</button>
+                    <h2 style="margin: 0 0 25px 0; text-align: center; color: #333;">⭐ قيّم: ${appName}</h2>
+                    <div id="starsContainer" style="display: flex; gap: 12px; justify-content: center; margin: 30px 0;">
+                        <span class="rate-star" data-rating="1" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="2" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="3" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="4" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="5" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                    </div>
+                    <textarea id="ratingComment" placeholder="شاركنا رأيك (اختياري)" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; min-height: 90px; font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
+                    <button id="submitRating" style="width: 100%; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 4px 15px rgba(76,175,80,0.3);">
+                        📤 إرسال التقييم
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = modalHTML;
+        const modalElement = tempDiv.firstElementChild;
+        document.body.appendChild(modalElement);
+        
+        let selectedRating = 0;
+        const stars = modalElement.querySelectorAll('.rate-star');
+        
+        // معالجة النقر على النجوم
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                selectedRating = parseInt(this.getAttribute('data-rating'));
+                console.log('✅ تم اختيار:', selectedRating, 'نجوم');
+                
+                // تحديث النجوم
+                stars.forEach((s, i) => {
+                    if (i < selectedRating) {
+                        s.textContent = '★';
+                        s.style.color = '#ffc107';
+                        s.style.transform = 'scale(1.1)';
+                    } else {
+                        s.textContent = '☆';
+                        s.style.color = '#ddd';
+                        s.style.transform = 'scale(1)';
+                    }
+                });
+            });
+            
+            star.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                this.click();
+            });
+        });
+        
+        // زر الإرسال
+        modalElement.querySelector('#submitRating').addEventListener('click', async function() {
+            if (selectedRating === 0) {
+                alert('⭐ الرجاء اختيار تقييمك (1-5 نجوم)');
+                return;
+            }
+            
+            const comment = modalElement.querySelector('#ratingComment').value.trim();
+            
+            App.showLoading();
+            try {
+                // حذف القديم
+                await App.supabase.from('ratings').delete()
+                    .eq('app_id', appId)
+                    .eq('user_id', App.state.user.id);
+                
+                // إضافة الجديد
+                await App.supabase.from('ratings').insert({
+                    app_id: appId,
+                    user_id: App.state.user.id,
+                    rating: selectedRating,
+                    comment: comment || null
+                });
+                
+                // تحديث المتوسط
+                const { data: allRatings } = await App.supabase
+                    .from('ratings')
+                    .select('rating')
+                    .eq('app_id', appId);
+                
+                if (allRatings && allRatings.length > 0) {
+                    const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
+                    await App.supabase.from('apps').update({
+                        average_rating: avg,
+                        rating_count: allRatings.length
+                    }).eq('id', appId);
+                }
+                
+                alert('شكراً لتقييمك! ⭐✨\nتم حفظ تقييمك بنجاح.');
+                modalElement.remove();
+                
+            } catch (error) {
+                console.error('خطأ في التقييم:', error);
+                alert('فشل إرسال التقييم. الرجاء المحاولة مرة أخرى.');
+            } finally {
+                App.hideLoading();
+            }
+        });
+    };
+}, 2500);
+</script>
+
 </body>
 </html>
