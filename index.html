@@ -3664,5 +3664,69 @@ setTimeout(function() {
 })();
 </script>
 
+
+<script>
+// Google OAuth - نسخة محسّنة
+(function() {
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const loginForm = document.getElementById('loginForm');
+            if (!loginForm || document.getElementById('googleAuthBtn')) return;
+            
+            const googleBtn = document.createElement('button');
+            googleBtn.id = 'googleAuthBtn';
+            googleBtn.type = 'button';
+            googleBtn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);';
+            googleBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/>
+                    <path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/>
+                    <path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/>
+                    <path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/>
+                </svg>
+                <span>تسجيل الدخول عبر Google</span>
+            `;
+            
+            googleBtn.onclick = async function(e) {
+                e.preventDefault();
+                console.log('🔵 محاولة تسجيل الدخول عبر Google...');
+                
+                try {
+                    // إنشاء Supabase client
+                    if (!window.supabase) {
+                        throw new Error('Supabase library not loaded');
+                    }
+                    
+                    const supabase = window.supabase.createClient(
+                        'https://qjfpkwyglveukzfazmzo.supabase.co',
+                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc'
+                    );
+                    
+                    const { data, error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: 'https://exotisa-store.vercel.app'
+                        }
+                    });
+                    
+                    if (error) {
+                        console.error('❌ خطأ Google:', error);
+                        alert('خطأ: ' + error.message);
+                    } else {
+                        console.log('✅ إعادة توجيه إلى Google...');
+                    }
+                } catch (error) {
+                    console.error('❌ خطأ:', error);
+                    alert('خطأ في تسجيل الدخول: ' + error.message);
+                }
+            };
+            
+            loginForm.appendChild(googleBtn);
+            console.log('✅ زر Google OAuth جاهز');
+        }, 2000);
+    });
+})();
+</script>
+
 </body>
 </html>
