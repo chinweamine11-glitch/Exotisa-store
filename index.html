@@ -1088,6 +1088,312 @@
             background: rgba(239, 68, 68, 0.1);
         }
     </style>
+
+    <style>
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        [data-theme="dark"] .skeleton {
+            background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+        }
+        
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-card {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .skeleton-title {
+            height: 20px;
+            width: 70%;
+            margin-bottom: 12px;
+        }
+        
+        .skeleton-text {
+            height: 14px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-text.short {
+            width: 60%;
+        }
+        
+        .skeleton-image {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 12px;
+        }
+    </style>
+
+    <style>
+        /* تحسينات Responsive للهاتف */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px !important;
+            }
+            
+            .app-card {
+                margin-bottom: 15px;
+            }
+            
+            .app-card img {
+                max-height: 150px;
+            }
+            
+            .modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+                margin: 20px auto !important;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .form-control {
+                font-size: 16px !important; /* منع zoom على iOS */
+            }
+            
+            button, .btn {
+                min-height: 44px; /* حجم أفضل للمس */
+                font-size: 16px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr !important;
+                gap: 15px;
+            }
+        }
+        
+        /* تحسين smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* تحسين touch targets */
+        a, button, .clickable {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+
+    <style>
+        /* =================================
+           تحسينات إضافية - المرحلة 2
+           ================================= */
+        
+        /* 1. تحسين الألوان والتباين */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --secondary-color: #2196F3;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --success-color: #4CAF50;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --bg-light: #f5f5f5;
+            --bg-white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        [data-theme="dark"] {
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --bg-light: #1a1a1a;
+            --bg-white: #2a2a2a;
+            --border-color: #404040;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-hover: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        
+        /* 2. تحسين تصميم البطاقات */
+        .app-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-white);
+            box-shadow: var(--shadow);
+        }
+        
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+        }
+        
+        .app-card img {
+            transition: transform 0.3s ease;
+        }
+        
+        .app-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* 3. تحسين الأزرار */
+        .btn, button {
+            transition: all 0.2s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover, button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .btn:active, button:active {
+            transform: translateY(0);
+        }
+        
+        /* 4. نظام التقييم بالنجوم - تفاعلي */
+        .rating-stars {
+            display: inline-flex;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        .rating-stars .star {
+            color: #ddd;
+            transition: all 0.2s ease;
+        }
+        
+        .rating-stars .star.filled {
+            color: #ffc107;
+        }
+        
+        .rating-stars:hover .star {
+            transform: scale(1.1);
+        }
+        
+        /* 5. تحسين النوافذ المنبثقة */
+        .modal {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 6. تحسين حقول الإدخال */
+        .form-control, input, textarea, select {
+            transition: all 0.2s ease;
+            border: 2px solid var(--border-color);
+        }
+        
+        .form-control:focus, input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            outline: none;
+        }
+        
+        /* 7. Smooth transitions للكل */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 8. تحسين الأيقونات */
+        i.fas, i.fab, i.far {
+            transition: all 0.2s ease;
+        }
+        
+        button:hover i, .btn:hover i {
+            transform: scale(1.1);
+        }
+        
+        /* 9. Loading spinner أفضل */
+        .loader {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 10. تحسين الـ Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+                padding: 10px;
+                gap: 15px;
+            }
+        }
+    </style>
+
+
+    <style>
+        /* تصغير الشريط العلوي */
+        header, .header {
+            padding: 12px 20px !important;
+            min-height: 60px !important;
+        }
+        
+        header h1, .header h1 {
+            font-size: 22px !important;
+            margin: 0 !important;
+        }
+        
+        header .logo {
+            height: 40px !important;
+        }
+        
+        @media (max-width: 768px) {
+            header, .header {
+                padding: 10px 15px !important;
+                min-height: 55px !important;
+            }
+            
+            header h1, .header h1 {
+                font-size: 18px !important;
+            }
+        }
+    </style>
+
 </head>
 <body>
     <!-- تحميل الشاشة -->
@@ -3420,107 +3726,463 @@
         window.App = App;
     </script>
 
-<script>
-// Google OAuth - حل بسيط ومستقل
-(function() {
-    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    let googleAuthClient = null;
+    <!-- نظام Toast Notifications -->
+    <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 999999; display: flex; flex-direction: column; gap: 10px;"></div>
     
-    window.addEventListener('DOMContentLoaded', function() {
-        googleAuthClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // إضافة زر Google
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            const googleBtn = document.createElement('button');
-            googleBtn.type = 'button';
-            googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; margin-top: 15px; font-weight: bold;';
-            googleBtn.textContent = '🔐 تسجيل الدخول عبر Google';
-            googleBtn.onclick = function() {
-                googleAuthClient.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: 'https://exotisa-store.vercel.app'
-                    }
-                });
-            };
-            
-            loginForm.appendChild(googleBtn);
+    <style>
+        .toast {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            min-width: 250px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
-        // معالجة العودة من Google - نسخة مباشرة
-        checkGoogleAuth();
-    });
-    
-    async function checkGoogleAuth() {
-        const { data: { session } } = await googleAuthClient.auth.getSession();
-        
-        if (session && session.user) {
-            // مستخدم Google مسجل!
-            const googleUser = session.user;
-            
-            // حفظ بيانات بسيطة في localStorage
-            localStorage.setItem('google_user', JSON.stringify({
-                id: googleUser.id,
-                email: googleUser.email,
-                name: googleUser.user_metadata?.full_name || googleUser.email,
-                avatar: googleUser.user_metadata?.avatar_url,
-                isGoogleUser: true
-            }));
-            
-            alert('مرحباً ' + googleUser.email + '!\nتم تسجيل الدخول بنجاح!');
-            
-            // إعادة تحميل الصفحة
-            window.location.href = '/';
+        .toast.success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
         }
-    }
-    
-    // تعديل App.checkSession لدعم مستخدمي Google
-    const originalCheckSession = App.checkSession;
-    App.checkSession = async function() {
-        // تحقق من مستخدم Google أولاً
-        const googleUserData = localStorage.getItem('google_user');
-        if (googleUserData) {
-            try {
-                const googleUser = JSON.parse(googleUserData);
-                this.state.user = {
-                    id: googleUser.id,
-                    email: googleUser.email,
-                    full_name: googleUser.name,
-                    role: 'user',
-                    is_active: true,
-                    isGoogleUser: true
-                };
-                this.state.isAdmin = false;
-                return;
-            } catch (e) {
-                // إذا فشل، امسح البيانات وابدأ من جديد
-                localStorage.removeItem('google_user');
+        
+        .toast.error {
+            background: linear-gradient(135deg, #f44336, #da190b);
+        }
+        
+        .toast.info {
+            background: linear-gradient(135deg, #2196F3, #0b7dda);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
             }
         }
         
-        // إذا لم يكن مستخدم Google، استخدم الطريقة الأصلية
-        await originalCheckSession.call(this);
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        
+        .toast.removing {
+            animation: slideOut 0.3s ease-out;
+        }
+    </style>
+    
+    <script>
+    // Toast Notification System
+    window.showToast = function(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+        toast.innerHTML = `
+            <span style="font-size: 20px;">${icon}</span>
+            <span style="flex: 1;">${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('removing');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
     };
     
-    // إضافة زر logout لمستخدمي Google
-    const originalLogout = App.logout;
-    App.logout = async function() {
-        const googleUserData = localStorage.getItem('google_user');
-        if (googleUserData) {
-            // تسجيل خروج من Google
-            await googleAuthClient.auth.signOut();
-            localStorage.removeItem('google_user');
-            this.state.user = null;
-            location.reload();
-        } else {
-            // تسجيل خروج عادي
-            await originalLogout.call(this);
+    // استبدال showAlert بـ showToast
+    if (window.App && App.showAlert) {
+        const originalShowAlert = App.showAlert;
+        App.showAlert = function(message, type = 'info') {
+            showToast(message, type);
+        };
+    }
+    </script>
+
+
+    <script>
+    // Infinite Scroll
+    (function() {
+        let isLoadingMore = false;
+        
+        window.addEventListener('scroll', function() {
+            if (isLoadingMore) return;
+            
+            const scrollHeight = document.documentElement.scrollHeight;
+            const scrollTop = document.documentElement.scrollTop;
+            const clientHeight = document.documentElement.clientHeight;
+            
+            // إذا وصلنا لأسفل الصفحة بـ 200px
+            if (scrollTop + clientHeight >= scrollHeight - 200) {
+                if (App && App.state && App.state.hasMore && !App.state.isLoading) {
+                    isLoadingMore = true;
+                    loadMoreApps();
+                }
+            }
+        });
+        
+        async function loadMoreApps() {
+            if (App && App.loadMoreApps) {
+                await App.loadMoreApps();
+                isLoadingMore = false;
+            }
+        }
+    })();
+    
+    // Interactive Star Rating
+    window.initStarRating = function(containerId, initialRating = 0, onChange = null) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const stars = [];
+        let currentRating = initialRating;
+        
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('span');
+            star.className = 'star' + (i <= currentRating ? ' filled' : '');
+            star.textContent = '★';
+            star.onclick = function() {
+                currentRating = i;
+                updateStars();
+                if (onChange) onChange(i);
+            };
+            stars.push(star);
+            container.appendChild(star);
+        }
+        
+        function updateStars() {
+            stars.forEach((star, index) => {
+                if (index < currentRating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+        
+        container.classList.add('rating-stars');
+    };
+    </script>
+
+
+    <script>
+    // إلغاء نظام الضيف - تسجيل الدخول إجباري
+    (function() {
+        window.addEventListener('DOMContentLoaded', function() {
+            // تحقق من تسجيل الدخول عند تحميل الصفحة
+            setTimeout(function() {
+                if (!App.state.user) {
+                    // إذا المستخدم غير مسجل، افتح نافذة تسجيل الدخول
+                    const googleUserData = localStorage.getItem('google_user');
+                    if (!googleUserData) {
+                        App.openModal('loginModal');
+                        
+                        // منع إغلاق النافذة إلا بعد تسجيل الدخول
+                        const loginModal = document.getElementById('loginModal');
+                        if (loginModal) {
+                            const closeBtn = loginModal.querySelector('.modal-close');
+                            if (closeBtn) {
+                                closeBtn.style.display = 'none';
+                            }
+                        }
+                        
+                        showToast('يجب تسجيل الدخول أولاً للدخول إلى المتجر', 'info', 5000);
+                    }
+                }
+            }, 500);
+        });
+        
+        // تحسين نظام البحث - النتائج في الأعلى
+        const originalSearch = App.searchApps;
+        if (originalSearch) {
+            App.searchApps = async function(query) {
+                await originalSearch.call(this, query);
+                
+                // التمرير للأعلى بعد البحث
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+        }
+    })();
+    </script>
+
+    <script>
+    // صفحات الأدمن - الإحصائيات، إدارة التطبيقات، إدارة المستخدمين
+    if (!App.adminPages) {
+        App.adminPages = {};
+    }
+    
+    // صفحة الإحصائيات
+    App.adminPages.showStatistics = async function() {
+        App.showLoading();
+        
+        try {
+            // جلب الإحصائيات
+            const { data: apps } = await App.supabase.from('apps').select('*');
+            const { data: users } = await App.supabase.from('users').select('*');
+            const { data: downloads } = await App.supabase.from('downloads').select('*');
+            const { data: ratings } = await App.supabase.from('ratings').select('*');
+            
+            const stats = {
+                totalApps: apps?.length || 0,
+                totalUsers: users?.length || 0,
+                totalDownloads: downloads?.length || 0,
+                totalRatings: ratings?.length || 0,
+                avgRating: ratings && ratings.length > 0 
+                    ? (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length).toFixed(2)
+                    : 0,
+                featuredApps: apps?.filter(a => a.is_featured).length || 0
+            };
+            
+            const content = `
+                <div style="padding: 30px;">
+                    <h2>📊 إحصائيات المتجر</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <div style="font-size: 36px; font-weight: bold;">${stats.totalApps}</div>
+                            <div style="margin-top: 8px; opacity: 0.9;">إجمالي التطبيقات</div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <div style="font-size: 36px; font-weight: bold;">${stats.totalUsers}</div>
+                            <div style="margin-top: 8px; opacity: 0.9;">المستخدمون</div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <div style="font-size: 36px; font-weight: bold;">${stats.totalDownloads}</div>
+                            <div style="margin-top: 8px; opacity: 0.9;">التحميلات</div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <div style="font-size: 36px; font-weight: bold;">⭐ ${stats.avgRating}</div>
+                            <div style="margin-top: 8px; opacity: 0.9;">متوسط التقييم</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3>📈 معلومات إضافية:</h3>
+                        <ul style="line-height: 2;">
+                            <li>تطبيقات مميزة: <strong>${stats.featuredApps}</strong></li>
+                            <li>إجمالي التقييمات: <strong>${stats.totalRatings}</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // عرض في modal أو في الصفحة الرئيسية
+            const mainContent = document.querySelector('.main-content') || document.querySelector('main') || document.body;
+            mainContent.innerHTML = content;
+            
+        } catch (error) {
+            console.error(error);
+            showToast('فشل تحميل الإحصائيات', 'error');
+        } finally {
+            App.hideLoading();
         }
     };
-})();
-</script>
+    
+    // صفحة إدارة التطبيقات
+    App.adminPages.showAppsManagement = async function() {
+        App.showLoading();
+        
+        try {
+            const { data: apps } = await App.supabase
+                .from('apps')
+                .select('*, categories(name)')
+                .order('created_at', { ascending: false });
+            
+            let appsHTML = apps.map(app => `
+                <tr>
+                    <td>${app.name}</td>
+                    <td>${app.developer}</td>
+                    <td>${app.categories?.name || '-'}</td>
+                    <td>${app.downloads || 0}</td>
+                    <td>⭐ ${app.average_rating || 0}</td>
+                    <td>
+                        <span style="color: ${app.is_active ? 'green' : 'red'};">
+                            ${app.is_active ? '✅ نشط' : '❌ معطّل'}
+                        </span>
+                    </td>
+                    <td>
+                        <button onclick="App.toggleAppStatus('${app.id}', ${!app.is_active})" class="btn btn-sm">
+                            ${app.is_active ? '❌ تعطيل' : '✅ تفعيل'}
+                        </button>
+                        <button onclick="App.deleteApp('${app.id}')" class="btn btn-sm" style="background: #f44336;">
+                            🗑️ حذف
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            const content = `
+                <div style="padding: 30px;">
+                    <h2>📱 إدارة التطبيقات</h2>
+                    <div style="overflow-x: auto; margin-top: 20px;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: var(--primary-color); color: white;">
+                                    <th style="padding: 12px; text-align: right;">الاسم</th>
+                                    <th style="padding: 12px; text-align: right;">المطوّر</th>
+                                    <th style="padding: 12px; text-align: right;">الفئة</th>
+                                    <th style="padding: 12px; text-align: right;">التحميلات</th>
+                                    <th style="padding: 12px; text-align: right;">التقييم</th>
+                                    <th style="padding: 12px; text-align: right;">الحالة</th>
+                                    <th style="padding: 12px; text-align: right;">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${appsHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            const mainContent = document.querySelector('.main-content') || document.querySelector('main') || document.body;
+            mainContent.innerHTML = content;
+            
+        } catch (error) {
+            console.error(error);
+            showToast('فشل تحميل التطبيقات', 'error');
+        } finally {
+            App.hideLoading();
+        }
+    };
+    
+    // صفحة إدارة المستخدمين
+    App.adminPages.showUsersManagement = async function() {
+        App.showLoading();
+        
+        try {
+            const { data: users } = await App.supabase
+                .from('users')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            let usersHTML = users.map(user => `
+                <tr>
+                    <td>${user.email}</td>
+                    <td>${user.full_name || '-'}</td>
+                    <td>
+                        <span style="background: ${user.role === 'admin' ? '#ff9800' : '#2196F3'}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px;">
+                            ${user.role === 'admin' ? '👑 أدمن' : '👤 مستخدم'}
+                        </span>
+                    </td>
+                    <td>
+                        <span style="color: ${user.is_active ? 'green' : 'red'};">
+                            ${user.is_active ? '✅ نشط' : '❌ معطّل'}
+                        </span>
+                    </td>
+                    <td>${new Date(user.created_at).toLocaleDateString('ar-EG')}</td>
+                    <td>
+                        <button onclick="App.toggleUserStatus('${user.id}', ${!user.is_active})" class="btn btn-sm">
+                            ${user.is_active ? '❌ تعطيل' : '✅ تفعيل'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            const content = `
+                <div style="padding: 30px;">
+                    <h2>👥 إدارة المستخدمين</h2>
+                    <div style="overflow-x: auto; margin-top: 20px;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: var(--primary-color); color: white;">
+                                    <th style="padding: 12px; text-align: right;">البريد الإلكتروني</th>
+                                    <th style="padding: 12px; text-align: right;">الاسم</th>
+                                    <th style="padding: 12px; text-align: right;">الدور</th>
+                                    <th style="padding: 12px; text-align: right;">الحالة</th>
+                                    <th style="padding: 12px; text-align: right;">تاريخ التسجيل</th>
+                                    <th style="padding: 12px; text-align: right;">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${usersHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            const mainContent = document.querySelector('.main-content') || document.querySelector('main') || document.body;
+            mainContent.innerHTML = content;
+            
+        } catch (error) {
+            console.error(error);
+            showToast('فشل تحميل المستخدمين', 'error');
+        } finally {
+            App.hideLoading();
+        }
+    };
+    
+    // دوال مساعدة
+    App.toggleAppStatus = async function(appId, newStatus) {
+        try {
+            const { error } = await this.supabase
+                .from('apps')
+                .update({ is_active: newStatus })
+                .eq('id', appId);
+            
+            if (error) throw error;
+            
+            showToast('تم تحديث حالة التطبيق بنجاح', 'success');
+            this.adminPages.showAppsManagement(); // إعادة تحميل
+        } catch (error) {
+            console.error(error);
+            showToast('فشل تحديث الحالة', 'error');
+        }
+    };
+    
+    App.deleteApp = async function(appId) {
+        if (!confirm('هل أنت متأكد من حذف هذا التطبيق؟')) return;
+        
+        try {
+            const { error } = await this.supabase
+                .from('apps')
+                .delete()
+                .eq('id', appId);
+            
+            if (error) throw error;
+            
+            showToast('تم حذف التطبيق بنجاح', 'success');
+            this.adminPages.showAppsManagement();
+        } catch (error) {
+            console.error(error);
+            showToast('فشل حذف التطبيق', 'error');
+        }
+    };
+    
+    App.toggleUserStatus = async function(userId, newStatus) {
+        try {
+            const { error } = await this.supabase
+                .from('users')
+                .update({ is_active: newStatus })
+                .eq('id', userId);
+            
+            if (error) throw error;
+            
+            showToast('تم تحديث حالة المستخدم بنجاح', 'success');
+            this.adminPages.showUsersManagement();
+        } catch (error) {
+            console.error(error);
+            showToast('فشل تحديث الحالة', 'error');
+        }
+    };
+    </script>
 
 </body>
 </html>
