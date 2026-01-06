@@ -3951,5 +3951,61 @@ setTimeout(() => {
 }, 2500);
 </script>
 
+
+<script>
+// ============================================= 
+// إصلاح تسجيل الخروج - نهائي
+// ============================================= 
+(function() {
+    let isLoggingOut = false;
+    
+    setTimeout(() => {
+        if (!App || !App.logout) return;
+        
+        const originalLogout = App.logout;
+        App.logout = async function() {
+            if (isLoggingOut) return; // منع التكرار
+            isLoggingOut = true;
+            
+            console.log('🔴 بدء تسجيل الخروج...');
+            
+            try {
+                // تنفيذ logout الأصلي
+                await originalLogout.call(this);
+            } catch (e) {
+                console.error('خطأ في logout الأصلي:', e);
+            }
+            
+            // حذف بيانات Google
+            localStorage.removeItem('google_user');
+            
+            // مسح state
+            if (this.state) {
+                this.state.user = null;
+                this.state.isAdmin = false;
+            }
+            
+            // حذف جلسة Supabase إن وُجدت
+            try {
+                const googleClient = window.supabase?.createClient(
+                    'https://qjfpkwyglveukzfazmzo.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc'
+                );
+                if (googleClient) {
+                    await googleClient.auth.signOut();
+                }
+            } catch (e) {
+                console.log('تم تسجيل الخروج من Google');
+            }
+            
+            // إعادة التحميل الكامل
+            window.location.href = '/';
+        };
+        
+        console.log('✅ نظام تسجيل الخروج جاهز');
+    }, 1000);
+})();
+</script>
+
 </body>
 </html>
