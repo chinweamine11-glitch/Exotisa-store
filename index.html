@@ -3763,5 +3763,69 @@ setTimeout(function() {
 }, 2500);
 </script>
 
+
+<script>
+// معالجة العودة من Google OAuth
+(function() {
+    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+    
+    window.addEventListener('DOMContentLoaded', async function() {
+        const googleClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // التحقق من جلسة Google
+        const { data: { session } } = await googleClient.auth.getSession();
+        
+        if (session && session.user) {
+            console.log('✅ وجدنا جلسة Google!', session.user.email);
+            
+            // حفظ بيانات المستخدم
+            const googleUser = {
+                id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.email,
+                role: 'user',
+                is_active: true,
+                isGoogleUser: true
+            };
+            
+            localStorage.setItem('google_user', JSON.stringify(googleUser));
+            
+            // تحديث App state
+            if (App && App.state) {
+                App.state.user = googleUser;
+                App.state.isAdmin = false;
+            }
+            
+            // إخفاء Lock Screen
+            const lockScreen = document.getElementById('loginLockScreen');
+            if (lockScreen) {
+                lockScreen.classList.add('hidden');
+            }
+            
+            // إخفاء أزرار التسجيل
+            setTimeout(() => {
+                document.querySelectorAll('button, a').forEach(el => {
+                    const text = el.textContent || '';
+                    const onclick = el.getAttribute('onclick') || '';
+                    if (text.includes('تسجيل الدخول') || text.includes('إنشاء حساب') || 
+                        onclick.includes('loginModal') || onclick.includes('registerModal')) {
+                        el.style.display = 'none';
+                    }
+                });
+            }, 500);
+            
+            // إغلاق النوافذ
+            if (App) {
+                App.closeModal('loginModal');
+                App.closeModal('registerModal');
+            }
+            
+            console.log('✅ Google login successful!');
+        }
+    });
+})();
+</script>
+
 </body>
 </html>
