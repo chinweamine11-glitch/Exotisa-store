@@ -4025,5 +4025,313 @@ setTimeout(function() {
 }, 1500);
 </script>
 
+
+<!-- ================================================ -->
+<!-- Exotisa Store - النسخة النهائية الشاملة -->
+<!-- جميع التحسينات المطلوبة -->
+<!-- ================================================ -->
+
+<style>
+/* Lock screen قبل تسجيل الدخول */
+#loginLockScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 999998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#loginLockScreen.hidden {
+    display: none;
+}
+
+/* تحسينات Responsive شاملة */
+@media (max-width: 480px) {
+    body { font-size: 14px; }
+    h1 { font-size: 20px !important; }
+    h2 { font-size: 18px !important; }
+    h3 { font-size: 16px !important; }
+    .modal-content { width: 98% !important; padding: 15px !important; }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .modal-content { width: 90% !important; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .modal-content { width: 70% !important; }
+}
+
+@media (min-width: 1025px) {
+    .modal-content { max-width: 600px !important; }
+}
+
+/* نظام التقييم المحسّن */
+.app-rating-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+}
+
+.rating-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.rating-count {
+    color: #666;
+    font-size: 14px;
+}
+</style>
+
+<!-- Lock Screen -->
+<div id="loginLockScreen">
+    <div style="text-align: center; color: white;">
+        <h1 style="font-size: 32px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
+        <div class="loader" style="margin: 0 auto; border-color: rgba(255,255,255,0.3); border-top-color: #4CAF50;"></div>
+    </div>
+</div>
+
+<script>
+// ================================================
+// 1. إلزامية تسجيل الدخول - Lock Screen
+// ================================================
+(function() {
+    const lockScreen = document.getElementById('loginLockScreen');
+    let isAuthenticated = false;
+    
+    function checkAuth() {
+        const googleUser = localStorage.getItem('google_user');
+        const normalUser = App && App.state && App.state.user;
+        
+        if (googleUser || normalUser) {
+            isAuthenticated = true;
+            lockScreen.classList.add('hidden');
+            if (App && App.closeModal) {
+                App.closeModal('loginModal');
+                App.closeModal('registerModal');
+            }
+        } else {
+            isAuthenticated = false;
+            lockScreen.classList.remove('hidden');
+            setTimeout(() => {
+                if (App && App.openModal) {
+                    App.openModal('loginModal');
+                }
+            }, 1000);
+        }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkAuth, 500);
+    });
+    
+    // Hook login/register للتحقق بعد النجاح
+    setInterval(() => {
+        if (App && App.state && App.state.user && !isAuthenticated) {
+            checkAuth();
+        }
+    }, 2000);
+})();
+
+// ================================================
+// 2. نظام "نسيت كلمة السر" - مُفعّل مع Resend
+// ================================================
+(function() {
+    const RESEND_API_KEY = 're_7bsjTjUa_C7mEiDN7sKUQ6baxfaKJj9uV';
+    
+    window.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm && !document.getElementById('forgotPasswordLink')) {
+            const forgotLink = document.createElement('div');
+            forgotLink.style.cssText = 'text-align: center; margin-top: 15px;';
+            forgotLink.innerHTML = '<a href="#" id="forgotPasswordLink" style="color: #4CAF50; text-decoration: none;">نسيت كلمة السر؟</a>';
+            loginForm.appendChild(forgotLink);
+            
+            document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleForgotPassword();
+            });
+        }
+    });
+    
+    async function handleForgotPassword() {
+        const email = prompt('أدخل بريدك الإلكتروني:');
+        if (!email) return;
+        
+        App.showLoading();
+        try {
+            // البحث عن المستخدم
+            const { data: users } = await App.supabase
+                .from('users')
+                .select('id, email')
+                .eq('email', email)
+                .eq('is_active', true);
+            
+            if (!users || users.length === 0) {
+                alert('لا يوجد حساب بهذا البريد الإلكتروني');
+                return;
+            }
+            
+            // إنشاء رمز
+            const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+                .map(b => b.toString(16).padStart(2, '0')).join('');
+            const expiresAt = new Date();
+            expiresAt.setHours(expiresAt.getHours() + 1);
+            
+            // حفظ الرمز
+            await App.supabase.from('password_reset_tokens').insert({
+                user_id: users[0].id,
+                email: users[0].email,
+                token: token,
+                expires_at: expiresAt.toISOString()
+            });
+            
+            // إرسال الإيميل
+            await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${RESEND_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from: 'Exotisa Store <onboarding@resend.dev>',
+                    to: [email],
+                    subject: 'إعادة تعيين كلمة السر',
+                    html: `<div dir="rtl" style="padding: 20px; font-family: Arial;">
+                        <h2>إعادة تعيين كلمة السر</h2>
+                        <p>الرمز: <strong style="font-size: 18px;">${token}</strong></p>
+                        <p>صالح لمدة ساعة واحدة</p>
+                    </div>`
+                })
+            });
+            
+            alert('تم إرسال رمز إعادة التعيين إلى بريدك!');
+            
+            // طلب الرمز
+            const userToken = prompt('أدخل الرمز المرسل:');
+            if (!userToken) return;
+            
+            const newPassword = prompt('كلمة السر الجديدة (6+ أحرف):');
+            if (!newPassword || newPassword.length < 6) {
+                alert('كلمة السر يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            
+            // التحقق من الرمز وتحديث كلمة السر
+            const { data: tokens } = await App.supabase
+                .from('password_reset_tokens')
+                .select('user_id')
+                .eq('token', userToken)
+                .eq('used', false)
+                .gt('expires_at', new Date().toISOString());
+            
+            if (!tokens || tokens.length === 0) {
+                alert('رمز غير صحيح أو منتهي الصلاحية');
+                return;
+            }
+            
+            // تحديث كلمة السر
+            await App.supabase.rpc('update_user_password', {
+                p_user_id: tokens[0].user_id,
+                p_new_password: newPassword
+            });
+            
+            // تعليم الرمز كمستخدم
+            await App.supabase
+                .from('password_reset_tokens')
+                .update({ used: true })
+                .eq('token', userToken);
+            
+            alert('تم تغيير كلمة السر بنجاح!\nيمكنك الآن تسجيل الدخول.');
+            location.reload();
+            
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ: ' + error.message);
+        } finally {
+            App.hideLoading();
+        }
+    }
+})();
+
+// ================================================
+// 3. نظام التقييم الكامل مع زر مرئي
+// ================================================
+setTimeout(function() {
+    if (!App) return;
+    
+    // إضافة دالة عرض التقييمات
+    App.displayAppRating = function(appId, avgRating, ratingCount) {
+        const container = document.createElement('div');
+        container.className = 'app-rating-display';
+        container.innerHTML = `
+            <span class="rating-number">⭐ ${avgRating.toFixed(1)}</span>
+            <span class="rating-count">(${ratingCount} تقييم)</span>
+        `;
+        return container.outerHTML;
+    };
+    
+    // دالة التقييم
+    App.rateThisApp = async function(appId, appName) {
+        if (!this.state.user) {
+            showToast('يجب تسجيل الدخول أولاً', 'error');
+            return;
+        }
+        
+        const rating = prompt(`قيّم "${appName}"\n\nأدخل تقييمك (1-5):`);
+        if (!rating) return;
+        
+        const ratingNum = parseInt(rating);
+        if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+            alert('الرجاء إدخال رقم من 1 إلى 5');
+            return;
+        }
+        
+        const comment = prompt('تعليق (اختياري):') || null;
+        
+        this.showLoading();
+        try {
+            await this.supabase.from('ratings').delete()
+                .eq('app_id', appId).eq('user_id', this.state.user.id);
+            
+            await this.supabase.from('ratings').insert({
+                app_id: appId,
+                user_id: this.state.user.id,
+                rating: ratingNum,
+                comment: comment
+            });
+            
+            const { data: allRatings } = await this.supabase
+                .from('ratings').select('rating').eq('app_id', appId);
+            
+            if (allRatings) {
+                const avg = allRatings.reduce((s, r) => s + r.rating, 0) / allRatings.length;
+                await this.supabase.from('apps').update({
+                    average_rating: avg,
+                    rating_count: allRatings.length
+                }).eq('id', appId);
+            }
+            
+            showToast('شكراً لتقييمك! ⭐', 'success');
+        } catch (error) {
+            showToast('فشل التقييم', 'error');
+        } finally {
+            this.hideLoading();
+        }
+    };
+    
+    console.log('✅ نظام التقييم جاهز');
+}, 1500);
+</script>
+
 </body>
 </html>
