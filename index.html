@@ -3638,5 +3638,147 @@ setTimeout(() => {
 }, 1000);
 </script>
 
+
+<style>
+/* Responsive كامل */
+@media (max-width: 480px) {
+    body { font-size: 14px; }
+    h1 { font-size: 22px !important; }
+    .modal-content { width: 98% !important; padding: 15px !important; }
+    button, .btn { font-size: 14px; padding: 10px !important; }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+    .modal-content { width: 90% !important; }
+}
+@media (min-width: 769px) {
+    .modal-content { max-width: 600px !important; }
+}
+</style>
+
+<script>
+// إغلاق كامل بعد تسجيل الخروج
+setTimeout(() => {
+    if (!App || !App.logout) return;
+    
+    const origLogout = App.logout;
+    App.logout = async function() {
+        await origLogout.call(this);
+        
+        // حذف بيانات Google
+        localStorage.removeItem('google_user');
+        
+        // إغلاق المحتوى بالكامل
+        document.body.style.display = 'none';
+        
+        // إعادة التحميل
+        location.reload();
+    };
+}, 1000);
+
+// إصلاح نظام التقييم - ضمان عمل النجوم
+setTimeout(() => {
+    if (!App || !App.showRatingModal) return;
+    
+    const origRating = App.showRatingModal;
+    App.showRatingModal = function(appId, appName) {
+        if (!this.state?.user) { alert('يجب تسجيل الدخول'); return; }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.cssText = 'display: block !important; position: fixed; z-index: 99999999999; inset: 0; background: rgba(0,0,0,0.8);';
+        modal.innerHTML = `
+            <div style="position: relative; background: white; max-width: 500px; margin: 100px auto; padding: 30px; border-radius: 12px;">
+                <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 10px; left: 10px; background: #f44336; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px;">&times;</button>
+                <h2 style="margin: 0 0 20px 0; text-align: center;">⭐ قيّم: ${appName}</h2>
+                <div id="ratingStarsInput" style="display: flex; gap: 15px; justify-content: center; margin: 25px 0;">
+                    <span class="rating-star" data-value="1" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="2" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="3" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="4" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="5" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                </div>
+                <textarea id="ratingCommentInput" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px; font-family: inherit;"></textarea>
+                <button id="submitRatingBtn" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">📤 إرسال التقييم</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        let chosenRating = 0;
+        const stars = modal.querySelectorAll('.rating-star');
+        
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                chosenRating = parseInt(this.getAttribute('data-value'));
+                console.log('⭐ تم اختيار:', chosenRating);
+                
+                stars.forEach((s, i) => {
+                    if (i < chosenRating) {
+                        s.textContent = '★';
+                        s.style.color = '#ffc107';
+                    } else {
+                        s.textContent = '☆';
+                        s.style.color = '#ddd';
+                    }
+                });
+            });
+            
+            star.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                this.click();
+            });
+        });
+        
+        modal.querySelector('#submitRatingBtn').addEventListener('click', async function() {
+            if (chosenRating === 0) {
+                alert('⭐ الرجاء اختيار تقييمك من 1 إلى 5 نجوم');
+                return;
+            }
+            
+            const comment = modal.querySelector('#ratingCommentInput').value.trim();
+            
+            App.showLoading();
+            try {
+                // حذف التقييم القديم
+                await App.supabase.from('ratings').delete()
+                    .eq('app_id', appId)
+                    .eq('user_id', App.state.user.id);
+                
+                // إضافة التقييم الجديد
+                await App.supabase.from('ratings').insert({
+                    app_id: appId,
+                    user_id: App.state.user.id,
+                    rating: chosenRating,
+                    comment: comment || null
+                });
+                
+                // تحديث المتوسط
+                const { data: ratings } = await App.supabase
+                    .from('ratings')
+                    .select('rating')
+                    .eq('app_id', appId);
+                
+                if (ratings && ratings.length > 0) {
+                    const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+                    await App.supabase.from('apps').update({
+                        average_rating: avg,
+                        rating_count: ratings.length
+                    }).eq('id', appId);
+                }
+                
+                alert('شكراً لتقييمك! ⭐✨');
+                modal.remove();
+            } catch (error) {
+                console.error('خطأ:', error);
+                alert('فشل إرسال التقييم. حاول مرة أخرى.');
+            } finally {
+                App.hideLoading();
+            }
+        });
+    };
+}, 2500);
+</script>
+
 </body>
 </html>
