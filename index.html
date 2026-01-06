@@ -3420,400 +3420,49 @@
         window.App = App;
     </script>
 
-<!-- نظام Toast -->
-<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999999;"></div>
-
 <!-- Lock Screen -->
-<div id="loginLockScreen" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+<div id="authLockScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
     <div style="text-align: center; color: white;">
-        <h1 style="font-size: 32px;">🔒 Exotisa Store</h1>
-        <p style="font-size: 18px;">يرجى تسجيل الدخول</p>
+        <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
     </div>
 </div>
 
 <style>
-#loginLockScreen.hidden { display: none !important; }
+#authLockScreen.unlocked { display: none !important; }
 .modal { z-index: 9999999 !important; }
-.auth-button { transition: all 0.3s; }
-.auth-button.logged-in { display: none !important; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 header { padding: 12px 20px !important; }
+.hide-when-logged-in { transition: opacity 0.3s; }
+.hide-when-logged-in.hidden { display: none !important; }
 </style>
 
 <script>
 // ========================================
-// 1. Lock Screen + إخفاء أزرار التسجيل
+// نظام بسيط وموثوق
 // ========================================
 (function() {
-    function handleAuthState() {
-        const lockScreen = document.getElementById('loginLockScreen');
+    let userLoggedIn = false;
+    
+    function checkAndUpdateAuth() {
         const hasUser = (App && App.state && App.state.user) || localStorage.getItem('google_user');
+        const lockScreen = document.getElementById('authLockScreen');
         
-        if (hasUser) {
-            // مسجل دخول
-            if (lockScreen) lockScreen.classList.add('hidden');
-            if (App) {
-                App.closeModal('loginModal');
-                App.closeModal('registerModal');
-            }
+        if (hasUser && !userLoggedIn) {
+            // تسجيل دخول ناجح
+            userLoggedIn = true;
+            if (lockScreen) lockScreen.classList.add('unlocked');
             
             // إخفاء أزرار التسجيل
             document.querySelectorAll('button, a').forEach(el => {
-                const text = el.textContent || '';
-                const onclick = el.getAttribute('onclick') || '';
-                if (text.includes('تسجيل الدخول') || text.includes('إنشاء حساب') || 
-                    onclick.includes('loginModal') || onclick.includes('registerModal')) {
-                    el.classList.add('logged-in');
-                    el.style.display = 'none';
+                const text = (el.textContent || '').toLowerCase();
+                const onclick = (el.getAttribute('onclick') || '').toLowerCase();
+                if (text.includes('تسجيل الدخول') || text.includes('إنشاء حساب') ||
+                    onclick.includes('loginmodal') || onclick.includes('registermodal')) {
+                    el.classList.add('hide-when-logged-in', 'hidden');
                 }
             });
-        } else {
-            // غير مسجل
-            if (lockScreen) lockScreen.classList.remove('hidden');
-            setTimeout(() => App && App.openModal && App.openModal('loginModal'), 300);
-        }
-    }
-    
-    window.addEventListener('DOMContentLoaded', () => setTimeout(handleAuthState, 800));
-    
-    // Hook على login/register
-    setTimeout(() => {
-        ['login', 'register'].forEach(method => {
-            const orig = App?.[method];
-            if (orig) {
-                App[method] = async function(...args) {
-                    await orig.apply(this, args);
-                    setTimeout(() => {
-                        handleAuthState();
-                        location.reload(); // إعادة تحميل لعرض المحتوى
-                    }, 300);
-                };
-            }
-        });
-    }, 500);
-})();
-
-// ========================================
-// 2. Toast Notifications
-// ========================================
-window.showToast = function(msg, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.style.cssText = 'background: ' + (type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3') + '; color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 10px; animation: slideIn 0.3s;';
-    toast.textContent = msg;
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-};
-
-setTimeout(() => {
-    if (App && App.showAlert) {
-        App.showAlert = (msg, type) => showToast(msg, type);
-    }
-}, 500);
-
-// ========================================
-// 3. نظام التقييم بالنجوم
-// ========================================
-setTimeout(function() {
-    if (!App) return;
-    
-    const origLoadApp = App.loadAppDetails;
-    if (origLoadApp) {
-        App.loadAppDetails = async function(appId) {
-            await origLoadApp.call(this, appId);
-            
-            setTimeout(() => {
-                if (!this.state.user) return;
-                
-                const modal = document.querySelector('.modal:last-of-type .modal-body');
-                if (modal && !document.getElementById('ratingUI')) {
-                    const ratingUI = document.createElement('div');
-                    ratingUI.id = 'ratingUI';
-                    ratingUI.style.cssText = 'margin-top: 20px; padding: 20px; background: #f9f9f9; border-radius: 10px;';
-                    ratingUI.innerHTML = `
-                        <h4 style="margin: 0 0 10px 0;">⭐ قيّم هذا التطبيق</h4>
-                        <div style="display: flex; gap: 8px; margin: 15px 0; font-size: 36px; cursor: pointer;" id="starsContainer">
-                            <span class="star" data-value="1" style="color: #ddd;">☆</span>
-                            <span class="star" data-value="2" style="color: #ddd;">☆</span>
-                            <span class="star" data-value="3" style="color: #ddd;">☆</span>
-                            <span class="star" data-value="4" style="color: #ddd;">☆</span>
-                            <span class="star" data-value="5" style="color: #ddd;">☆</span>
-                        </div>
-                        <textarea id="ratingCommentBox" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 60px;"></textarea>
-                        <button id="sendRatingBtn" style="width: 100%; margin-top: 10px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                            📤 إرسال التقييم
-                        </button>
-                    `;
-                    modal.appendChild(ratingUI);
-                    
-                    let selectedRating = 0;
-                    document.querySelectorAll('#starsContainer .star').forEach(star => {
-                        star.onclick = function() {
-                            selectedRating = parseInt(this.dataset.value);
-                            document.querySelectorAll('#starsContainer .star').forEach((s, i) => {
-                                if (i < selectedRating) {
-                                    s.textContent = '★';
-                                    s.style.color = '#ffc107';
-                                } else {
-                                    s.textContent = '☆';
-                                    s.style.color = '#ddd';
-                                }
-                            });
-                        };
-                    });
-                    
-                    document.getElementById('sendRatingBtn').onclick = async function() {
-                        if (selectedRating === 0) {
-                            alert('اختر تقييمك من 1-5 نجوم');
-                            return;
-                        }
-                        
-                        const comment = document.getElementById('ratingCommentBox').value;
-                        App.showLoading();
-                        
-                        try {
-                            await App.supabase.from('ratings').delete()
-                                .eq('app_id', appId).eq('user_id', App.state.user.id);
-                            
-                            await App.supabase.from('ratings').insert({
-                                app_id: appId,
-                                user_id: App.state.user.id,
-                                rating: selectedRating,
-                                comment: comment || null
-                            });
-                            
-                            const { data: ratings } = await App.supabase
-                                .from('ratings').select('rating').eq('app_id', appId);
-                            
-                            if (ratings) {
-                                const avg = ratings.reduce((s, r) => s + r.rating, 0) / ratings.length;
-                                await App.supabase.from('apps').update({
-                                    average_rating: avg,
-                                    rating_count: ratings.length
-                                }).eq('id', appId);
-                            }
-                            
-                            showToast('شكراً لتقييمك! ⭐', 'success');
-                        } catch (e) {
-                            showToast('فشل التقييم', 'error');
-                        } finally {
-                            App.hideLoading();
-                        }
-                    };
-                }
-            }, 500);
-        };
-    }
-}, 2000);
-</script>
-
-
-<script>
-// ========================================
-// Google OAuth - بدلاً من "نسيت كلمة السر"
-// ========================================
-(function() {
-    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    let googleClient = null;
-    
-    window.addEventListener('DOMContentLoaded', function() {
-        googleClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // إضافة زر Google في نموذج تسجيل الدخول
-        setTimeout(() => {
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm && !document.getElementById('googleLoginBtn')) {
-                const googleBtn = document.createElement('button');
-                googleBtn.id = 'googleLoginBtn';
-                googleBtn.type = 'button';
-                googleBtn.style.cssText = 'width: 100%; background: #4285F4; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;';
-                googleBtn.textContent = '🔐 تسجيل الدخول عبر Google';
-                googleBtn.onclick = function() {
-                    googleClient.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: { redirectTo: 'https://exotisa-store.vercel.app' }
-                    });
-                };
-                loginForm.appendChild(googleBtn);
-            }
-        }, 1500);
-    });
-})();
-
-// ========================================
-// إصلاح نظام التقييم - مُحسّن
-// ========================================
-setTimeout(function() {
-    if (!App || !App.loadAppDetails) return;
-    
-    const originalLoad = App.loadAppDetails;
-    App.loadAppDetails = async function(appId) {
-        await originalLoad.call(this, appId);
-        
-        setTimeout(() => {
-            if (!this.state || !this.state.user) {
-                console.log('⚠️ المستخدم غير مسجل - لا تقييم');
-                return;
-            }
-            
-            const modalBody = document.querySelector('.modal[style*="display: block"] .modal-body, .modal:not([style*="display: none"]) .modal-body');
-            
-            if (modalBody && !document.getElementById('appRatingSection')) {
-                const ratingSection = document.createElement('div');
-                ratingSection.id = 'appRatingSection';
-                ratingSection.style.cssText = 'margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;';
-                ratingSection.innerHTML = `
-                    <h3 style="margin: 0 0 15px 0; font-size: 20px;">⭐ قيّم التطبيق</h3>
-                    <div id="ratingStars" style="display: flex; gap: 10px; margin: 15px 0; justify-content: center;">
-                        ${[1,2,3,4,5].map(i => `<span class="rating-star" data-rating="${i}" style="font-size: 42px; cursor: pointer; color: rgba(255,255,255,0.3); transition: all 0.2s;">☆</span>`).join('')}
-                    </div>
-                    <textarea id="ratingComment" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: none; border-radius: 8px; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
-                    <button id="submitRating" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-                        📤 إرسال التقييم
-                    </button>
-                `;
-                modalBody.appendChild(ratingSection);
-                
-                let chosenRating = 0;
-                
-                // معالجة النقر على النجوم
-                document.querySelectorAll('#ratingStars .rating-star').forEach(star => {
-                    star.addEventListener('click', function() {
-                        chosenRating = parseInt(this.dataset.rating);
-                        document.querySelectorAll('#ratingStars .rating-star').forEach((s, idx) => {
-                            if (idx < chosenRating) {
-                                s.textContent = '★';
-                                s.style.color = '#ffc107';
-                                s.style.transform = 'scale(1.2)';
-                            } else {
-                                s.textContent = '☆';
-                                s.style.color = 'rgba(255,255,255,0.3)';
-                                s.style.transform = 'scale(1)';
-                            }
-                        });
-                    });
-                    
-                    // Hover effect
-                    star.addEventListener('mouseenter', function() {
-                        this.style.transform = 'scale(1.3)';
-                    });
-                    star.addEventListener('mouseleave', function() {
-                        const rating = parseInt(this.dataset.rating);
-                        this.style.transform = rating <= chosenRating ? 'scale(1.2)' : 'scale(1)';
-                    });
-                });
-                
-                // زر الإرسال
-                document.getElementById('submitRating').addEventListener('click', async function() {
-                    if (chosenRating === 0) {
-                        alert('⭐ اختر تقييمك من 1 إلى 5 نجوم');
-                        return;
-                    }
-                    
-                    const comment = document.getElementById('ratingComment').value.trim();
-                    
-                    App.showLoading();
-                    try {
-                        // حذف التقييم القديم
-                        await App.supabase.from('ratings').delete()
-                            .eq('app_id', appId)
-                            .eq('user_id', App.state.user.id);
-                        
-                        // إضافة التقييم الجديد
-                        const { error: insertError } = await App.supabase
-                            .from('ratings')
-                            .insert({
-                                app_id: appId,
-                                user_id: App.state.user.id,
-                                rating: chosenRating,
-                                comment: comment || null
-                            });
-                        
-                        if (insertError) throw insertError;
-                        
-                        // تحديث متوسط التقييم
-                        const { data: allRatings } = await App.supabase
-                            .from('ratings')
-                            .select('rating')
-                            .eq('app_id', appId);
-                        
-                        if (allRatings && allRatings.length > 0) {
-                            const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
-                            await App.supabase.from('apps').update({
-                                average_rating: avg,
-                                rating_count: allRatings.length
-                            }).eq('id', appId);
-                        }
-                        
-                        alert('شكراً لتقييمك! ⭐✨');
-                        document.getElementById('appRatingSection').remove();
-                        
-                    } catch (error) {
-                        console.error('خطأ في التقييم:', error);
-                        alert('فشل إرسال التقييم. حاول مرة أخرى.');
-                    } finally {
-                        App.hideLoading();
-                    }
-                });
-                
-                console.log('✅ نظام التقييم جاهز');
-            }
-        }, 800);
-    };
-}, 2500);
-</script>
-
-
-<script>
-// معالجة العودة من Google OAuth
-(function() {
-    const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-    
-    window.addEventListener('DOMContentLoaded', async function() {
-        const googleClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // التحقق من جلسة Google
-        const { data: { session } } = await googleClient.auth.getSession();
-        
-        if (session && session.user) {
-            console.log('✅ وجدنا جلسة Google!', session.user.email);
-            
-            // حفظ بيانات المستخدم
-            const googleUser = {
-                id: session.user.id,
-                email: session.user.email,
-                full_name: session.user.user_metadata?.full_name || session.user.email,
-                role: 'user',
-                is_active: true,
-                isGoogleUser: true
-            };
-            
-            localStorage.setItem('google_user', JSON.stringify(googleUser));
-            
-            // تحديث App state
-            if (App && App.state) {
-                App.state.user = googleUser;
-                App.state.isAdmin = false;
-            }
-            
-            // إخفاء Lock Screen
-            const lockScreen = document.getElementById('loginLockScreen');
-            if (lockScreen) {
-                lockScreen.classList.add('hidden');
-            }
-            
-            // إخفاء أزرار التسجيل
-            setTimeout(() => {
-                document.querySelectorAll('button, a').forEach(el => {
-                    const text = el.textContent || '';
-                    const onclick = el.getAttribute('onclick') || '';
-                    if (text.includes('تسجيل الدخول') || text.includes('إنشاء حساب') || 
-                        onclick.includes('loginModal') || onclick.includes('registerModal')) {
-                        el.style.display = 'none';
-                    }
-                });
-            }, 500);
             
             // إغلاق النوافذ
             if (App) {
@@ -3821,10 +3470,130 @@ setTimeout(function() {
                 App.closeModal('registerModal');
             }
             
-            console.log('✅ Google login successful!');
+            console.log('✅ تم تسجيل الدخول بنجاح!');
+        } else if (!hasUser && userLoggedIn) {
+            // تسجيل خروج
+            userLoggedIn = false;
+            if (lockScreen) lockScreen.classList.remove('unlocked');
+            location.reload();
+        } else if (!hasUser) {
+            // غير مسجل - افتح نافذة الدخول
+            setTimeout(() => {
+                if (App && App.openModal) App.openModal('loginModal');
+            }, 500);
         }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkAndUpdateAuth, 800);
+        setInterval(checkAndUpdateAuth, 2000);
     });
+    
+    // Hook على login/register للتحديث الفوري
+    setTimeout(() => {
+        const origLogin = App?.login;
+        if (origLogin) {
+            App.login = async function(...args) {
+                await origLogin.apply(this, args);
+                setTimeout(() => {
+                    checkAndUpdateAuth();
+                    location.reload();
+                }, 300);
+            };
+        }
+        
+        const origRegister = App?.register;
+        if (origRegister) {
+            App.register = async function(...args) {
+                await origRegister.apply(this, args);
+                setTimeout(() => {
+                    checkAndUpdateAuth();
+                    location.reload();
+                }, 300);
+            };
+        }
+    }, 500);
 })();
+
+// ========================================
+// نظام التقييم بالنجوم
+// ========================================
+setTimeout(function() {
+    if (!App) return;
+    
+    const origLoad = App.loadAppDetails;
+    if (origLoad) {
+        App.loadAppDetails = async function(appId) {
+            await origLoad.call(this, appId);
+            
+            setTimeout(() => {
+                if (!this.state?.user) return;
+                
+                const modal = document.querySelector('.modal[style*="display: block"] .modal-body');
+                if (modal && !document.getElementById('ratingBox')) {
+                    const box = document.createElement('div');
+                    box.id = 'ratingBox';
+                    box.style.cssText = 'margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; color: white;';
+                    box.innerHTML = `
+                        <h3 style="margin: 0 0 15px 0;">⭐ قيّم التطبيق</h3>
+                        <div id="stars" style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
+                            ${[1,2,3,4,5].map(i => `<span class="star" data-val="${i}" style="font-size: 40px; cursor: pointer; color: rgba(255,255,255,0.3);">☆</span>`).join('')}
+                        </div>
+                        <textarea id="comment" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: none; border-radius: 8px; min-height: 70px;"></textarea>
+                        <button id="sendBtn" style="width: 100%; margin-top: 15px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            📤 إرسال التقييم
+                        </button>
+                    `;
+                    modal.appendChild(box);
+                    
+                    let rating = 0;
+                    document.querySelectorAll('#stars .star').forEach(star => {
+                        star.onclick = function() {
+                            rating = parseInt(this.dataset.val);
+                            document.querySelectorAll('#stars .star').forEach((s, i) => {
+                                s.textContent = i < rating ? '★' : '☆';
+                                s.style.color = i < rating ? '#ffc107' : 'rgba(255,255,255,0.3)';
+                            });
+                        };
+                    });
+                    
+                    document.getElementById('sendBtn').onclick = async function() {
+                        if (rating === 0) { alert('اختر تقييمك'); return; }
+                        
+                        App.showLoading();
+                        try {
+                            await App.supabase.from('ratings').delete()
+                                .eq('app_id', appId).eq('user_id', App.state.user.id);
+                            
+                            await App.supabase.from('ratings').insert({
+                                app_id: appId,
+                                user_id: App.state.user.id,
+                                rating: rating,
+                                comment: document.getElementById('comment').value || null
+                            });
+                            
+                            const { data } = await App.supabase.from('ratings').select('rating').eq('app_id', appId);
+                            if (data) {
+                                const avg = data.reduce((s, r) => s + r.rating, 0) / data.length;
+                                await App.supabase.from('apps').update({
+                                    average_rating: avg,
+                                    rating_count: data.length
+                                }).eq('id', appId);
+                            }
+                            
+                            alert('شكراً لتقييمك! ⭐');
+                            document.getElementById('ratingBox').remove();
+                        } catch (e) {
+                            alert('خطأ في التقييم');
+                        } finally {
+                            App.hideLoading();
+                        }
+                    };
+                }
+            }, 700);
+        };
+    }
+}, 2000);
 </script>
 
 </body>
