@@ -3420,164 +3420,156 @@
         window.App = App;
     </script>
 
+<!-- نظام Toast -->
+<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999999;"></div>
+
 <!-- Lock Screen -->
-<div id="loginLockScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+<div id="loginLockScreen" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; pointer-events: none;">
     <div style="text-align: center; color: white;">
-        <h1 style="font-size: 32px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
-        <p style="font-size: 18px;">يرجى تسجيل الدخول للمتابعة</p>
+        <h1 style="font-size: 32px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px;">يرجى تسجيل الدخول</p>
     </div>
 </div>
 
 <style>
-#loginLockScreen.hidden { display: none; }
-.modal { z-index: 999999 !important; }
-header, .header { padding: 12px 20px !important; min-height: 60px !important; }
-header h1 { font-size: 22px !important; }
-
-.auth-buttons { display: inline-flex; gap: 10px; }
-.auth-buttons.hide-after-login { display: none !important; }
-
-@media (max-width: 768px) {
-    header { padding: 10px 15px !important; }
-    header h1 { font-size: 18px !important; }
-}
+#loginLockScreen.hidden { display: none !important; }
+.modal { z-index: 9999999 !important; }
+.auth-button { transition: all 0.3s; }
+.auth-button.logged-in { display: none !important; }
+header { padding: 12px 20px !important; }
 </style>
 
 <script>
-// ================================================
+// ========================================
 // 1. Lock Screen + إخفاء أزرار التسجيل
-// ================================================
+// ========================================
 (function() {
-    function updateAuthUI() {
+    function handleAuthState() {
         const lockScreen = document.getElementById('loginLockScreen');
-        const isLoggedIn = (App && App.state && App.state.user) || localStorage.getItem('google_user');
+        const hasUser = (App && App.state && App.state.user) || localStorage.getItem('google_user');
         
-        if (isLoggedIn) {
-            // مسجل دخول - أخفِ Lock Screen وأزرار التسجيل
+        if (hasUser) {
+            // مسجل دخول
             if (lockScreen) lockScreen.classList.add('hidden');
+            if (App) {
+                App.closeModal('loginModal');
+                App.closeModal('registerModal');
+            }
             
-            // إخفاء أزرار تسجيل الدخول/إنشاء حساب
-            const authButtons = document.querySelectorAll('[onclick*="loginModal"], [onclick*="registerModal"]');
-            authButtons.forEach(btn => {
-                if (!btn.id || btn.id !== 'logoutBtn') {
-                    btn.style.display = 'none';
+            // إخفاء أزرار التسجيل
+            document.querySelectorAll('button, a').forEach(el => {
+                const text = el.textContent || '';
+                const onclick = el.getAttribute('onclick') || '';
+                if (text.includes('تسجيل الدخول') || text.includes('إنشاء حساب') || 
+                    onclick.includes('loginModal') || onclick.includes('registerModal')) {
+                    el.classList.add('logged-in');
+                    el.style.display = 'none';
                 }
             });
         } else {
-            // غير مسجل - أظهر Lock Screen
+            // غير مسجل
             if (lockScreen) lockScreen.classList.remove('hidden');
-            
-            setTimeout(() => {
-                if (App && App.openModal) {
-                    App.openModal('loginModal');
-                }
-            }, 500);
+            setTimeout(() => App && App.openModal && App.openModal('loginModal'), 300);
         }
     }
     
-    window.addEventListener('DOMContentLoaded', () => setTimeout(updateAuthUI, 1000));
+    window.addEventListener('DOMContentLoaded', () => setTimeout(handleAuthState, 800));
     
-    // التحديث بعد تسجيل الدخول
-    const originalLogin = App?.login;
-    if (originalLogin) {
-        App.login = async function(...args) {
-            await originalLogin.apply(this, args);
-            setTimeout(() => {
-                updateAuthUI();
-                this.closeModal('loginModal');
-            }, 500);
-        };
-    }
-    
-    const originalRegister = App?.register;
-    if (originalRegister) {
-        App.register = async function(...args) {
-            await originalRegister.apply(this, args);
-            setTimeout(() => {
-                updateAuthUI();
-                this.closeModal('registerModal');
-            }, 500);
-        };
-    }
+    // Hook على login/register
+    setTimeout(() => {
+        ['login', 'register'].forEach(method => {
+            const orig = App?.[method];
+            if (orig) {
+                App[method] = async function(...args) {
+                    await orig.apply(this, args);
+                    setTimeout(() => {
+                        handleAuthState();
+                        location.reload(); // إعادة تحميل لعرض المحتوى
+                    }, 300);
+                };
+            }
+        });
+    }, 500);
 })();
 
-// ================================================
-// 2. "نسيت كلمة السر" - نسخة بسيطة بدون failed to fetch
-// ================================================
-setTimeout(function() {
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm && !document.getElementById('forgotLink')) {
-        const link = document.createElement('div');
-        link.style.cssText = 'text-align: center; margin-top: 15px;';
-        link.innerHTML = '<a href="#" id="forgotLink" style="color: #4CAF50; text-decoration: none;">نسيت كلمة السر؟</a>';
-        loginForm.appendChild(link);
-        
-        document.getElementById('forgotLink').onclick = function(e) {
-            e.preventDefault();
-            alert('لإعادة تعيين كلمة السر:\n\n1. تواصل مع الدعم\n2. أو أنشئ حساب جديد');
-        };
-    }
-}, 2000);
+// ========================================
+// 2. Toast Notifications
+// ========================================
+window.showToast = function(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.style.cssText = 'background: ' + (type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3') + '; color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 10px; animation: slideIn 0.3s;';
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+};
 
-// ================================================
-// 3. نظام التقييم - في صفحة التطبيق
-// ================================================
+setTimeout(() => {
+    if (App && App.showAlert) {
+        App.showAlert = (msg, type) => showToast(msg, type);
+    }
+}, 500);
+
+// ========================================
+// 3. نظام التقييم بالنجوم
+// ========================================
 setTimeout(function() {
     if (!App) return;
     
-    // إضافة زر التقييم في loadAppDetails
-    const originalLoadApp = App.loadAppDetails;
-    if (originalLoadApp) {
+    const origLoadApp = App.loadAppDetails;
+    if (origLoadApp) {
         App.loadAppDetails = async function(appId) {
-            await originalLoadApp.call(this, appId);
+            await origLoadApp.call(this, appId);
             
             setTimeout(() => {
-                if (!App.state.user) return;
+                if (!this.state.user) return;
                 
-                // البحث عن مكان لإضافة التقييم
                 const modal = document.querySelector('.modal:last-of-type .modal-body');
-                if (modal && !document.getElementById('ratingSection')) {
-                    const ratingDiv = document.createElement('div');
-                    ratingDiv.id = 'ratingSection';
-                    ratingDiv.style.cssText = 'margin-top: 20px; padding-top: 20px; border-top: 2px solid #e0e0e0;';
-                    ratingDiv.innerHTML = `
-                        <h4>⭐ قيّم هذا التطبيق</h4>
-                        <div style="display: flex; gap: 10px; margin: 15px 0; font-size: 32px; cursor: pointer;" id="ratingStarsInput">
-                            <span class="rate-star" data-rating="1">☆</span>
-                            <span class="rate-star" data-rating="2">☆</span>
-                            <span class="rate-star" data-rating="3">☆</span>
-                            <span class="rate-star" data-rating="4">☆</span>
-                            <span class="rate-star" data-rating="5">☆</span>
+                if (modal && !document.getElementById('ratingUI')) {
+                    const ratingUI = document.createElement('div');
+                    ratingUI.id = 'ratingUI';
+                    ratingUI.style.cssText = 'margin-top: 20px; padding: 20px; background: #f9f9f9; border-radius: 10px;';
+                    ratingUI.innerHTML = `
+                        <h4 style="margin: 0 0 10px 0;">⭐ قيّم هذا التطبيق</h4>
+                        <div style="display: flex; gap: 8px; margin: 15px 0; font-size: 36px; cursor: pointer;" id="starsContainer">
+                            <span class="star" data-value="1" style="color: #ddd;">☆</span>
+                            <span class="star" data-value="2" style="color: #ddd;">☆</span>
+                            <span class="star" data-value="3" style="color: #ddd;">☆</span>
+                            <span class="star" data-value="4" style="color: #ddd;">☆</span>
+                            <span class="star" data-value="5" style="color: #ddd;">☆</span>
                         </div>
-                        <textarea id="ratingComment" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; min-height: 80px;"></textarea>
-                        <button id="submitRatingBtn" style="width: 100%; margin-top: 10px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                            إرسال التقييم
+                        <textarea id="ratingCommentBox" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 60px;"></textarea>
+                        <button id="sendRatingBtn" style="width: 100%; margin-top: 10px; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            📤 إرسال التقييم
                         </button>
                     `;
-                    modal.appendChild(ratingDiv);
+                    modal.appendChild(ratingUI);
                     
-                    // معالجة النقر على النجوم
                     let selectedRating = 0;
-                    document.querySelectorAll('.rate-star').forEach(star => {
+                    document.querySelectorAll('#starsContainer .star').forEach(star => {
                         star.onclick = function() {
-                            selectedRating = parseInt(this.dataset.rating);
-                            document.querySelectorAll('.rate-star').forEach((s, i) => {
-                                s.textContent = i < selectedRating ? '★' : '☆';
-                                s.style.color = i < selectedRating ? '#ffc107' : '#ddd';
+                            selectedRating = parseInt(this.dataset.value);
+                            document.querySelectorAll('#starsContainer .star').forEach((s, i) => {
+                                if (i < selectedRating) {
+                                    s.textContent = '★';
+                                    s.style.color = '#ffc107';
+                                } else {
+                                    s.textContent = '☆';
+                                    s.style.color = '#ddd';
+                                }
                             });
                         };
                     });
                     
-                    // زر الإرسال
-                    document.getElementById('submitRatingBtn').onclick = async function() {
+                    document.getElementById('sendRatingBtn').onclick = async function() {
                         if (selectedRating === 0) {
-                            alert('الرجاء اختيار تقييم (1-5 نجوم)');
+                            alert('اختر تقييمك من 1-5 نجوم');
                             return;
                         }
                         
-                        const comment = document.getElementById('ratingComment').value;
-                        
+                        const comment = document.getElementById('ratingCommentBox').value;
                         App.showLoading();
+                        
                         try {
                             await App.supabase.from('ratings').delete()
                                 .eq('app_id', appId).eq('user_id', App.state.user.id);
@@ -3589,7 +3581,6 @@ setTimeout(function() {
                                 comment: comment || null
                             });
                             
-                            // تحديث متوسط التقييم
                             const { data: ratings } = await App.supabase
                                 .from('ratings').select('rating').eq('app_id', appId);
                             
@@ -3601,11 +3592,9 @@ setTimeout(function() {
                                 }).eq('id', appId);
                             }
                             
-                            alert('شكراً لتقييمك! ⭐');
-                            await App.loadAppDetails(appId); // إعادة التحميل
-                        } catch (error) {
-                            console.error(error);
-                            alert('فشل إرسال التقييم');
+                            showToast('شكراً لتقييمك! ⭐', 'success');
+                        } catch (e) {
+                            showToast('فشل التقييم', 'error');
                         } finally {
                             App.hideLoading();
                         }
