@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Exotisa Store - متجر التطبيقات الذكي
-  </title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-  <style>
-   /* === متغيرات CSS === */
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exotisa Store - متجر التطبيقات الذكي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === متغيرات CSS === */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -1089,685 +1087,511 @@
         .remove-file:hover {
             background: rgba(239, 68, 68, 0.1);
         }
-  </style>
- </head>
- <body>
-  <!-- تحميل الشاشة -->
-  <div class="loading-overlay" id="loadingOverlay">
-   <div class="loading-spinner">
-   </div>
-  </div>
-  <!-- تنبيهات -->
-  <div class="alert-container" id="alertContainer">
-  </div>
-  <!-- أزرار عائمة -->
-  <div class="floating-buttons">
-   <button class="floating-btn home" onclick="App.scrollToTop()" title="الصفحة الرئيسية">
-    <i class="fas fa-home">
-    </i>
-   </button>
-   <button class="floating-btn add" onclick="App.openAddAppModal()" style="display: none;" title="إضافة تطبيق">
-    <i class="fas fa-plus">
-    </i>
-   </button>
-   <button class="floating-btn theme" onclick="App.toggleTheme()" title="تبديل الوضع">
-    <i class="fas fa-moon">
-    </i>
-   </button>
-  </div>
-  <!-- الهيدر -->
-  <header class="header">
-   <div class="container">
-    <div class="header-content">
-     <div class="logo" onclick="App.goToHome()">
-      <h1>
-       <i class="fas fa-store">
-       </i>
-       Exotisa Store
-      </h1>
-      <small>
-       متجر التطبيقات الذكي المتكامل
-      </small>
-     </div>
-     <div class="search-container">
-      <div class="search-wrapper">
-       <input class="search-input" id="searchInput" placeholder="ابحث عن تطبيق أو فئة..." type="text"/>
-       <button class="search-btn" onclick="App.performSearch()">
-        <i class="fas fa-search">
-        </i>
-       </button>
-       <div class="suggestions-box" id="suggestionsBox">
-        <!-- سيتم تعبئته ديناميكياً -->
-       </div>
-      </div>
-     </div>
-     <div class="header-actions">
-      <button class="theme-toggle" id="themeToggle">
-       <i class="fas fa-moon">
-       </i>
-      </button>
-      <!-- زر المستخدم -->
-      <div class="user-profile" id="userProfile">
-       <div style="position: relative;">
-        <div class="user-avatar" id="userAvatar" onclick="App.toggleProfileMenu()">
-         <i class="fas fa-user">
-         </i>
-        </div>
-        <div class="profile-dropdown" id="profileDropdown">
-         <div class="profile-header">
-          <div class="user-avatar" style="width: 48px; height: 48px; font-size: 1.2rem;">
-           <i class="fas fa-user">
-           </i>
-          </div>
-          <div class="profile-info">
-           <div class="profile-name">
-            زائر
-           </div>
-           <div class="profile-email">
-            غير مسجل
-           </div>
-          </div>
-         </div>
-         <button class="dropdown-item" onclick="App.showLoginModal()">
-          <i class="fas fa-sign-in-alt">
-          </i>
-          تسجيل الدخول
-         </button>
-         <button class="dropdown-item" onclick="App.showRegisterModal()">
-          <i class="fas fa-user-plus">
-          </i>
-          إنشاء حساب
-         </button>
-        </div>
-       </div>
-      </div>
-     </div>
+    </style>
+</head>
+<body>
+    <!-- تحميل الشاشة -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
     </div>
-   </div>
-  </header>
-  <!-- الفئات -->
-  <nav class="categories">
-   <div class="container">
-    <div class="categories-list" id="categoriesList">
-     <!-- سيتم تعبئته ديناميكياً -->
-    </div>
-   </div>
-  </nav>
-  <!-- المحتوى الرئيسي -->
-  <main class="main-content" id="mainContent">
-   <div class="container">
-    <!-- قسم الترحيب -->
-    <section class="hero-section" style="margin-top: 120px; text-align: center; padding: 3rem 0;">
-     <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);">
-      مرحباً بك في Exotisa Store
-     </h1>
-     <p style="font-size: 1.2rem; color: var(--gray-500); max-width: 600px; margin: 0 auto 2rem;">
-      اكتشف أفضل التطبيقات والأدوات لتطوير أعمالك وتحسين إنتاجيتك
-     </p>
-     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-      <button class="btn btn-primary btn-lg" onclick="App.scrollToApps()">
-       <i class="fas fa-rocket">
-       </i>
-       استكشاف التطبيقات
-      </button>
-      <button class="btn btn-outline btn-lg" onclick="App.showLoginModal()">
-       <i class="fas fa-sign-in-alt">
-       </i>
-       تسجيل الدخول
-      </button>
-     </div>
-    </section>
-    <!-- التطبيقات المميزة -->
-    <section id="featuredSection">
-     <h2 class="section-title" style="margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 1rem; font-size: 1.75rem;">
-      <i class="fas fa-crown">
-      </i>
-      التطبيقات المميزة
-     </h2>
-     <div class="apps-grid" id="featuredApps">
-      <!-- سيتم تعبئته ديناميكياً -->
-     </div>
-    </section>
-    <!-- جميع التطبيقات -->
-    <section id="allAppsSection">
-     <div style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1.5rem;">
-      <h2 class="section-title" style="display: flex; align-items: center; gap: 1rem; font-size: 1.75rem;">
-       <i class="fas fa-th">
-       </i>
-       جميع التطبيقات
-      </h2>
-      <div style="display: flex; gap: 1rem; align-items: center;">
-       <select class="form-control" id="sortSelect" style="width: auto; min-width: 180px;">
-        <option value="newest">
-         الأحدث
-        </option>
-        <option value="popular">
-         الأكثر شعبية
-        </option>
-        <option value="rating">
-         الأعلى تقييمًا
-        </option>
-        <option value="downloads">
-         الأكثر تحميلاً
-        </option>
-       </select>
-       <button class="btn btn-secondary btn-icon" onclick="App.refreshApps()">
-        <i class="fas fa-sync-alt">
-        </i>
-       </button>
-      </div>
-     </div>
-     <div class="apps-grid" id="appsGrid">
-      <!-- سيتم تعبئته ديناميكياً -->
-     </div>
-     <div style="text-align: center; margin: 3rem 0;">
-      <button class="btn btn-primary btn-lg" id="loadMoreBtn" onclick="App.loadMoreApps()" style="display: none;">
-       <i class="fas fa-spinner fa-spin" id="loadMoreSpinner" style="display: none;">
-       </i>
-       <span id="loadMoreText">
-        تحميل المزيد
-       </span>
-      </button>
-     </div>
-    </section>
-   </div>
-  </main>
-  <!-- نافذة تسجيل الدخول -->
-  <div class="modal" id="loginModal">
-   <div class="modal-content">
-    <div class="modal-header">
-     <h3>
-      تسجيل الدخول
-     </h3>
-     <button class="modal-close" onclick="App.closeModal('loginModal')">
-      ×
-     </button>
-    </div>
-    <div class="modal-body">
-     <form id="loginForm">
-      <div class="form-group">
-       <label class="form-label">
-        البريد الإلكتروني
-       </label>
-       <input class="form-control" id="loginEmail" placeholder="example@email.com" required="" type="email"/>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        كلمة المرور
-       </label>
-       <div class="password-wrapper">
-        <input class="form-control" id="loginPassword" placeholder="أدخل كلمة المرور" required="" type="password"/>
-        <button class="toggle-password" onclick="App.togglePassword('loginPassword')" type="button">
-         <i class="fas fa-eye">
-         </i>
+
+    <!-- تنبيهات -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- أزرار عائمة -->
+    <div class="floating-buttons">
+        <button class="floating-btn home" onclick="App.scrollToTop()" title="الصفحة الرئيسية">
+            <i class="fas fa-home"></i>
         </button>
-       </div>
-      </div>
-      <button class="btn btn-primary" style="width: 100%;" type="submit">
-       <i class="fas fa-sign-in-alt">
-       </i>
-       تسجيل الدخول
-      </button>
-     </form>
-     <div style="text-align: center; margin-top: 1.5rem;">
-      <p style="color: var(--gray-500); margin-bottom: 1rem;">
-       ليس لديك حساب؟
-      </p>
-      <button class="btn btn-outline" onclick="App.showRegisterModal()" style="width: 100%;">
-       <i class="fas fa-user-plus">
-       </i>
-       إنشاء حساب جديد
-      </button>
-     </div>
-    </div>
-   </div>
-  </div>
-  <!-- نافذة إنشاء حساب -->
-  <div class="modal" id="registerModal">
-   <div class="modal-content">
-    <div class="modal-header">
-     <h3>
-      إنشاء حساب جديد
-     </h3>
-     <button class="modal-close" onclick="App.closeModal('registerModal')">
-      ×
-     </button>
-    </div>
-    <div class="modal-body">
-     <form id="registerForm">
-      <div class="form-group">
-       <label class="form-label">
-        الاسم الكامل (اختياري)
-       </label>
-       <input class="form-control" id="registerName" placeholder="الاسم الكامل" type="text"/>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        البريد الإلكتروني *
-       </label>
-       <input class="form-control" id="registerEmail" placeholder="example@email.com" required="" type="email"/>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        كلمة المرور *
-       </label>
-       <div class="password-wrapper">
-        <input class="form-control" id="registerPassword" placeholder="6 أحرف على الأقل" required="" type="password"/>
-        <button class="toggle-password" onclick="App.togglePassword('registerPassword')" type="button">
-         <i class="fas fa-eye">
-         </i>
+        <button class="floating-btn add" onclick="App.openAddAppModal()" title="إضافة تطبيق" style="display: none;">
+            <i class="fas fa-plus"></i>
         </button>
-       </div>
-       <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
-        <i class="fas fa-info-circle">
-        </i>
-        يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل
-       </small>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        تأكيد كلمة المرور *
-       </label>
-       <div class="password-wrapper">
-        <input class="form-control" id="registerConfirmPassword" placeholder="أعد إدخال كلمة المرور" required="" type="password"/>
-        <button class="toggle-password" onclick="App.togglePassword('registerConfirmPassword')" type="button">
-         <i class="fas fa-eye">
-         </i>
+        <button class="floating-btn theme" onclick="App.toggleTheme()" title="تبديل الوضع">
+            <i class="fas fa-moon"></i>
         </button>
-       </div>
-      </div>
-      <button class="btn btn-primary" style="width: 100%;" type="submit">
-       <i class="fas fa-user-plus">
-       </i>
-       إنشاء حساب
-      </button>
-     </form>
-     <div style="text-align: center; margin-top: 1.5rem;">
-      <p style="color: var(--gray-500); margin-bottom: 1rem;">
-       هل لديك حساب بالفعل؟
-      </p>
-      <button class="btn btn-outline" onclick="App.showLoginModal()" style="width: 100%;">
-       <i class="fas fa-sign-in-alt">
-       </i>
-       تسجيل الدخول
-      </button>
-     </div>
     </div>
-   </div>
-  </div>
-  <!-- نافذة إضافة/تعديل التطبيق -->
-  <div class="modal" id="appModal">
-   <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-    <div class="modal-header">
-     <h3 id="appModalTitle">
-      إضافة تطبيق جديد
-     </h3>
-     <button class="modal-close" onclick="App.closeModal('appModal')">
-      ×
-     </button>
-    </div>
-    <div class="modal-body">
-     <form id="appForm">
-      <input id="appId" type="hidden"/>
-      <div class="form-row">
-       <div class="form-group">
-        <label class="form-label">
-         اسم التطبيق *
-        </label>
-        <input class="form-control" id="appName" required="" type="text"/>
-       </div>
-       <div class="form-group">
-        <label class="form-label">
-         المطور *
-        </label>
-        <input class="form-control" id="appDeveloper" required="" type="text"/>
-       </div>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        وصف مختصر *
-       </label>
-       <input class="form-control" id="appShortDescription" required="" type="text"/>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        الوصف الكامل *
-       </label>
-       <textarea class="form-control form-textarea" id="appDescription" required="" rows="4"></textarea>
-      </div>
-      <div class="form-row">
-       <div class="form-group">
-        <label class="form-label">
-         الإصدار *
-        </label>
-        <input class="form-control" id="appVersion" placeholder="مثال: 1.0.0" required="" type="text"/>
-       </div>
-       <div class="form-group">
-        <label class="form-label">
-         الحجم (MB) *
-        </label>
-        <input class="form-control" id="appSize" required="" step="0.01" type="number"/>
-       </div>
-      </div>
-      <div class="form-row">
-       <div class="form-group">
-        <label class="form-label">
-         الفئة *
-        </label>
-        <select class="form-control" id="appCategory" required="">
-         <option value="">
-          اختر الفئة
-         </option>
-        </select>
-       </div>
-       <div class="form-group">
-        <label class="form-label">
-         السعر ($)
-        </label>
-        <input class="form-control" id="appPrice" step="0.01" type="number" value="0"/>
-       </div>
-      </div>
-      <!-- ملف APK -->
-      <div class="form-group">
-       <label class="form-label">
-        ملف التطبيق (APK) *
-       </label>
-       <div class="file-upload-wrapper">
-        <label class="file-upload-label" for="appApkFile" id="apkUploadLabel">
-         <i class="fas fa-cloud-upload-alt">
-         </i>
-         <span id="apkUploadText">
-          اختر ملف APK
-         </span>
-        </label>
-        <input accept=".apk,.APK" class="form-control" id="appApkFile" required="" style="display: none;" type="file"/>
-        <div id="apkFileInfo" style="display: none;">
-         <div class="file-info">
-          <i class="fas fa-file-alt" id="apkFileIcon">
-          </i>
-          <div class="file-name" id="apkFileName">
-          </div>
-          <div class="file-size" id="apkFileSize">
-          </div>
-          <button class="remove-file" onclick="App.removeApkFile()" type="button">
-           <i class="fas fa-times">
-           </i>
-          </button>
-         </div>
+
+    <!-- الهيدر -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo" onclick="App.goToHome()">
+                    <h1>
+                        <i class="fas fa-store"></i>
+                        Exotisa Store
+                    </h1>
+                    <small>متجر التطبيقات الذكي المتكامل</small>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن تطبيق أو فئة...">
+                        <button class="search-btn" onclick="App.performSearch()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <div class="suggestions-box" id="suggestionsBox">
+                            <!-- سيتم تعبئته ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <!-- زر المستخدم -->
+                    <div class="user-profile" id="userProfile">
+                        <div style="position: relative;">
+                            <div class="user-avatar" id="userAvatar" onclick="App.toggleProfileMenu()">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="profile-dropdown" id="profileDropdown">
+                                <div class="profile-header">
+                                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="profile-info">
+                                        <div class="profile-name">زائر</div>
+                                        <div class="profile-email">غير مسجل</div>
+                                    </div>
+                                </div>
+                                <button class="dropdown-item" onclick="App.showLoginModal()">
+                                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                                </button>
+                                <button class="dropdown-item" onclick="App.showRegisterModal()">
+                                    <i class="fas fa-user-plus"></i> إنشاء حساب
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-       </div>
-       <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
-        <i class="fas fa-info-circle">
-        </i>
-        يتم قبول ملفات APK فقط، الحد الأقصى: 50MB
-       </small>
-      </div>
-      <!-- صورة الأيقونة -->
-      <div class="form-group">
-       <label class="form-label">
-        صورة الأيقونة (اختياري)
-       </label>
-       <div class="file-upload-wrapper">
-        <label class="file-upload-label" for="appIconFile" id="iconUploadLabel">
-         <i class="fas fa-cloud-upload-alt">
-         </i>
-         <span id="iconUploadText">
-          اختر صورة الأيقونة
-         </span>
-        </label>
-        <input accept="image/*" class="form-control" id="appIconFile" style="display: none;" type="file"/>
-        <div id="iconFileInfo" style="display: none;">
-         <div class="file-info">
-          <i class="fas fa-image" id="iconFileIcon">
-          </i>
-          <div class="file-name" id="iconFileName">
-          </div>
-          <div class="file-size" id="iconFileSize">
-          </div>
-          <button class="remove-file" onclick="App.removeIconFile()" type="button">
-           <i class="fas fa-times">
-           </i>
-          </button>
-         </div>
+    </header>
+
+    <!-- الفئات -->
+    <nav class="categories">
+        <div class="container">
+            <div class="categories-list" id="categoriesList">
+                <!-- سيتم تعبئته ديناميكياً -->
+            </div>
         </div>
-       </div>
-       <div id="iconPreview" style="margin-top: 1rem; text-align: center;">
-        <img id="iconPreviewImage" style="width: 100px; height: 100px; border-radius: 20px; object-fit: cover; border: 2px solid var(--gray-300); display: none;"/>
-       </div>
-       <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
-        <i class="fas fa-info-circle">
-        </i>
-        صورة PNG أو JPG، الحجم المثالي: 512x512 بكسل، الحد الأقصى: 5MB
-       </small>
-      </div>
-      <div class="form-group">
-       <label class="form-label">
-        الكلمات المفتاحية (اختياري)
-       </label>
-       <div id="tagsContainer" style="margin-bottom: 0.5rem;">
-       </div>
-       <div style="display: flex; gap: 0.5rem;">
-        <input class="form-control" id="tagInput" placeholder="أدخل كلمة مفتاحية" type="text"/>
-        <button class="btn btn-secondary" onclick="App.addTag()" type="button">
-         <i class="fas fa-plus">
-         </i>
-         إضافة
-        </button>
-       </div>
-      </div>
-      <div class="form-group">
-       <label style="display: flex; align-items: center; gap: 0.5rem;">
-        <input id="appIsFeatured" type="checkbox"/>
-        <span>
-         تطبيق مميز
-        </span>
-       </label>
-      </div>
-      <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-       <button class="btn btn-secondary" onclick="App.closeModal('appModal')" style="flex: 1;" type="button">
-        إلغاء
-       </button>
-       <button class="btn btn-primary" style="flex: 1;" type="submit">
-        <i class="fas fa-save">
-        </i>
-        حفظ التطبيق
-       </button>
-      </div>
-     </form>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content" id="mainContent">
+        <div class="container">
+            <!-- قسم الترحيب -->
+            <section class="hero-section" style="margin-top: 120px; text-align: center; padding: 3rem 0;">
+                <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);">مرحباً بك في Exotisa Store</h1>
+                <p style="font-size: 1.2rem; color: var(--gray-500); max-width: 600px; margin: 0 auto 2rem;">
+                    اكتشف أفضل التطبيقات والأدوات لتطوير أعمالك وتحسين إنتاجيتك
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary btn-lg" onclick="App.scrollToApps()">
+                        <i class="fas fa-rocket"></i> استكشاف التطبيقات
+                    </button>
+                    <button class="btn btn-outline btn-lg" onclick="App.showLoginModal()">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </button>
+                </div>
+            </section>
+
+            <!-- التطبيقات المميزة -->
+            <section id="featuredSection">
+                <h2 class="section-title" style="margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 1rem; font-size: 1.75rem;">
+                    <i class="fas fa-crown"></i> التطبيقات المميزة
+                </h2>
+                <div class="apps-grid" id="featuredApps">
+                    <!-- سيتم تعبئته ديناميكياً -->
+                </div>
+            </section>
+
+            <!-- جميع التطبيقات -->
+            <section id="allAppsSection">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0 1.5rem;">
+                    <h2 class="section-title" style="display: flex; align-items: center; gap: 1rem; font-size: 1.75rem;">
+                        <i class="fas fa-th"></i> جميع التطبيقات
+                    </h2>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <select class="form-control" id="sortSelect" style="width: auto; min-width: 180px;">
+                            <option value="newest">الأحدث</option>
+                            <option value="popular">الأكثر شعبية</option>
+                            <option value="rating">الأعلى تقييمًا</option>
+                            <option value="downloads">الأكثر تحميلاً</option>
+                        </select>
+                        <button class="btn btn-secondary btn-icon" onclick="App.refreshApps()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="apps-grid" id="appsGrid">
+                    <!-- سيتم تعبئته ديناميكياً -->
+                </div>
+                <div style="text-align: center; margin: 3rem 0;">
+                    <button class="btn btn-primary btn-lg" id="loadMoreBtn" onclick="App.loadMoreApps()" style="display: none;">
+                        <i class="fas fa-spinner fa-spin" id="loadMoreSpinner" style="display: none;"></i>
+                        <span id="loadMoreText">تحميل المزيد</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تسجيل الدخول</h3>
+                <button class="modal-close" onclick="App.closeModal('loginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="loginPassword" placeholder="أدخل كلمة المرور" required>
+                            <button type="button" class="toggle-password" onclick="App.togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </button>
+                </form>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <p style="color: var(--gray-500); margin-bottom: 1rem;">ليس لديك حساب؟</p>
+                    <button class="btn btn-outline" style="width: 100%;" onclick="App.showRegisterModal()">
+                        <i class="fas fa-user-plus"></i> إنشاء حساب جديد
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-   </div>
-  </div>
-  <!-- نافذة تفاصيل التطبيق -->
-  <div class="modal" id="appDetailsModal">
-   <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-    <div class="modal-header">
-     <h3>
-      تفاصيل التطبيق
-     </h3>
-     <button class="modal-close" onclick="App.closeModal('appDetailsModal')">
-      ×
-     </button>
+
+    <!-- نافذة إنشاء حساب -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إنشاء حساب جديد</h3>
+                <button class="modal-close" onclick="App.closeModal('registerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">الاسم الكامل (اختياري)</label>
+                        <input type="text" class="form-control" id="registerName" placeholder="الاسم الكامل">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">البريد الإلكتروني *</label>
+                        <input type="email" class="form-control" id="registerEmail" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور *</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="registerPassword" placeholder="6 أحرف على الأقل" required>
+                            <button type="button" class="toggle-password" onclick="App.togglePassword('registerPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
+                            <i class="fas fa-info-circle"></i> يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تأكيد كلمة المرور *</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="registerConfirmPassword" placeholder="أعد إدخال كلمة المرور" required>
+                            <button type="button" class="toggle-password" onclick="App.togglePassword('registerConfirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-user-plus"></i> إنشاء حساب
+                    </button>
+                </form>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <p style="color: var(--gray-500); margin-bottom: 1rem;">هل لديك حساب بالفعل؟</p>
+                    <button class="btn btn-outline" style="width: 100%;" onclick="App.showLoginModal()">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="modal-body" id="appDetailsContent">
-     <!-- سيتم تعبئته ديناميكياً -->
+
+    <!-- نافذة إضافة/تعديل التطبيق -->
+    <div class="modal" id="appModal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h3 id="appModalTitle">إضافة تطبيق جديد</h3>
+                <button class="modal-close" onclick="App.closeModal('appModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="appForm">
+                    <input type="hidden" id="appId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">اسم التطبيق *</label>
+                            <input type="text" class="form-control" id="appName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">المطور *</label>
+                            <input type="text" class="form-control" id="appDeveloper" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">وصف مختصر *</label>
+                        <input type="text" class="form-control" id="appShortDescription" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">الوصف الكامل *</label>
+                        <textarea class="form-control form-textarea" id="appDescription" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">الإصدار *</label>
+                            <input type="text" class="form-control" id="appVersion" placeholder="مثال: 1.0.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">الحجم (MB) *</label>
+                            <input type="number" step="0.01" class="form-control" id="appSize" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">الفئة *</label>
+                            <select class="form-control" id="appCategory" required>
+                                <option value="">اختر الفئة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">السعر ($)</label>
+                            <input type="number" step="0.01" class="form-control" id="appPrice" value="0">
+                        </div>
+                    </div>
+                    
+                    <!-- ملف APK -->
+                    <div class="form-group">
+                        <label class="form-label">ملف التطبيق (APK) *</label>
+                        <div class="file-upload-wrapper">
+                            <label for="appApkFile" class="file-upload-label" id="apkUploadLabel">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span id="apkUploadText">اختر ملف APK</span>
+                            </label>
+                            <input type="file" class="form-control" id="appApkFile" accept=".apk,.APK" style="display: none;" required>
+                            <div id="apkFileInfo" style="display: none;">
+                                <div class="file-info">
+                                    <i class="fas fa-file-alt" id="apkFileIcon"></i>
+                                    <div class="file-name" id="apkFileName"></div>
+                                    <div class="file-size" id="apkFileSize"></div>
+                                    <button type="button" class="remove-file" onclick="App.removeApkFile()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
+                            <i class="fas fa-info-circle"></i> يتم قبول ملفات APK فقط، الحد الأقصى: 50MB
+                        </small>
+                    </div>
+                    
+                    <!-- صورة الأيقونة -->
+                    <div class="form-group">
+                        <label class="form-label">صورة الأيقونة (اختياري)</label>
+                        <div class="file-upload-wrapper">
+                            <label for="appIconFile" class="file-upload-label" id="iconUploadLabel">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span id="iconUploadText">اختر صورة الأيقونة</span>
+                            </label>
+                            <input type="file" class="form-control" id="appIconFile" accept="image/*" style="display: none;">
+                            <div id="iconFileInfo" style="display: none;">
+                                <div class="file-info">
+                                    <i class="fas fa-image" id="iconFileIcon"></i>
+                                    <div class="file-name" id="iconFileName"></div>
+                                    <div class="file-size" id="iconFileSize"></div>
+                                    <button type="button" class="remove-file" onclick="App.removeIconFile()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="iconPreview" style="margin-top: 1rem; text-align: center;">
+                            <img id="iconPreviewImage" style="width: 100px; height: 100px; border-radius: 20px; object-fit: cover; border: 2px solid var(--gray-300); display: none;">
+                        </div>
+                        <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">
+                            <i class="fas fa-info-circle"></i> صورة PNG أو JPG، الحجم المثالي: 512x512 بكسل، الحد الأقصى: 5MB
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">الكلمات المفتاحية (اختياري)</label>
+                        <div id="tagsContainer" style="margin-bottom: 0.5rem;"></div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" class="form-control" id="tagInput" placeholder="أدخل كلمة مفتاحية">
+                            <button type="button" class="btn btn-secondary" onclick="App.addTag()">
+                                <i class="fas fa-plus"></i> إضافة
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="appIsFeatured">
+                            <span>تطبيق مميز</span>
+                        </label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="App.closeModal('appModal')">
+                            إلغاء
+                        </button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            <i class="fas fa-save"></i> حفظ التطبيق
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-   </div>
-  </div>
-  <!-- لوحة التحكم -->
-  <main class="dashboard" id="dashboard" style="display: none; padding: 100px 0 40px; min-height: 100vh;">
-   <div class="container">
-    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--gray-200);">
-     <h2>
-      <i class="fas fa-cogs">
-      </i>
-      لوحة التحكم
-     </h2>
-     <button class="btn btn-secondary" onclick="App.toggleDashboard(false)">
-      <i class="fas fa-times">
-      </i>
-      إغلاق
-     </button>
+
+    <!-- نافذة تفاصيل التطبيق -->
+    <div class="modal" id="appDetailsModal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h3>تفاصيل التطبيق</h3>
+                <button class="modal-close" onclick="App.closeModal('appDetailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="appDetailsContent">
+                <!-- سيتم تعبئته ديناميكياً -->
+            </div>
+        </div>
     </div>
-    <div class="dashboard-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto;">
-     <button class="tab-btn active" data-tab="stats">
-      الإحصائيات
-     </button>
-     <button class="tab-btn" data-tab="add-app">
-      إضافة تطبيق
-     </button>
-     <button class="tab-btn" data-tab="manage-apps">
-      إدارة التطبيقات
-     </button>
-     <button class="tab-btn" data-tab="manage-users">
-      إدارة المستخدمين
-     </button>
-    </div>
-    <div class="tab-content active" id="statsTab">
-     <h3>
-      نظرة عامة على الإحصائيات
-     </h3>
-     <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
-      <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-       <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
-       </i>
-       <h3 id="totalApps" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">
-        0
-       </h3>
-       <p style="color: var(--gray-500); font-size: 1rem;">
-        إجمالي التطبيقات
-       </p>
-      </div>
-      <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-       <i class="fas fa-download" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
-       </i>
-       <h3 id="totalDownloads" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">
-        0
-       </h3>
-       <p style="color: var(--gray-500); font-size: 1rem;">
-        إجمالي التحميلات
-       </p>
-      </div>
-      <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-       <i class="fas fa-users" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
-       </i>
-       <h3 id="totalUsers" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">
-        0
-       </h3>
-       <p style="color: var(--gray-500); font-size: 1rem;">
-        المستخدمون
-       </p>
-      </div>
-      <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
-       <i class="fas fa-star" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
-       </i>
-       <h3 id="avgRating" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">
-        0.0
-       </h3>
-       <p style="color: var(--gray-500); font-size: 1rem;">
-        متوسط التقييم
-       </p>
-      </div>
-     </div>
-    </div>
-    <div class="tab-content" id="addAppTab" style="display: none;">
-     <div style="text-align: center; padding: 2rem;">
-      <button class="btn btn-primary btn-lg" onclick="App.openAddAppModal()">
-       <i class="fas fa-plus">
-       </i>
-       إضافة تطبيق جديد
-      </button>
-     </div>
-    </div>
-    <div class="tab-content" id="manageAppsTab" style="display: none;">
-     <h3>
-      إدارة التطبيقات
-     </h3>
-     <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-      <input class="form-control" id="manageSearch" placeholder="ابحث في التطبيقات..." type="text"/>
-      <button class="btn btn-secondary" onclick="App.searchManageApps()">
-       <i class="fas fa-search">
-       </i>
-      </button>
-     </div>
-     <div class="table-responsive" style="overflow-x: auto; border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
-      <table class="table" style="width: 100%; border-collapse: collapse;">
-       <thead>
-        <tr>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          اسم التطبيق
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          المطور
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          التنزيلات
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          التقييم
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          الحالة
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          الإجراءات
-         </th>
-        </tr>
-       </thead>
-       <tbody id="manageAppsTableBody">
-        <!-- سيتم تعبئته ديناميكياً -->
-       </tbody>
-      </table>
-     </div>
-    </div>
-    <div class="tab-content" id="manageUsersTab" style="display: none;">
-     <h3>
-      إدارة المستخدمين
-     </h3>
-     <div class="table-responsive" style="overflow-x: auto; border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
-      <table class="table" style="width: 100%; border-collapse: collapse;">
-       <thead>
-        <tr>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          الاسم
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          البريد الإلكتروني
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          الدور
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          التسجيل
-         </th>
-         <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">
-          الإجراءات
-         </th>
-        </tr>
-       </thead>
-       <tbody id="manageUsersTableBody">
-        <!-- سيتم تعبئته ديناميكياً -->
-       </tbody>
-      </table>
-     </div>
-    </div>
-   </div>
-  </main>
-  <!-- الفوتر -->
-  <footer class="footer">
-   <div class="container">
-    <p>
-     © 2024 Exotisa Store. جميع الحقوق محفوظة.
-    </p>
-    <p>
-     متجر تطبيقات متكامل بأحدث التقنيات
-    </p>
-   </div>
-  </footer>
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  </script>
-  <script>
-   // ==================== التطبيق الرئيسي ====================
+
+    <!-- لوحة التحكم -->
+    <main class="dashboard" id="dashboard" style="display: none; padding: 100px 0 40px; min-height: 100vh;">
+        <div class="container">
+            <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--gray-200);">
+                <h2><i class="fas fa-cogs"></i> لوحة التحكم</h2>
+                <button class="btn btn-secondary" onclick="App.toggleDashboard(false)">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+            
+            <div class="dashboard-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto;">
+                <button class="tab-btn active" data-tab="stats">الإحصائيات</button>
+                <button class="tab-btn" data-tab="add-app">إضافة تطبيق</button>
+                <button class="tab-btn" data-tab="manage-apps">إدارة التطبيقات</button>
+                <button class="tab-btn" data-tab="manage-users">إدارة المستخدمين</button>
+            </div>
+            
+            <div class="tab-content active" id="statsTab">
+                <h3>نظرة عامة على الإحصائيات</h3>
+                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3 id="totalApps" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
+                        <p style="color: var(--gray-500); font-size: 1rem;">إجمالي التطبيقات</p>
+                    </div>
+                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-download" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3 id="totalDownloads" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
+                        <p style="color: var(--gray-500); font-size: 1rem;">إجمالي التحميلات</p>
+                    </div>
+                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-users" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3 id="totalUsers" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0</h3>
+                        <p style="color: var(--gray-500); font-size: 1rem;">المستخدمون</p>
+                    </div>
+                    <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-200); transition: var(--transition);">
+                        <i class="fas fa-star" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3 id="avgRating" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">0.0</h3>
+                        <p style="color: var(--gray-500); font-size: 1rem;">متوسط التقييم</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="addAppTab" style="display: none;">
+                <div style="text-align: center; padding: 2rem;">
+                    <button class="btn btn-primary btn-lg" onclick="App.openAddAppModal()">
+                        <i class="fas fa-plus"></i> إضافة تطبيق جديد
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="manageAppsTab" style="display: none;">
+                <h3>إدارة التطبيقات</h3>
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                    <input type="text" class="form-control" id="manageSearch" placeholder="ابحث في التطبيقات...">
+                    <button class="btn btn-secondary" onclick="App.searchManageApps()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="table-responsive" style="overflow-x: auto; border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">اسم التطبيق</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">المطور</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">التنزيلات</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">التقييم</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الحالة</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manageAppsTableBody">
+                            <!-- سيتم تعبئته ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="manageUsersTab" style="display: none;">
+                <h3>إدارة المستخدمين</h3>
+                <div class="table-responsive" style="overflow-x: auto; border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الاسم</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">البريد الإلكتروني</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الدور</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">التسجيل</th>
+                                <th style="background: var(--gray-50); padding: 1rem; text-align: right; font-weight: 600; color: var(--dark); border-bottom: 2px solid var(--gray-200);">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manageUsersTableBody">
+                            <!-- سيتم تعبئته ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Exotisa Store. جميع الحقوق محفوظة.</p>
+            <p>متجر تطبيقات متكامل بأحدث التقنيات</p>
+        </div>
+    </footer>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ==================== التطبيق الرئيسي ====================
         const App = {
             // معلومات Supabase
             config: {
@@ -3594,26 +3418,24 @@
 
         // جعل App متاحاً عالمياً
         window.App = App;
-  </script>
-  <!-- ============================================= -->
-  <!-- Exotisa Store - Enhanced Features -->
-  <!-- ملف منظم مع جميع الوظائف العاملة -->
-  <!-- ============================================= -->
-  <!-- Lock Screen -->
-  <div id="authLock" style="position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
-   <div style="text-align: center; color: white;">
-    <h1 style="font-size: 36px; margin-bottom: 20px;">
-     🔒 Exotisa Store
-    </h1>
-    <p style="font-size: 18px; margin-bottom: 30px;">
-     يرجى تسجيل الدخول للمتابعة
-    </p>
-    <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;">
+    </script>
+
+<!-- ============================================= -->
+<!-- Exotisa Store - Enhanced Features -->
+<!-- ملف منظم مع جميع الوظائف العاملة -->
+<!-- ============================================= -->
+
+<!-- Lock Screen -->
+<div id="authLock" style="position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
+    <div style="text-align: center; color: white;">
+        <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
     </div>
-   </div>
-  </div>
-  <style>
-   /* Lock Screen */
+</div>
+
+<style>
+/* Lock Screen */
 #authLock.unlocked { display: none !important; }
 .modal { z-index: 999999999 !important; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -3626,9 +3448,10 @@ header, .header { padding: 12px 20px !important; }
     header, .header { padding: 10px 15px !important; }
     .modal-content { width: 95% !important; }
 }
-  </style>
-  <script>
-   // ============================================= 
+</style>
+
+<script>
+// ============================================= 
 // 1. Authentication System
 // ============================================= 
 (function() {
@@ -3775,9 +3598,11 @@ setTimeout(() => {
         };
     }
 }, 2000);
-  </script>
-  <script>
-   // Fix: إعادة إضافة زر Google في كل مرة
+</script>
+
+
+<script>
+// Fix: إعادة إضافة زر Google في كل مرة
 setTimeout(() => {
     if (!App || !App.openModal) return;
     
@@ -3811,9 +3636,11 @@ setTimeout(() => {
         }
     };
 }, 1000);
-  </script>
-  <style>
-   /* Responsive كامل */
+</script>
+
+
+<style>
+/* Responsive كامل */
 @media (max-width: 480px) {
     body { font-size: 14px; }
     h1 { font-size: 22px !important; }
@@ -3826,9 +3653,10 @@ setTimeout(() => {
 @media (min-width: 769px) {
     .modal-content { max-width: 600px !important; }
 }
-  </style>
-  <script>
-   // إغلاق كامل بعد تسجيل الخروج
+</style>
+
+<script>
+// إغلاق كامل بعد تسجيل الخروج
 setTimeout(() => {
     if (!App || !App.logout) return;
     
@@ -3950,9 +3778,11 @@ setTimeout(() => {
         });
     };
 }, 2500);
-  </script>
-  <style>
-   /* تصغير الشريط العلوي بشكل كبير */
+</script>
+
+
+<style>
+/* تصغير الشريط العلوي بشكل كبير */
 header, .header {
     padding: 8px 15px !important;
     min-height: 50px !important;
@@ -3972,9 +3802,10 @@ header h1, .header h1, header .logo {
         font-size: 16px !important;
     }
 }
-  </style>
-  <script>
-   // ============================================= 
+</style>
+
+<script>
+// ============================================= 
 // إصلاح 1: تسجيل الخروج
 // ============================================= 
 setTimeout(() => {
@@ -4118,9 +3949,11 @@ setTimeout(() => {
         });
     };
 }, 2500);
-  </script>
-  <script>
-   // ============================================= 
+</script>
+
+
+<script>
+// ============================================= 
 // إصلاح تسجيل الخروج - نهائي
 // ============================================= 
 (function() {
@@ -4172,6 +4005,7 @@ setTimeout(() => {
         console.log('✅ نظام تسجيل الخروج جاهز');
     }, 1000);
 })();
-  </script>
- </body>
+</script>
+
+</body>
 </html>
