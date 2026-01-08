@@ -6,6 +6,7 @@
     <title>Exotisa Store - متجر التطبيقات الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* === متغيرات CSS === */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -29,6 +30,7 @@
             --gray-700: #374151;
             --gray-800: #1f2937;
             --gray-900: #111827;
+            
             --border-radius: 16px;
             --border-radius-sm: 8px;
             --border-radius-lg: 24px;
@@ -83,14 +85,14 @@
             padding: 0 24px;
         }
 
-        /* الهيدر */
+        /* === الهيدر === */
         .header {
             background: linear-gradient(135deg, 
                 rgba(99, 102, 241, 0.95) 0%, 
                 rgba(79, 70, 229, 0.95) 100%);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 0.75rem 0;
+            padding: 1.25rem 0;
             position: fixed;
             top: 0;
             left: 0;
@@ -99,7 +101,6 @@
             box-shadow: var(--shadow-lg);
             border-bottom: 1px solid rgba(255,255,255,0.1);
             animation: slideDown 0.5s ease-out;
-            min-height: 60px;
         }
 
         @keyframes slideDown {
@@ -126,7 +127,7 @@
         }
 
         .logo h1 {
-            font-size: 1.4rem;
+            font-size: 1.75rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -136,11 +137,11 @@
 
         .logo small {
             opacity: 0.9;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 300;
         }
 
-        /* البحث */
+        /* === البحث === */
         .search-container {
             flex: 1;
             max-width: 600px;
@@ -154,7 +155,7 @@
 
         .search-input {
             width: 100%;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 1.5rem;
             padding-right: 4rem;
             border: none;
             border-radius: 50px;
@@ -186,10 +187,10 @@
             background: none;
             border: none;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             cursor: pointer;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -236,7 +237,7 @@
             background: var(--gray-50);
         }
 
-        /* أزرار */
+        /* === أزرار === */
         .header-actions {
             display: flex;
             align-items: center;
@@ -244,8 +245,8 @@
         }
 
         .theme-toggle {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -255,7 +256,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             transition: var(--transition);
         }
 
@@ -343,7 +344,7 @@
             font-size: 1.1rem;
         }
 
-        /* صورة المستخدم */
+        /* === صورة المستخدم === */
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -438,12 +439,12 @@
             border-bottom: none;
         }
 
-        /* الفئات */
+        /* === الفئات === */
         .categories {
             background: var(--gray-50);
             padding: 1rem 0;
             position: sticky;
-            top: 60px;
+            top: 80px;
             z-index: 999;
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--gray-200);
@@ -499,7 +500,7 @@
             box-shadow: var(--shadow);
         }
 
-        /* بطاقات التطبيقات */
+        /* === بطاقات التطبيقات === */
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -705,7 +706,7 @@
             background: var(--gray-50);
         }
 
-        /* النوافذ المنبثقة */
+        /* === النوافذ المنبثقة === */
         .modal {
             display: none;
             position: fixed;
@@ -778,7 +779,7 @@
             overflow-y: auto;
         }
 
-        /* النماذج */
+        /* === النماذج === */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -818,7 +819,7 @@
             gap: 1rem;
         }
 
-        /* إدارة كلمة المرور */
+        /* === إدارة كلمة المرور === */
         .password-wrapper {
             position: relative;
         }
@@ -835,7 +836,7 @@
             padding: 0.5rem;
         }
 
-        /* أزرار عائمة */
+        /* === أزرار عائمة === */
         .floating-buttons {
             position: fixed;
             bottom: 30px;
@@ -879,7 +880,7 @@
             background: var(--warning);
         }
 
-        /* التحميل */
+        /* === التحميل === */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -912,7 +913,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* التنبيهات */
+        /* === التنبيهات === */
         .alert-container {
             position: fixed;
             top: 100px;
@@ -967,7 +968,7 @@
             }
         }
 
-        /* التجاوب */
+        /* === التجاوب === */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -1010,7 +1011,7 @@
             }
         }
 
-        /* الفوتر */
+        /* === الفوتر === */
         .footer {
             background: var(--gray-900);
             color: white;
@@ -1024,7 +1025,7 @@
             opacity: 0.8;
         }
 
-        /* إضافات جديدة للتحميل */
+        /* === إضافات جديدة للتحميل === */
         .file-upload-wrapper {
             position: relative;
         }
@@ -1086,72 +1087,6 @@
         .remove-file:hover {
             background: rgba(239, 68, 68, 0.1);
         }
-
-        /* Google Button Style */
-        .google-btn {
-            width: 100%;
-            background: white;
-            color: #444;
-            border: 1px solid #ddd;
-            padding: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: all 0.3s;
-        }
-
-        .google-btn:hover {
-            background: #f8f8f8;
-            border-color: #ccc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        /* Lock Screen */
-        #authLock {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.98);
-            z-index: 999999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s;
-        }
-
-        #authLock.unlocked {
-            display: none !important;
-        }
-
-        #authLock .lock-content {
-            text-align: center;
-            color: white;
-        }
-
-        #authLock h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-
-        #authLock p {
-            font-size: 18px;
-            margin-bottom: 30px;
-        }
-
-        #authLock .lock-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top-color: #4CAF50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
     </style>
 </head>
 <body>
@@ -1162,15 +1097,6 @@
 
     <!-- تنبيهات -->
     <div class="alert-container" id="alertContainer"></div>
-
-    <!-- Lock Screen -->
-    <div id="authLock" class="unlocked">
-        <div class="lock-content">
-            <h1>🔒 Exotisa Store</h1>
-            <p>يرجى تسجيل الدخول للمتابعة</p>
-            <div class="lock-spinner"></div>
-        </div>
-    </div>
 
     <!-- أزرار عائمة -->
     <div class="floating-buttons">
@@ -1257,7 +1183,7 @@
     <main class="main-content" id="mainContent">
         <div class="container">
             <!-- قسم الترحيب -->
-            <section class="hero-section" style="margin-top: 100px; text-align: center; padding: 3rem 0;">
+            <section class="hero-section" style="margin-top: 120px; text-align: center; padding: 3rem 0;">
                 <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);">مرحباً بك في Exotisa Store</h1>
                 <p style="font-size: 1.2rem; color: var(--gray-500); max-width: 600px; margin: 0 auto 2rem;">
                     اكتشف أفضل التطبيقات والأدوات لتطوير أعمالك وتحسين إنتاجيتك
@@ -1339,7 +1265,6 @@
                         <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                     </button>
                 </form>
-                <div id="googleLoginContainer"></div>
                 <div style="text-align: center; margin-top: 1.5rem;">
                     <p style="color: var(--gray-500); margin-bottom: 1rem;">ليس لديك حساب؟</p>
                     <button class="btn btn-outline" style="width: 100%;" onclick="App.showRegisterModal()">
@@ -1693,8 +1618,7 @@
                 sessionToken: null,
                 currentApkFile: null,
                 currentIconFile: null,
-                editingAppId: null,
-                googleAuth: null
+                editingAppId: null
             },
 
             // تهيئة Supabase
@@ -1712,17 +1636,8 @@
                         this.config.supabaseKey
                     );
                     
-                    // تهيئة Google Auth
-                    this.state.googleAuth = window.supabase.createClient(
-                        this.config.supabaseUrl,
-                        this.config.supabaseKey
-                    );
-                    
                     // التحقق من جلسة المستخدم
                     await this.checkSession();
-                    
-                    // التحقق من جلسة Google
-                    await this.checkGoogleSession();
                     
                     // تطبيق الوضع المحفوظ
                     this.applyTheme();
@@ -1779,34 +1694,9 @@
                 }
             },
 
-            async checkGoogleSession() {
-                try {
-                    const { data: { session } } = await this.state.googleAuth.auth.getSession();
-                    if (session && session.user) {
-                        // حفظ بيانات مستخدم Google
-                        const googleUser = {
-                            id: session.user.id,
-                            email: session.user.email,
-                            full_name: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
-                            avatar_url: session.user.user_metadata?.avatar_url,
-                            google_id: session.user.id,
-                            role: 'user',
-                            is_active: true
-                        };
-                        
-                        localStorage.setItem('google_user', JSON.stringify(googleUser));
-                        this.state.user = googleUser;
-                        this.state.isAdmin = false;
-                    }
-                } catch (error) {
-                    console.log('لا توجد جلسة Google');
-                }
-            },
-
             clearSession() {
                 localStorage.removeItem('session_token');
                 localStorage.removeItem('user_id');
-                localStorage.removeItem('google_user');
                 this.state.user = null;
                 this.state.sessionToken = null;
                 this.state.isAdmin = false;
@@ -1947,21 +1837,6 @@
                 }
             },
 
-            // ==================== تسجيل الدخول عبر Google ====================
-            async loginWithGoogle() {
-                try {
-                    await this.state.googleAuth.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: window.location.origin
-                        }
-                    });
-                } catch (error) {
-                    console.error('❌ خطأ في تسجيل الدخول عبر Google:', error);
-                    this.showAlert('حدث خطأ في تسجيل الدخول عبر Google', 'error');
-                }
-            },
-
             // ==================== تسجيل الخروج ====================
             async logout() {
                 try {
@@ -1973,11 +1848,6 @@
                             .eq('token', this.state.sessionToken);
                     }
                     
-                    // تسجيل الخروج من Google إذا كان مستخدم Google
-                    if (this.state.user?.google_id) {
-                        await this.state.googleAuth.auth.signOut();
-                    }
-                    
                     // مسح البيانات المحلية
                     this.clearSession();
                     
@@ -1985,9 +1855,6 @@
                     this.hideProfileMenu();
                     this.showAlert('تم تسجيل الخروج بنجاح', 'success');
                     this.toggleDashboard(false);
-                    
-                    // إعادة تحميل التطبيقات
-                    await this.loadApps();
                     
                 } catch (error) {
                     console.error('❌ خطأ في تسجيل الخروج:', error);
@@ -2329,11 +2196,6 @@
                                     <button class="btn btn-success btn-lg" onclick="App.downloadApp('${app.id}')">
                                         <i class="fas fa-download"></i> تحميل التطبيق
                                     </button>
-                                    ${this.state.user ? `
-                                        <button class="btn btn-warning btn-lg" onclick="App.showRatingDialog('${app.id}', '${app.name.replace(/'/g, "\\'")}')">
-                                            <i class="fas fa-star"></i> تقييم التطبيق
-                                        </button>
-                                    ` : ''}
                                     ${this.state.isAdmin ? `
                                         <button class="btn btn-warning" onclick="App.editApp('${app.id}')">
                                             <i class="fas fa-edit"></i> تعديل
@@ -2910,122 +2772,6 @@
                 }
             },
 
-            // ==================== نظام التقييم ====================
-            showRatingDialog(appId, appName) {
-                if (!this.state.user) {
-                    this.showAlert('يجب تسجيل الدخول لتقييم التطبيق', 'error');
-                    this.showLoginModal();
-                    return;
-                }
-                
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.style.cssText = 'display: block !important; position: fixed; z-index: 999999999; inset: 0; background: rgba(0,0,0,0.85);';
-                modal.innerHTML = `
-                    <div style="position: relative; background: white; max-width: 500px; margin: 80px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-                        <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 15px; left: 15px; background: #f44336; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 20px; font-weight: bold;">&times;</button>
-                        <h2 style="margin: 0 0 25px 0; text-align: center; color: #333;">⭐ قيّم: ${appName}</h2>
-                        <div id="ratingStarsInput" style="display: flex; gap: 12px; justify-content: center; margin: 25px 0;">
-                            <span class="rating-star" data-value="1" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                            <span class="rating-star" data-value="2" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                            <span class="rating-star" data-value="3" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                            <span class="rating-star" data-value="4" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                            <span class="rating-star" data-value="5" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
-                        </div>
-                        <textarea id="ratingCommentInput" placeholder="شاركنا رأيك (اختياري)" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; min-height: 90px; font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
-                        <button id="submitRatingBtn" style="width: 100%; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 4px 15px rgba(76,175,80,0.3);">
-                            📤 إرسال التقييم
-                        </button>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-                
-                let chosenRating = 0;
-                const stars = modal.querySelectorAll('.rating-star');
-                
-                // معالجة النقر على النجوم
-                stars.forEach((star, index) => {
-                    star.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        chosenRating = parseInt(this.getAttribute('data-value'));
-                        console.log('✅ تم اختيار:', chosenRating, 'نجوم');
-                        
-                        // تحديث النجوم
-                        stars.forEach((s, i) => {
-                            if (i < chosenRating) {
-                                s.textContent = '★';
-                                s.style.color = '#ffc107';
-                                s.style.transform = 'scale(1.1)';
-                            } else {
-                                s.textContent = '☆';
-                                s.style.color = '#ddd';
-                                s.style.transform = 'scale(1)';
-                            }
-                        });
-                    });
-                    
-                    star.addEventListener('touchstart', function(e) {
-                        e.preventDefault();
-                        this.click();
-                    });
-                });
-                
-                // زر الإرسال
-                modal.querySelector('#submitRatingBtn').addEventListener('click', async function() {
-                    if (chosenRating === 0) {
-                        alert('⭐ الرجاء اختيار تقييمك (1-5 نجوم)');
-                        return;
-                    }
-                    
-                    const comment = modal.querySelector('#ratingCommentInput').value.trim();
-                    
-                    App.showLoading();
-                    try {
-                        // حذف التقييم القديم
-                        await App.supabase.from('ratings').delete()
-                            .eq('app_id', appId)
-                            .eq('user_id', App.state.user.id);
-                        
-                        // إضافة التقييم الجديد
-                        await App.supabase.from('ratings').insert({
-                            app_id: appId,
-                            user_id: App.state.user.id,
-                            rating: chosenRating,
-                            comment: comment || null
-                        });
-                        
-                        // تحديث المتوسط
-                        const { data: allRatings } = await App.supabase
-                            .from('ratings')
-                            .select('rating')
-                            .eq('app_id', appId);
-                        
-                        if (allRatings && allRatings.length > 0) {
-                            const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
-                            await App.supabase.from('apps').update({
-                                average_rating: avg,
-                                rating_count: allRatings.length
-                            }).eq('id', appId);
-                        }
-                        
-                        App.showAlert('شكراً لتقييمك! ⭐✨ تم حفظ تقييمك بنجاح.', 'success');
-                        modal.remove();
-                        
-                        // إعادة تحميل التطبيق الحالي إذا كان مفتوحاً
-                        if (App.state.currentApp?.id === appId) {
-                            await App.openAppDetails(appId);
-                        }
-                        
-                    } catch (error) {
-                        console.error('خطأ في التقييم:', error);
-                        App.showAlert('فشل إرسال التقييم. حاول مرة أخرى.', 'error');
-                    } finally {
-                        App.hideLoading();
-                    }
-                });
-            },
-
             // ==================== لوحة التحكم ====================
             toggleDashboard(show) {
                 const dashboard = document.getElementById('dashboard');
@@ -3232,16 +2978,10 @@
                 const userAvatar = document.getElementById('userAvatar');
                 const profileDropdown = document.getElementById('profileDropdown');
                 const floatingAddBtn = document.querySelector('.floating-btn.add');
-                const lockScreen = document.getElementById('authLock');
                 
                 if (this.state.user) {
                     const userName = this.state.user.full_name || this.state.user.email.split('@')[0];
                     const userInitial = userName.charAt(0).toUpperCase();
-                    
-                    // إخفاء شاشة القفل
-                    if (lockScreen) {
-                        lockScreen.classList.add('unlocked');
-                    }
                     
                     // تحديث صورة المستخدم
                     userAvatar.innerHTML = userInitial;
@@ -3283,11 +3023,6 @@
                     }
                     
                 } else {
-                    // إظهار شاشة القفل
-                    if (lockScreen) {
-                        lockScreen.classList.remove('unlocked');
-                    }
-                    
                     // حالة عدم تسجيل الدخول
                     userAvatar.innerHTML = '<i class="fas fa-user"></i>';
                     profileDropdown.innerHTML = `
@@ -3315,28 +3050,6 @@
                 }
             },
 
-            // ==================== إضافة زر Google ====================
-            addGoogleButton() {
-                const container = document.getElementById('googleLoginContainer');
-                if (!container || container.querySelector('.google-btn')) return;
-                
-                const googleBtn = document.createElement('button');
-                googleBtn.type = 'button';
-                googleBtn.className = 'google-btn';
-                googleBtn.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 20 20">
-                        <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/>
-                        <path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/>
-                        <path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/>
-                        <path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/>
-                    </svg>
-                    <span>تسجيل الدخول عبر Google</span>
-                `;
-                
-                googleBtn.onclick = () => this.loginWithGoogle();
-                container.appendChild(googleBtn);
-            },
-
             // ==================== عرض/إخفاء القوائم ====================
             toggleProfileMenu() {
                 const dropdown = document.getElementById('profileDropdown');
@@ -3356,9 +3069,6 @@
                 this.closeModal('registerModal');
                 this.openModal('loginModal');
                 this.hideProfileMenu();
-                
-                // إضافة زر Google بعد فتح النافذة
-                setTimeout(() => this.addGoogleButton(), 100);
             },
 
             showRegisterModal() {
@@ -3710,125 +3420,631 @@
         window.App = App;
     </script>
 
+<!-- ============================================= -->
+<!-- Exotisa Store - Enhanced Features -->
+<!-- ملف منظم مع جميع الوظائف العاملة -->
+<!-- ============================================= -->
+
+<!-- Lock Screen -->
+<div id="authLock" style="position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 999999; display: flex; align-items: center; justify-content: center;">
+    <div style="text-align: center; color: white;">
+        <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    </div>
+</div>
+
+<style>
+/* Lock Screen */
+#authLock.unlocked { display: none !important; }
+.modal { z-index: 999999999 !important; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Header */
+header, .header { padding: 12px 20px !important; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header, .header { padding: 10px 15px !important; }
+    .modal-content { width: 95% !important; }
+}
+</style>
+
 <script>
 // ============================================= 
-// نظام بسيط: نافذة تسجيل الدخول دائمة
+// 1. Authentication System
 // ============================================= 
 (function() {
-    'use strict';
+    const SB_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+    let googleAuth = null;
     
-    let checkInterval = null;
-    
-    function enforceLoginModal() {
-        const hasUser = (window.App && window.App.state && window.App.state.user) || 
-                       localStorage.getItem('google_user');
+    window.addEventListener('DOMContentLoaded', async () => {
+        googleAuth = window.supabase.createClient(SB_URL, SB_KEY);
         
-        if (!hasUser) {
-            // غير مسجل - افتح النافذة وامنع إغلاقها
-            const loginModal = document.getElementById('loginModal');
-            
-            if (loginModal) {
-                // فتح النافذة
-                if (loginModal.style.display !== 'block') {
-                    if (window.App && window.App.openModal) {
-                        window.App.openModal('loginModal');
-                    } else {
-                        loginModal.style.display = 'block';
-                    }
-                }
-                
-                // منع إغلاق النافذة
-                const closeBtn = loginModal.querySelector('.modal-close, .close, button[onclick*="closeModal"]');
-                if (closeBtn) {
-                    closeBtn.style.display = 'none';
-                }
-            }
-            
-            // إخفاء المحتوى خلف الخلفية المعتمة
-            const mainContent = document.querySelector('main, .main-content, #app');
-            if (mainContent) {
-                mainContent.style.filter = 'blur(10px)';
-                mainContent.style.pointerEvents = 'none';
-            }
-        } else {
-            // مسجل - أغلق النافذة وأظهر المحتوى
-            if (window.App) {
-                if (window.App.closeModal) {
-                    window.App.closeModal('loginModal');
-                    window.App.closeModal('registerModal');
-                }
-            }
-            
-            const mainContent = document.querySelector('main, .main-content, #app');
-            if (mainContent) {
-                mainContent.style.filter = 'none';
-                mainContent.style.pointerEvents = 'auto';
-            }
-            
-            // إيقاف الفحص
-            if (checkInterval) {
-                clearInterval(checkInterval);
-                checkInterval = null;
-            }
+        // Check Google session
+        const { data: { session } } = await googleAuth.auth.getSession();
+        if (session && session.user) {
+            const u = {
+                id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.email,
+                role: 'user',
+                is_active: true
+            };
+            localStorage.setItem('google_user', JSON.stringify(u));
+            if (App && App.state) App.state.user = u;
+            updateAuthUI();
+            return;
+        }
+        
+        // Add Google button
+        setTimeout(addGoogleBtn, 1500);
+        
+        // Update UI
+        setTimeout(updateAuthUI, 800);
+        setInterval(updateAuthUI, 3000);
+        
+        // Hook login/register
+        setTimeout(hookAuth, 500);
+    });
+    
+    function addGoogleBtn() {
+        const form = document.getElementById('loginForm');
+        if (form && !document.getElementById('gBtn')) {
+            const btn = document.createElement('button');
+            btn.id = 'gBtn';
+            btn.type = 'button';
+            btn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;';
+            btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20"><path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/><path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/><path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/><path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/></svg><span>تسجيل الدخول عبر Google</span>`;
+            btn.onclick = () => googleAuth.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://exotisa-store.vercel.app' } });
+            form.appendChild(btn);
         }
     }
     
-    // Hook على login/register
-    function setupHooks() {
-        ['login', 'register'].forEach(method => {
-            const original = window.App?.[method];
-            if (original) {
-                window.App[method] = async function(...args) {
-                    await original.apply(this, args);
-                    setTimeout(() => {
-                        enforceLoginModal();
-                        location.reload();
-                    }, 300);
+    function updateAuthUI() {
+        const lock = document.getElementById('authLock');
+        const hasUser = (App && App.state && App.state.user) || localStorage.getItem('google_user');
+        
+        if (hasUser) {
+            if (lock) lock.classList.add('unlocked');
+            document.querySelectorAll('button, a').forEach(el => {
+                const t = (el.textContent || '').toLowerCase();
+                if ((t.includes('تسجيل الدخول') || t.includes('إنشاء حساب')) && el.id !== 'gBtn') {
+                    el.style.display = 'none';
+                }
+            });
+            if (App) { App.closeModal('loginModal'); App.closeModal('registerModal'); }
+        } else {
+            if (lock) lock.classList.remove('unlocked');
+            addGoogleBtn(); // Re-add if missing
+            setTimeout(() => App && App.openModal && App.openModal('loginModal'), 300);
+        }
+    }
+    
+    function hookAuth() {
+        ['login', 'register'].forEach(m => {
+            const o = App?.[m];
+            if (o) {
+                App[m] = async function(...args) {
+                    await o.apply(this, args);
+                    setTimeout(() => { updateAuthUI(); location.reload(); }, 300);
                 };
             }
         });
-        
-        // Hook على logout
-        const originalLogout = window.App?.logout;
-        if (originalLogout) {
-            window.App.logout = async function() {
-                await originalLogout.call(this);
-                localStorage.clear();
-                if (this.state) {
-                    this.state.user = null;
-                }
-                location.reload();
-            };
-        }
     }
+})();
+
+// ============================================= 
+// 2. Rating System
+// ============================================= 
+setTimeout(() => {
+    if (!App || !App.loadAppDetails) return;
     
-    // Initialization
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            enforceLoginModal();
-            setupHooks();
+    App.showRatingModal = function(appId, appName) {
+        if (!this.state?.user) { alert('يجب تسجيل الدخول'); return; }
+        
+        const m = document.createElement('div');
+        m.className = 'modal';
+        m.style.cssText = 'display: block; z-index: 9999999999;';
+        m.innerHTML = `<div class="modal-content" style="max-width: 500px;"><span class="close" onclick="this.closest('.modal').remove()">&times;</span><div style="padding: 20px;"><h2>⭐ قيّم: ${appName}</h2><div id="stars" style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">${[1,2,3,4,5].map(i => `<span class="s" data-r="${i}" style="font-size: 50px; cursor: pointer; color: #ddd;">☆</span>`).join('')}</div><textarea id="cmt" placeholder="تعليق (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px;"></textarea><button id="send" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">📤 إرسال</button></div></div>`;
+        document.body.appendChild(m);
+        
+        let r = 0;
+        m.querySelectorAll('.s').forEach(s => {
+            s.onclick = function() {
+                r = parseInt(this.dataset.r);
+                m.querySelectorAll('.s').forEach((st, i) => {
+                    st.textContent = i < r ? '★' : '☆';
+                    st.style.color = i < r ? '#ffc107' : '#ddd';
+                });
+            };
+        });
+        
+        m.querySelector('#send').onclick = async () => {
+            if (r === 0) { alert('اختر تقييمك'); return; }
+            App.showLoading();
+            try {
+                await App.supabase.from('ratings').delete().eq('app_id', appId).eq('user_id', App.state.user.id);
+                await App.supabase.from('ratings').insert({ app_id: appId, user_id: App.state.user.id, rating: r, comment: m.querySelector('#cmt').value || null });
+                const { data } = await App.supabase.from('ratings').select('rating').eq('app_id', appId);
+                if (data) {
+                    const avg = data.reduce((s, x) => s + x.rating, 0) / data.length;
+                    await App.supabase.from('apps').update({ average_rating: avg, rating_count: data.length }).eq('id', appId);
+                }
+                alert('شكراً لتقييمك! ⭐');
+                m.remove();
+            } catch (e) { alert('خطأ في التقييم'); } finally { App.hideLoading(); }
+        };
+    };
+    
+    // Add rating button
+    const o = App.loadAppDetails;
+    if (o) {
+        App.loadAppDetails = async function(appId) {
+            await o.call(this, appId);
+            setTimeout(() => {
+                if (!this.state?.user) return;
+                const mb = document.querySelector('.modal[style*="display: block"] .modal-body');
+                if (mb && !document.getElementById('rateBtn')) {
+                    const btn = document.createElement('button');
+                    btn.id = 'rateBtn';
+                    btn.style.cssText = 'width: 100%; margin-top: 20px; padding: 14px; background: #ff9800; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;';
+                    btn.textContent = '⭐ قيّم هذا التطبيق';
+                    btn.onclick = () => this.showRatingModal(appId, this.state.currentApp?.name || 'التطبيق');
+                    mb.appendChild(btn);
+                }
+            }, 700);
+        };
+    }
+}, 2000);
+</script>
+
+
+<script>
+// Fix: إعادة إضافة زر Google في كل مرة
+setTimeout(() => {
+    if (!App || !App.openModal) return;
+    
+    const origOpenModal = App.openModal;
+    App.openModal = function(modalId) {
+        origOpenModal.call(this, modalId);
+        
+        if (modalId === 'loginModal') {
+            // إضافة زر Google بعد فتح modal
+            setTimeout(() => {
+                const form = document.getElementById('loginForm');
+                const existingBtn = document.getElementById('gBtn');
+                
+                // حذف الزر القديم إن وُجد
+                if (existingBtn) existingBtn.remove();
+                
+                if (form) {
+                    const googleBtn = document.createElement('button');
+                    googleBtn.id = 'gBtn';
+                    googleBtn.type = 'button';
+                    googleBtn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;';
+                    googleBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20"><path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/><path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/><path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/><path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/></svg><span>تسجيل الدخول عبر Google</span>`;
+                    googleBtn.onclick = () => {
+                        const sb = window.supabase.createClient('https://qjfpkwyglveukzfazmzo.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc');
+                        sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://exotisa-store.vercel.app' } });
+                    };
+                    form.appendChild(googleBtn);
+                    console.log('✅ زر Google مُضاف');
+                }
+            }, 100);
+        }
+    };
+}, 1000);
+</script>
+
+
+<style>
+/* Responsive كامل */
+@media (max-width: 480px) {
+    body { font-size: 14px; }
+    h1 { font-size: 22px !important; }
+    .modal-content { width: 98% !important; padding: 15px !important; }
+    button, .btn { font-size: 14px; padding: 10px !important; }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+    .modal-content { width: 90% !important; }
+}
+@media (min-width: 769px) {
+    .modal-content { max-width: 600px !important; }
+}
+</style>
+
+<script>
+// إغلاق كامل بعد تسجيل الخروج
+setTimeout(() => {
+    if (!App || !App.logout) return;
+    
+    const origLogout = App.logout;
+    App.logout = async function() {
+        await origLogout.call(this);
+        
+        // حذف بيانات Google
+        localStorage.removeItem('google_user');
+        
+        // إغلاق المحتوى بالكامل
+        document.body.style.display = 'none';
+        
+        // إعادة التحميل
+        location.reload();
+    };
+}, 1000);
+
+// إصلاح نظام التقييم - ضمان عمل النجوم
+setTimeout(() => {
+    if (!App || !App.showRatingModal) return;
+    
+    const origRating = App.showRatingModal;
+    App.showRatingModal = function(appId, appName) {
+        if (!this.state?.user) { alert('يجب تسجيل الدخول'); return; }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.cssText = 'display: block !important; position: fixed; z-index: 99999999999; inset: 0; background: rgba(0,0,0,0.8);';
+        modal.innerHTML = `
+            <div style="position: relative; background: white; max-width: 500px; margin: 100px auto; padding: 30px; border-radius: 12px;">
+                <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 10px; left: 10px; background: #f44336; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px;">&times;</button>
+                <h2 style="margin: 0 0 20px 0; text-align: center;">⭐ قيّم: ${appName}</h2>
+                <div id="ratingStarsInput" style="display: flex; gap: 15px; justify-content: center; margin: 25px 0;">
+                    <span class="rating-star" data-value="1" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="2" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="3" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="4" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                    <span class="rating-star" data-value="5" style="font-size: 50px; cursor: pointer; color: #ddd; user-select: none;">☆</span>
+                </div>
+                <textarea id="ratingCommentInput" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px; font-family: inherit;"></textarea>
+                <button id="submitRatingBtn" style="width: 100%; margin-top: 15px; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">📤 إرسال التقييم</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        let chosenRating = 0;
+        const stars = modal.querySelectorAll('.rating-star');
+        
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                chosenRating = parseInt(this.getAttribute('data-value'));
+                console.log('⭐ تم اختيار:', chosenRating);
+                
+                stars.forEach((s, i) => {
+                    if (i < chosenRating) {
+                        s.textContent = '★';
+                        s.style.color = '#ffc107';
+                    } else {
+                        s.textContent = '☆';
+                        s.style.color = '#ddd';
+                    }
+                });
+            });
             
-            // فحص دوري كل ثانية
-            if (checkInterval) clearInterval(checkInterval);
-            checkInterval = setInterval(enforceLoginModal, 1000);
+            star.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                this.click();
+            });
+        });
+        
+        modal.querySelector('#submitRatingBtn').addEventListener('click', async function() {
+            if (chosenRating === 0) {
+                alert('⭐ الرجاء اختيار تقييمك من 1 إلى 5 نجوم');
+                return;
+            }
             
-            console.log('✅ نظام تسجيل الدخول الإلزامي جاهز');
-        }, 500);
-    });
+            const comment = modal.querySelector('#ratingCommentInput').value.trim();
+            
+            App.showLoading();
+            try {
+                // حذف التقييم القديم
+                await App.supabase.from('ratings').delete()
+                    .eq('app_id', appId)
+                    .eq('user_id', App.state.user.id);
+                
+                // إضافة التقييم الجديد
+                await App.supabase.from('ratings').insert({
+                    app_id: appId,
+                    user_id: App.state.user.id,
+                    rating: chosenRating,
+                    comment: comment || null
+                });
+                
+                // تحديث المتوسط
+                const { data: ratings } = await App.supabase
+                    .from('ratings')
+                    .select('rating')
+                    .eq('app_id', appId);
+                
+                if (ratings && ratings.length > 0) {
+                    const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+                    await App.supabase.from('apps').update({
+                        average_rating: avg,
+                        rating_count: ratings.length
+                    }).eq('id', appId);
+                }
+                
+                alert('شكراً لتقييمك! ⭐✨');
+                modal.remove();
+            } catch (error) {
+                console.error('خطأ:', error);
+                alert('فشل إرسال التقييم. حاول مرة أخرى.');
+            } finally {
+                App.hideLoading();
+            }
+        });
+    };
+}, 2500);
+</script>
+
+
+<style>
+/* تصغير الشريط العلوي بشكل كبير */
+header, .header {
+    padding: 8px 15px !important;
+    min-height: 50px !important;
+}
+
+header h1, .header h1, header .logo {
+    font-size: 18px !important;
+    margin: 0 !important;
+}
+
+@media (max-width: 768px) {
+    header, .header {
+        padding: 6px 12px !important;
+        min-height: 45px !important;
+    }
+    header h1 {
+        font-size: 16px !important;
+    }
+}
+</style>
+
+<script>
+// ============================================= 
+// إصلاح 1: تسجيل الخروج
+// ============================================= 
+setTimeout(() => {
+    if (!App) return;
+    
+    // Hook على logout
+    const origLogout = App.logout;
+    if (origLogout) {
+        App.logout = async function() {
+            console.log('🔴 تسجيل خروج...');
+            
+            // تنفيذ logout الأصلي
+            await origLogout.call(this);
+            
+            // حذف Google user
+            localStorage.removeItem('google_user');
+            
+            // مسح state
+            this.state.user = null;
+            this.state.isAdmin = false;
+            
+            // إعادة تحميل الصفحة
+            window.location.href = '/';
+        };
+    }
+}, 1000);
+
+// ============================================= 
+// إصلاح 2: نظام التقييم - يعمل 100%
+// ============================================= 
+setTimeout(() => {
+    if (!App) return;
+    
+    // دالة التقييم الجديدة
+    App.showRatingDialog = function(appId, appName) {
+        if (!this.state?.user) { alert('يجب تسجيل الدخول أولاً'); return; }
+        
+        const modalHTML = `
+            <div class="modal" style="display: block !important; position: fixed; z-index: 999999999; inset: 0; background: rgba(0,0,0,0.85);">
+                <div style="position: relative; background: white; max-width: 500px; margin: 80px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 15px; left: 15px; background: #f44336; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 20px; font-weight: bold;">&times;</button>
+                    <h2 style="margin: 0 0 25px 0; text-align: center; color: #333;">⭐ قيّم: ${appName}</h2>
+                    <div id="starsContainer" style="display: flex; gap: 12px; justify-content: center; margin: 30px 0;">
+                        <span class="rate-star" data-rating="1" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="2" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="3" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="4" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                        <span class="rate-star" data-rating="5" style="font-size: 55px; cursor: pointer; color: #ddd; transition: all 0.2s;">☆</span>
+                    </div>
+                    <textarea id="ratingComment" placeholder="شاركنا رأيك (اختياري)" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; min-height: 90px; font-family: inherit; font-size: 15px; resize: vertical;"></textarea>
+                    <button id="submitRating" style="width: 100%; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 4px 15px rgba(76,175,80,0.3);">
+                        📤 إرسال التقييم
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = modalHTML;
+        const modalElement = tempDiv.firstElementChild;
+        document.body.appendChild(modalElement);
+        
+        let selectedRating = 0;
+        const stars = modalElement.querySelectorAll('.rate-star');
+        
+        // معالجة النقر على النجوم
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                selectedRating = parseInt(this.getAttribute('data-rating'));
+                console.log('✅ تم اختيار:', selectedRating, 'نجوم');
+                
+                // تحديث النجوم
+                stars.forEach((s, i) => {
+                    if (i < selectedRating) {
+                        s.textContent = '★';
+                        s.style.color = '#ffc107';
+                        s.style.transform = 'scale(1.1)';
+                    } else {
+                        s.textContent = '☆';
+                        s.style.color = '#ddd';
+                        s.style.transform = 'scale(1)';
+                    }
+                });
+            });
+            
+            star.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                this.click();
+            });
+        });
+        
+        // زر الإرسال
+        modalElement.querySelector('#submitRating').addEventListener('click', async function() {
+            if (selectedRating === 0) {
+                alert('⭐ الرجاء اختيار تقييمك (1-5 نجوم)');
+                return;
+            }
+            
+            const comment = modalElement.querySelector('#ratingComment').value.trim();
+            
+            App.showLoading();
+            try {
+                // حذف القديم
+                await App.supabase.from('ratings').delete()
+                    .eq('app_id', appId)
+                    .eq('user_id', App.state.user.id);
+                
+                // إضافة الجديد
+                await App.supabase.from('ratings').insert({
+                    app_id: appId,
+                    user_id: App.state.user.id,
+                    rating: selectedRating,
+                    comment: comment || null
+                });
+                
+                // تحديث المتوسط
+                const { data: allRatings } = await App.supabase
+                    .from('ratings')
+                    .select('rating')
+                    .eq('app_id', appId);
+                
+                if (allRatings && allRatings.length > 0) {
+                    const avg = allRatings.reduce((sum, r) => sum + r.rating, 0) / allRatings.length;
+                    await App.supabase.from('apps').update({
+                        average_rating: avg,
+                        rating_count: allRatings.length
+                    }).eq('id', appId);
+                }
+                
+                alert('شكراً لتقييمك! ⭐✨\nتم حفظ تقييمك بنجاح.');
+                modalElement.remove();
+                
+            } catch (error) {
+                console.error('خطأ في التقييم:', error);
+                alert('فشل إرسال التقييم. الرجاء المحاولة مرة أخرى.');
+            } finally {
+                App.hideLoading();
+            }
+        });
+    };
+}, 2500);
+</script>
+
+
+<script>
+// ============================================= 
+// إصلاح تسجيل الخروج - نهائي
+// ============================================= 
+(function() {
+    let isLoggingOut = false;
+    
+    setTimeout(() => {
+        if (!App || !App.logout) return;
+        
+        const originalLogout = App.logout;
+        App.logout = async function() {
+            if (isLoggingOut) return; // منع التكرار
+            isLoggingOut = true;
+            
+            console.log('🔴 بدء تسجيل الخروج...');
+            
+            try {
+                // تنفيذ logout الأصلي
+                await originalLogout.call(this);
+            } catch (e) {
+                console.error('خطأ في logout الأصلي:', e);
+            }
+            
+            // حذف بيانات Google
+            localStorage.removeItem('google_user');
+            
+            // مسح state
+            if (this.state) {
+                this.state.user = null;
+                this.state.isAdmin = false;
+            }
+            
+            // حذف جلسة Supabase إن وُجدت
+            try {
+                const googleClient = window.supabase?.createClient(
+                    'https://qjfpkwyglveukzfazmzo.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc'
+                );
+                if (googleClient) {
+                    await googleClient.auth.signOut();
+                }
+            } catch (e) {
+                console.log('تم تسجيل الخروج من Google');
+            }
+            
+            // إعادة التحميل الكامل
+            window.location.href = '/';
+        };
+        
+        console.log('✅ نظام تسجيل الخروج جاهز');
+    }, 1000);
 })();
 </script>
 
+
 <style>
-/* إخفاء Lock Screen القديم إن وُجد */
-#authLock, #authLockScreen, #lockScreen, #smartLockScreen {
-    display: none !important;
+/* Lock Screen لا يحجب */
+#authLock, #authLockScreen, #lockScreen {
+    pointer-events: none !important;
+    z-index: 999 !important;
 }
 
-/* التأكد من أن Modal مرئي */
 .modal {
     z-index: 999999999 !important;
+    pointer-events: auto !important;
 }
 </style>
+
+<script>
+// نافذة تسجيل الدخول دائمة
+(function() {
+    function keepLoginOpen() {
+        const hasUser = (window.App && window.App.state && window.App.state.user) || localStorage.getItem('google_user');
+        
+        if (!hasUser) {
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal && loginModal.style.display !== 'block') {
+                if (window.App && window.App.openModal) {
+                    window.App.openModal('loginModal');
+                } else {
+                    loginModal.style.display = 'block';
+                }
+            }
+        }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(keepLoginOpen, 500);
+        setInterval(keepLoginOpen, 2000);
+    });
+})();
+</script>
 
 </body>
 </html>
