@@ -3716,5 +3716,49 @@
         // جعل App متاحاً عالمياً
         window.App = App;
     </script>
+
+<script>
+// إصلاح: فتح نافذة تسجيل الدخول حتى لو App لم يُحمّل
+(function() {
+    function forceOpenLoginModal() {
+        // محاولة 1: عبر App
+        if (window.App && window.App.openModal) {
+            window.App.openModal('loginModal');
+            console.log('✅ فتحت نافذة الدخول عبر App');
+            return true;
+        }
+        
+        // محاولة 2: مباشرة عبر DOM
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.style.display = 'block';
+            console.log('✅ فتحت نافذة الدخول مباشرة');
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // محاولة فتح النافذة بشكل متكرر حتى تنجح
+    let attempts = 0;
+    const maxAttempts = 20;
+    
+    const openModalInterval = setInterval(() => {
+        attempts++;
+        
+        if (forceOpenLoginModal()) {
+            clearInterval(openModalInterval);
+            console.log('✅ نجحت في فتح نافذة تسجيل الدخول');
+        } else if (attempts >= maxAttempts) {
+            clearInterval(openModalInterval);
+            console.error('❌ فشل فتح نافذة تسجيل الدخول');
+            
+            // كحل أخير: إعادة تحميل الصفحة
+            setTimeout(() => location.reload(), 2000);
+        }
+    }, 200); // كل 200ms
+})();
+</script>
+
 </body>
 </html>
