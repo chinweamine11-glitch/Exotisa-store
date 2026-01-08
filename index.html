@@ -3768,5 +3768,96 @@
 })();
 </script>
 
+
+<script>
+// ============================================= 
+// نظام ذكي لتسجيل الدخول/الخروج
+// ============================================= 
+(function() {
+    let modalCheckInterval = null;
+    
+    function smartAuthCheck() {
+        const lockScreen = document.getElementById('authLockScreen');
+        const loginModal = document.getElementById('loginModal');
+        const hasUser = (window.App && window.App.state && window.App.state.user) || localStorage.getItem('google_user');
+        
+        if (!hasUser) {
+            // غير مسجل - أظهر Lock Screen وافتح النافذة
+            if (lockScreen) lockScreen.classList.add('active');
+            
+            // افتح النافذة إذا لم تكن مفتوحة
+            if (loginModal && loginModal.style.display !== 'block') {
+                if (window.App && window.App.openModal) {
+                    window.App.openModal('loginModal');
+                } else {
+                    loginModal.style.display = 'block';
+                }
+            }
+        } else {
+            // مسجل - أخفِ Lock Screen وأغلق النافذة
+            if (lockScreen) lockScreen.classList.remove('active');
+            
+            if (loginModal && loginModal.style.display === 'block') {
+                if (window.App && window.App.closeModal) {
+                    window.App.closeModal('loginModal');
+                    window.App.closeModal('registerModal');
+                } else {
+                    loginModal.style.display = 'none';
+                }
+            }
+        }
+    }
+    
+    // فحص دوري كل ثانية
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            smartAuthCheck();
+            if (modalCheckInterval) clearInterval(modalCheckInterval);
+            modalCheckInterval = setInterval(smartAuthCheck, 1000);
+        }, 500);
+    });
+    
+    // Hook على login
+    setTimeout(() => {
+        const origLogin = window.App?.login;
+        if (origLogin) {
+            window.App.login = async function(...args) {
+                await origLogin.apply(this, args);
+                setTimeout(() => {
+                    smartAuthCheck();
+                    location.reload();
+                }, 300);
+            };
+        }
+        
+        const origRegister = window.App?.register;
+        if (origRegister) {
+            window.App.register = async function(...args) {
+                await origRegister.apply(this, args);
+                setTimeout(() => {
+                    smartAuthCheck();
+                    location.reload();
+                }, 300);
+            };
+        }
+        
+        const origLogout = window.App?.logout;
+        if (origLogout) {
+            window.App.logout = async function() {
+                await origLogout.call(this);
+                localStorage.clear();
+                if (this.state) {
+                    this.state.user = null;
+                    this.state.isAdmin = false;
+                }
+                location.reload();
+            };
+        }
+    }, 1500);
+    
+    console.log('✅ نظام تسجيل الدخول/الخروج الذكي جاهز');
+})();
+</script>
+
 </body>
 </html>
