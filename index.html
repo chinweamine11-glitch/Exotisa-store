@@ -196,12 +196,13 @@
 
     <script>
         // Initialize Supabase
-        const _supabase = supabase.createClient(
-            'https://qjfpkwyglveukzfazmzo.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' // Anon Key المختصر للعرض
-        );
+        const supabaseUrl = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+        
+        const _supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         let currentUser = null;
+        let isSignUpMode = false;
 
         // 1. Auth Logic
         async function checkUser() {
@@ -216,14 +217,71 @@
         async function handleEmailAuth() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
             
-            if (error) { // Try Sign Up if Sign In fails
-                const { data: signUpData, error: signUpError } = await _supabase.auth.signUp({ email, password });
-                if (signUpError) alert(signUpError.message);
-                else alert('تحقق من بريدك الإلكتروني!');
+            if (!email || !password) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+
+            if (isSignUpMode) {
+                // Sign Up
+                const { data, error } = await _supabase.auth.signUp({ 
+                    email, 
+                    password,
+                    options: {
+                        data: {
+                            full_name: email.split('@')[0],
+                            role: 'user'
+                        }
+                    }
+                });
+                
+                if (error) {
+                    alert('خطأ في التسجيل: ' + error.message);
+                } else {
+                    alert('تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني للتفعيل.');
+                    document.getElementById('auth-modal').style.display = 'none';
+                }
             } else {
-                location.reload();
+                // Sign In
+                const { data, error } = await _supabase.auth.signInWithPassword({ 
+                    email, 
+                    password 
+                });
+                
+                if (error) {
+                    alert('خطأ في تسجيل الدخول: ' + error.message);
+                } else {
+                    location.reload();
+                }
+            }
+        }
+
+        async function handleGoogleLogin() {
+            const { error } = await _supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin
+                }
+            });
+            
+            if (error) alert('خطأ في تسجيل الدخول بـ Google: ' + error.message);
+        }
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            const authTitle = document.getElementById('auth-title');
+            const authButton = document.querySelector('#auth-modal .btn-download');
+            const toggleText = document.querySelector('#auth-modal p:last-child');
+            
+            if (isSignUpMode) {
+                authTitle.textContent = 'أنشئ حساباً جديداً';
+                authButton.textContent = 'تسجيل';
+                toggleText.innerHTML = 'لديك حساب بالفعل؟ <span style="color:#6366f1; font-weight:600;">سجل الدخول</span>';
+            } else {
+                authTitle.textContent = 'مرحباً بك في Exotisa';
+                authButton.textContent = 'تسجيل الدخول';
+                toggleText.innerHTML = 'ليس لديك حساب؟ <span style="color:#6366f1; font-weight:600;">سجل الآن</span>';
             }
         }
 
@@ -233,11 +291,17 @@
                 <span style="margin-left: 1rem;">${user.email}</span>
                 <button onclick="logout()" class="btn-download" style="width: auto; background: var(--accent);">خروج</button>
             `;
-            // Check Admin Status (Special Request)
+            
+            // Check Admin Status
             if (user.email === 'chinweamine11@gmail.com') {
                 document.getElementById('admin-panel').style.display = 'block';
                 initCharts();
             }
+        }
+
+        async function logout() {
+            await _supabase.auth.signOut();
+            location.reload();
         }
 
         // 2. Apps System
@@ -247,77 +311,183 @@
                 .select('*')
                 .order('download_count', { ascending: false });
 
+            if (error) {
+                console.error('Error loading apps:', error);
+                return;
+            }
+
             const container = document.getElementById('apps-container');
-            container.innerHTML = apps.map(app => `
-                <div class="app-card" onclick="viewAppDetails('${app.id}')">
-                    <img src="${app.icon_url || 'https://via.placeholder.com/150'}" class="app-icon">
-                    <h3>${app.name}</h3>
-                    <p style="color: #94a3b8; font-size: 0.9rem;">${app.category} • ${app.size_mb} MB</p>
-                    <div style="margin-top: 10px; color: #fbbf24;">
-                        ${'★'.repeat(Math.round(app.average_rating))}${'☆'.repeat(5-Math.round(app.average_rating))}
+            if (apps && apps.length > 0) {
+                container.innerHTML = apps.map(app => `
+                    <div class="app-card" onclick="viewAppDetails('${app.id}')">
+                        <img src="${app.icon_url || 'https://via.placeholder.com/150'}" class="app-icon">
+                        <h3>${app.name}</h3>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">${app.category || 'عام'} • ${app.size_mb || 0} MB</p>
+                        <div style="margin-top: 10px; color: #fbbf24;">
+                            ${'★'.repeat(Math.round(app.average_rating || 0))}${'☆'.repeat(5-Math.round(app.average_rating || 0))}
+                        </div>
+                        <button class="btn-download" onclick="secureDownload('${app.id}', event)">تحميل الآن</button>
                     </div>
-                    <button class="btn-download" onclick="secureDownload('${app.id}', event)">تحميل الآن</button>
-                </div>
-            `).join('');
+                `).join('');
+            } else {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">لا توجد تطبيقات متاحة حالياً</p>';
+            }
         }
 
-        // 3. Security: Secure Download with RLS & Tracking
+        async function viewAppDetails(appId) {
+            // يمكن إضافة صفحة تفاصيل التطبيق هنا
+            alert('تفاصيل التطبيق - سيتم تطوير هذه الصفحة قريباً');
+        }
+
+        // 3. Secure Download with RLS & Tracking
         async function secureDownload(appId, event) {
             event.stopPropagation();
+            
             if (!currentUser) {
                 showAuth();
                 return;
             }
 
-            // تسجيل التحميل في قاعدة البيانات
-            const { error } = await _supabase.from('downloads').insert({
-                app_id: appId,
-                user_id: currentUser.id,
-                device_fingerprint: navigator.userAgent
-            });
+            try {
+                // تسجيل التحميل في قاعدة البيانات
+                const { error: downloadError } = await _supabase.from('downloads').insert({
+                    app_id: appId,
+                    user_id: currentUser.id,
+                    device_fingerprint: navigator.userAgent,
+                    download_time: new Date().toISOString()
+                });
 
-            if (!error) {
+                if (downloadError) throw downloadError;
+
+                // زيادة عداد التحميلات
+                const { error: updateError } = await _supabase.rpc('increment_downloads', { row_id: appId });
+                
+                if (updateError) throw updateError;
+
                 alert('بدأ التحميل الآمن... يتم فحص الملف ضد الفيروسات.');
-                // زيادة عداد التحميلات برمجياً
-                await _supabase.rpc('increment_downloads', { row_id: appId });
-                loadApps(); 
+                loadApps();
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('حدث خطأ أثناء التحميل: ' + error.message);
             }
         }
 
-        // 4. Analytics
+        // 4. Upload App Form
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('يجب تسجيل الدخول أولاً');
+                return;
+            }
+
+            const appName = document.getElementById('app_name').value;
+            const packageName = document.getElementById('package_name').value;
+            const fullDesc = document.getElementById('full_desc').value;
+
+            const { data, error } = await _supabase.from('apps').insert({
+                name: appName,
+                package_name: packageName,
+                full_desc: fullDesc,
+                developer_id: currentUser.id,
+                created_at: new Date().toISOString(),
+                download_count: 0,
+                average_rating: 0
+            });
+
+            if (error) {
+                alert('خطأ في رفع التطبيق: ' + error.message);
+            } else {
+                alert('تم رفع التطبيق بنجاح!');
+                document.getElementById('upload-form').reset();
+                loadApps();
+            }
+        });
+
+        // 5. Analytics Chart
         function initCharts() {
             var chartDom = document.getElementById('analytics-chart');
             var myChart = echarts.init(chartDom, 'dark');
             var option = {
                 backgroundColor: 'transparent',
-                title: { text: 'إحصائيات المنصة الحية' },
+                title: { 
+                    text: 'إحصائيات المنصة الحية',
+                    textStyle: { color: '#fff' }
+                },
                 tooltip: { trigger: 'axis' },
-                xAxis: { type: 'category', data: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-                yAxis: { type: 'value' },
+                xAxis: { 
+                    type: 'category', 
+                    data: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                    axisLabel: { color: '#94a3b8' }
+                },
+                yAxis: { 
+                    type: 'value',
+                    axisLabel: { color: '#94a3b8' }
+                },
                 series: [{
                     data: [150, 230, 224, 218, 135, 147, 260],
                     type: 'line',
                     smooth: true,
-                    color: '#6366f1'
+                    color: '#6366f1',
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(99, 102, 241, 0.6)' },
+                            { offset: 1, color: 'rgba(99, 102, 241, 0.1)' }
+                        ])
+                    }
                 }]
             };
             myChart.setOption(option);
         }
 
-        // Search Implementation
+        // 6. Search Implementation
         document.getElementById('mainSearch').addEventListener('input', async (e) => {
-            const term = e.target.value;
+            const term = e.target.value.trim();
+            
+            if (term.length === 0) {
+                loadApps();
+                return;
+            }
+
             const { data } = await _supabase
                 .from('apps')
                 .select('*')
-                .ilike('name', `%${term}%`);
-            // Update UI with search results logic...
+                .or(`name.ilike.%${term}%,category.ilike.%${term}%,full_desc.ilike.%${term}%`)
+                .order('download_count', { ascending: false });
+
+            const container = document.getElementById('apps-container');
+            if (data && data.length > 0) {
+                container.innerHTML = data.map(app => `
+                    <div class="app-card" onclick="viewAppDetails('${app.id}')">
+                        <img src="${app.icon_url || 'https://via.placeholder.com/150'}" class="app-icon">
+                        <h3>${app.name}</h3>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">${app.category || 'عام'} • ${app.size_mb || 0} MB</p>
+                        <div style="margin-top: 10px; color: #fbbf24;">
+                            ${'★'.repeat(Math.round(app.average_rating || 0))}${'☆'.repeat(5-Math.round(app.average_rating || 0))}
+                        </div>
+                        <button class="btn-download" onclick="secureDownload('${app.id}', event)">تحميل الآن</button>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">لا توجد نتائج للبحث</p>';
+            }
         });
 
-        // UI Helpers
-        function showAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
-        window.onclick = (e) => { if(e.target.id == 'auth-modal') e.target.style.display = 'none'; }
+        // 7. UI Helpers
+        function showAuth() { 
+            document.getElementById('auth-modal').style.display = 'flex'; 
+            isSignUpMode = false;
+            toggleAuthMode(); // Reset to login mode
+        }
+        
+        window.onclick = (e) => { 
+            if(e.target.id == 'auth-modal') {
+                e.target.style.display = 'none';
+            }
+        }
 
+        // Initialize
         checkUser();
         loadApps();
     </script>
