@@ -332,18 +332,9 @@
             background: #f8f9fa;
         }
         
-        .btn-github {
-            background: #333;
-            color: white;
-        }
-        
-        .btn-github:hover {
-            background: #444;
-        }
-        
         .social-login {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
             margin: 1.5rem 0;
         }
@@ -712,12 +703,26 @@
             overflow: hidden;
             border: 1px solid var(--border);
             transition: var(--transition);
+            position: relative;
         }
         
         .app-card:hover {
             transform: translateY(-10px);
             border-color: var(--primary);
             box-shadow: var(--shadow-lg);
+        }
+        
+        .app-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 1;
         }
         
         .app-header {
@@ -739,6 +744,13 @@
             color: white;
             font-size: 2rem;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .app-info {
@@ -804,6 +816,8 @@
             align-items: center;
             gap: 8px;
             transition: var(--transition);
+            border: none;
+            cursor: pointer;
         }
         
         .download-btn:hover {
@@ -864,7 +878,7 @@
         .form-section {
             margin-bottom: 2rem;
             padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border);
         }
         
         .section-header {
@@ -970,7 +984,7 @@
         
         .notification-item {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border);
             transition: var(--transition);
         }
         
@@ -980,6 +994,63 @@
         
         .notification-item.unread {
             background: rgba(59, 130, 246, 0.1);
+        }
+        
+        /* ============================================
+           صفحة الملف الشخصي
+        ============================================ */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-bio {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
         
         /* ============================================
@@ -1028,6 +1099,16 @@
             
             .welcome-title {
                 font-size: 2rem;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .profile-stats {
+                justify-content: center;
             }
         }
         
@@ -1144,6 +1225,27 @@
             border: 1px solid var(--primary);
             color: var(--primary);
         }
+        
+        /* ============================================
+           رزمة النجوم للتقييم
+        ============================================ */
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            direction: ltr;
+        }
+        
+        .star-rating .star {
+            font-size: 1.5rem;
+            color: #ccc;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .star-rating .star:hover,
+        .star-rating .star.active {
+            color: #fbbf24;
+        }
     </style>
 </head>
 <body>
@@ -1204,10 +1306,6 @@
                             <i class="fab fa-google"></i>
                             Google
                         </button>
-                        <button type="button" class="btn btn-github" id="githubLogin">
-                            <i class="fab fa-github"></i>
-                            GitHub
-                        </button>
                     </div>
                 </form>
             </div>
@@ -1265,10 +1363,6 @@
                         <button type="button" class="btn btn-google" id="googleRegister">
                             <i class="fab fa-google"></i>
                             Google
-                        </button>
-                        <button type="button" class="btn btn-github" id="githubRegister">
-                            <i class="fab fa-github"></i>
-                            GitHub
                         </button>
                     </div>
                 </form>
@@ -1503,7 +1597,7 @@
                         <i class="fas fa-th-large"></i>
                         التصنيفات
                     </h1>
-                    <div class="apps-grid" id="categoriesAppsGrid"></div>
+                    <div id="categoriesList" class="apps-grid"></div>
                 </div>
                 
                 <!-- صفحة لوحة تحكم المطور -->
@@ -1595,48 +1689,6 @@
                         
                         <div class="form-section">
                             <h3 class="section-header">
-                                <i class="fas fa-file-upload"></i>
-                                الملفات
-                            </h3>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">أيقونة التطبيق *</label>
-                                    <div class="file-upload" id="iconUpload">
-                                        <i class="fas fa-image"></i>
-                                        <p>انقر لرفع الأيقونة</p>
-                                        <small>PNG أو JPG، الحد الأقصى 2MB</small>
-                                    </div>
-                                    <input type="file" id="iconFile" accept="image/*" style="display: none;">
-                                    <div class="file-preview" id="iconPreview"></div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="form-label">ملف APK *</label>
-                                    <div class="file-upload" id="apkUpload">
-                                        <i class="fas fa-file-archive"></i>
-                                        <p>انقر لرفع ملف APK</p>
-                                        <small>ملف APK، الحد الأقصى 100MB</small>
-                                    </div>
-                                    <input type="file" id="apkFile" accept=".apk" style="display: none;">
-                                    <div class="file-preview" id="apkPreview"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">صور الشاشات</label>
-                                <div class="file-upload" id="screenshotsUpload">
-                                    <i class="fas fa-images"></i>
-                                    <p>انقر لرفع صور الشاشات</p>
-                                    <small>PNG أو JPG، حتى 5 صور</small>
-                                </div>
-                                <input type="file" id="screenshotsFile" accept="image/*" multiple style="display: none;">
-                                <div class="file-preview" id="screenshotsPreview"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-section">
-                            <h3 class="section-header">
                                 <i class="fas fa-cog"></i>
                                 إعدادات إضافية
                             </h3>
@@ -1663,22 +1715,89 @@
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 رفع التطبيق
                             </button>
-                            <button type="button" class="btn btn-secondary" id="saveDraftBtn" style="margin-right: 1rem;">
-                                <i class="fas fa-save"></i>
-                                حفظ كمسودة
-                            </button>
                         </div>
                     </form>
                 </div>
                 
-                <!-- صفحات أخرى -->
-                <div class="page" id="page-trending"></div>
-                <div class="page" id="page-favorites"></div>
-                <div class="page" id="page-my-apps"></div>
-                <div class="page" id="page-analytics"></div>
-                <div class="page" id="page-profile"></div>
-                <div class="page" id="page-downloads"></div>
-                <div class="page" id="page-settings"></div>
+                <!-- صفحة الملف الشخصي -->
+                <div class="page" id="page-profile">
+                    <div class="profile-header" id="profileHeader">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="صورة الملف الشخصي" class="profile-avatar" id="profileAvatar">
+                        <div class="profile-info">
+                            <h2 class="profile-name" id="profileName">اسم المستخدم</h2>
+                            <p class="profile-bio" id="profileBio">نبذة عن المستخدم...</p>
+                            <div class="profile-stats">
+                                <div class="profile-stat">
+                                    <div class="stat-number" id="profileDownloads">0</div>
+                                    <div class="stat-label">التحميلات</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="stat-number" id="profileApps">0</div>
+                                    <div class="stat-label">التطبيقات</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="stat-number" id="profileReviews">0</div>
+                                    <div class="stat-label">التقييمات</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3 class="dashboard-title">
+                            <i class="fas fa-user-edit"></i>
+                            تعديل الملف الشخصي
+                        </h3>
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">الاسم الكامل</label>
+                                    <input type="text" class="form-control" id="editName" placeholder="الاسم الكامل">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" id="editEmail" placeholder="البريد الإلكتروني" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">نبذة عنك</label>
+                                <textarea class="form-control" id="editBio" placeholder="اكتب نبذة عن نفسك..." rows="3"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">الموقع</label>
+                                    <input type="text" class="form-control" id="editLocation" placeholder="البلد أو المدينة">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">الموقع الإلكتروني</label>
+                                    <input type="url" class="form-control" id="editWebsite" placeholder="https://example.com">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                حفظ التعديلات
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- صفحة التحميلات -->
+                <div class="page" id="page-downloads">
+                    <h1 class="section-title">
+                        <i class="fas fa-download"></i>
+                        تحميلاتي
+                    </h1>
+                    <div class="apps-grid" id="myDownloadsGrid"></div>
+                </div>
+                
+                <!-- صفحة المفضلة -->
+                <div class="page" id="page-favorites">
+                    <h1 class="section-title">
+                        <i class="fas fa-heart"></i>
+                        تطبيقاتي المفضلة
+                    </h1>
+                    <div class="apps-grid" id="favoritesGrid"></div>
+                </div>
             </div>
         </main>
     </div>
@@ -1746,8 +1865,10 @@
                 
                 if (session) {
                     currentUser = session.user;
+                    console.log('User logged in:', currentUser.email);
                     await loadUserProfile();
                     showApp();
+                    showMessage('مرحباً بك مجدداً!', 'success');
                 } else {
                     showLogin();
                 }
@@ -1769,14 +1890,8 @@
                 
                 if (error) {
                     console.error('Error loading profile:', error);
-                    // إنشاء ملف شخصي جديد
-                    await createUserProfile();
-                    userProfile = {
-                        id: currentUser.id,
-                        email: currentUser.email,
-                        full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
-                        role: 'user'
-                    };
+                    // محاولة إنشاء ملف شخصي جديد
+                    userProfile = await createUserProfile();
                 } else {
                     userProfile = profile;
                 }
@@ -1789,6 +1904,12 @@
                 
             } catch (error) {
                 console.error('Profile load error:', error);
+                userProfile = {
+                    id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+                    role: 'user'
+                };
             }
         }
         
@@ -1796,12 +1917,12 @@
             try {
                 const { data, error } = await supabase
                     .from('profiles')
-                    .insert({
+                    .upsert({
                         id: currentUser.id,
                         email: currentUser.email,
                         full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
                         username: currentUser.email.split('@')[0],
-                        role: currentUser.email === 'chinweamine11@gmail.com' ? 'developer' : 'user'
+                        role: currentUser.email === 'chinweamine11@gmail.com' ? 'admin' : 'user'
                     })
                     .select()
                     .single();
@@ -1810,7 +1931,12 @@
                 return data;
             } catch (error) {
                 console.error('Error creating profile:', error);
-                return null;
+                return {
+                    id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+                    role: 'user'
+                };
             }
         }
         
@@ -1819,11 +1945,11 @@
         // ============================================
         async function handleLogin(email, password, rememberMe = false) {
             try {
-                showLoading('loginBtn');
+                showLoading('loginBtn', 'جاري تسجيل الدخول...');
                 
                 const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
+                    email: email.trim().toLowerCase(),
+                    password: password
                 });
                 
                 if (error) throw error;
@@ -1839,7 +1965,7 @@
                 
             } catch (error) {
                 console.error('Login error:', error);
-                showMessage(error.message || 'خطأ في تسجيل الدخول', 'error');
+                showMessage('خطأ في تسجيل الدخول: ' + error.message, 'error');
             } finally {
                 hideLoading('loginBtn');
             }
@@ -1847,30 +1973,41 @@
         
         async function handleRegister(name, email, password) {
             try {
-                showLoading('registerBtn');
+                showLoading('registerBtn', 'جاري إنشاء الحساب...');
+                
+                // التحقق من صحة البريد الإلكتروني
+                if (!validateEmail(email)) {
+                    throw new Error('البريد الإلكتروني غير صالح');
+                }
+                
+                // التحقق من قوة كلمة المرور
+                if (password.length < 6) {
+                    throw new Error('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                }
                 
                 const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
+                    email: email.trim().toLowerCase(),
+                    password: password,
                     options: {
                         data: {
                             full_name: name
-                        }
+                        },
+                        emailRedirectTo: window.location.origin
                     }
                 });
                 
                 if (error) throw error;
                 
                 if (data.user) {
-                    showMessage('تم إنشاء الحساب بنجاح!', 'success');
+                    showMessage('تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني', 'success');
                     setTimeout(() => {
                         switchToLogin();
-                    }, 2000);
+                    }, 3000);
                 }
                 
             } catch (error) {
                 console.error('Register error:', error);
-                showMessage(error.message || 'خطأ في إنشاء الحساب', 'error');
+                showMessage('خطأ في إنشاء الحساب: ' + error.message, 'error');
             } finally {
                 hideLoading('registerBtn');
             }
@@ -1878,33 +2015,25 @@
         
         async function handleGoogleLogin() {
             try {
-                const { error } = await supabase.auth.signInWithOAuth({
+                showLoading('googleLogin', 'جاري التوجيه إلى Google...');
+                
+                const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin
+                        redirectTo: window.location.origin,
+                        queryParams: {
+                            access_type: 'offline',
+                            prompt: 'consent'
+                        }
                     }
                 });
                 
                 if (error) throw error;
+                
             } catch (error) {
                 console.error('Google login error:', error);
-                showMessage('خطأ في تسجيل الدخول باستخدام Google', 'error');
-            }
-        }
-        
-        async function handleGitHubLogin() {
-            try {
-                const { error } = await supabase.auth.signInWithOAuth({
-                    provider: 'github',
-                    options: {
-                        redirectTo: window.location.origin
-                    }
-                });
-                
-                if (error) throw error;
-            } catch (error) {
-                console.error('GitHub login error:', error);
-                showMessage('خطأ في تسجيل الدخول باستخدام GitHub', 'error');
+                showMessage('خطأ في تسجيل الدخول باستخدام Google: ' + error.message, 'error');
+                hideLoading('googleLogin');
             }
         }
         
@@ -1926,12 +2055,46 @@
         }
         
         // ============================================
+        // وظائف المساعدة
+        // ============================================
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showLoading(buttonId, text = null) {
+            const button = document.getElementById(buttonId);
+            if (button) {
+                const originalText = button.innerHTML;
+                button.innerHTML = text ? `<div class="loading"></div> ${text}` : '<div class="loading"></div>';
+                button.disabled = true;
+                button.setAttribute('data-original', originalText);
+            }
+        }
+        
+        function hideLoading(buttonId) {
+            const button = document.getElementById(buttonId);
+            if (button && button.hasAttribute('data-original')) {
+                button.innerHTML = button.getAttribute('data-original');
+                button.removeAttribute('data-original');
+                button.disabled = false;
+            }
+        }
+        
+        // ============================================
         // إدارة الواجهة
         // ============================================
         function showLogin() {
             document.getElementById('loginOverlay').classList.remove('hidden');
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('menuToggle').style.display = 'none';
+            
+            // تحميل البريد الإلكتروني المحفوظ
+            const savedEmail = localStorage.getItem('rememberEmail');
+            if (savedEmail) {
+                document.getElementById('loginEmail').value = savedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
         }
         
         function showApp() {
@@ -1953,39 +2116,30 @@
             // تحديث الشريط الجانبي
             document.getElementById('sidebarName').textContent = userProfile.full_name || userProfile.email.split('@')[0];
             document.getElementById('sidebarEmail').textContent = userProfile.email;
-            document.getElementById('sidebarRole').textContent = userProfile.role === 'developer' ? 'مطور' : 'مستخدم';
+            document.getElementById('sidebarRole').textContent = userProfile.role === 'developer' ? 'مطور' : userProfile.role === 'admin' ? 'مدير' : 'مستخدم';
             
             // تحديث صورة المستخدم
             const avatarUrl = userProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.id}`;
             document.getElementById('sidebarAvatar').src = avatarUrl;
+            document.getElementById('profileAvatar').src = avatarUrl;
+            
+            // تحديث صفحة الملف الشخصي
+            document.getElementById('profileName').textContent = userProfile.full_name || userProfile.email.split('@')[0];
+            document.getElementById('profileBio').textContent = userProfile.bio || 'نبذة عن المستخدم...';
+            document.getElementById('editName').value = userProfile.full_name || '';
+            document.getElementById('editEmail').value = userProfile.email || '';
+            document.getElementById('editBio').value = userProfile.bio || '';
+            document.getElementById('editLocation').value = userProfile.location || '';
+            document.getElementById('editWebsite').value = userProfile.website || '';
         }
         
         function updateDeveloperSection() {
             const developerSection = document.getElementById('developerSection');
             
-            if (userProfile && userProfile.role === 'developer') {
+            if (userProfile && (userProfile.role === 'developer' || userProfile.role === 'admin')) {
                 developerSection.style.display = 'block';
             } else {
                 developerSection.style.display = 'none';
-            }
-        }
-        
-        function showLoading(buttonId) {
-            const button = document.getElementById(buttonId);
-            if (button) {
-                const originalText = button.innerHTML;
-                button.innerHTML = '<div class="loading"></div>';
-                button.disabled = true;
-                button.setAttribute('data-original', originalText);
-            }
-        }
-        
-        function hideLoading(buttonId) {
-            const button = document.getElementById(buttonId);
-            if (button && button.hasAttribute('data-original')) {
-                button.innerHTML = button.getAttribute('data-original');
-                button.removeAttribute('data-original');
-                button.disabled = false;
             }
         }
         
@@ -2002,7 +2156,9 @@
             
             // إزالة الرسالة بعد 5 ثواني
             setTimeout(() => {
-                messageDiv.remove();
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
             }, 5000);
         }
         
@@ -2058,13 +2214,23 @@
                 case 'categories':
                     await loadCategoriesPage();
                     break;
+                case 'favorites':
+                    await loadFavoritesPage();
+                    break;
                 case 'developer-dashboard':
                     await loadDeveloperDashboard();
                     break;
                 case 'upload-app':
                     initUploadForm();
                     break;
-                // يمكن إضافة صفحات أخرى هنا
+                case 'profile':
+                    await loadProfilePage();
+                    break;
+                case 'downloads':
+                    await loadDownloadsPage();
+                    break;
+                default:
+                    console.log(`Page ${page} loaded`);
             }
         }
         
@@ -2074,28 +2240,35 @@
         async function loadInitialData() {
             await loadStats();
             await loadNotifications();
+            await updateProfileStats();
         }
         
         async function loadStats() {
             try {
                 // إجمالي التطبيقات
-                const { count: totalApps } = await supabase
+                const { count: totalApps, error: appsError } = await supabase
                     .from('apps')
                     .select('*', { count: 'exact', head: true })
                     .eq('is_active', true);
                 
+                if (appsError) throw appsError;
+                
                 // إجمالي التحميلات
-                const { data: apps } = await supabase
+                const { data: apps, error: downloadsError } = await supabase
                     .from('apps')
                     .select('download_count');
+                
+                if (downloadsError) throw downloadsError;
                 
                 const totalDownloads = apps?.reduce((sum, app) => sum + (app.download_count || 0), 0) || 0;
                 
                 // متوسط التقييم
-                const { data: allApps } = await supabase
+                const { data: allApps, error: ratingError } = await supabase
                     .from('apps')
                     .select('average_rating')
                     .eq('is_active', true);
+                
+                if (ratingError) throw ratingError;
                 
                 const avgRating = allApps?.length > 0 
                     ? (allApps.reduce((sum, app) => sum + (app.average_rating || 0), 0) / allApps.length).toFixed(1)
@@ -2103,11 +2276,44 @@
                 
                 // تحديث واجهة المستخدم
                 document.getElementById('totalApps').textContent = totalApps || 0;
-                document.getElementById('totalDownloads').textContent = totalDownloads;
+                document.getElementById('totalDownloads').textContent = totalDownloads.toLocaleString();
                 document.getElementById('averageRating').textContent = avgRating;
+                document.getElementById('activeUsers').textContent = Math.floor(totalDownloads / 10) || 1;
                 
             } catch (error) {
                 console.error('Error loading stats:', error);
+            }
+        }
+        
+        async function updateProfileStats() {
+            try {
+                if (!userProfile) return;
+                
+                // عدد التحميلات
+                const { count: downloadCount, error: downloadsError } = await supabase
+                    .from('downloads')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', userProfile.id);
+                
+                // عدد التطبيقات (للمطورين)
+                const { count: appCount, error: appsError } = await supabase
+                    .from('apps')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('developer_id', userProfile.id);
+                
+                // عدد التقييمات
+                const { count: reviewCount, error: reviewsError } = await supabase
+                    .from('reviews')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', userProfile.id);
+                
+                // تحديث واجهة المستخدم
+                document.getElementById('profileDownloads').textContent = downloadCount || 0;
+                document.getElementById('profileApps').textContent = appCount || 0;
+                document.getElementById('profileReviews').textContent = reviewCount || 0;
+                
+            } catch (error) {
+                console.error('Error loading profile stats:', error);
             }
         }
         
@@ -2132,7 +2338,7 @@
                 if (apps && apps.length > 0) {
                     container.innerHTML = apps.map(app => createAppCard(app)).join('');
                 } else {
-                    container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">لا توجد تطبيقات مميزة حالياً</p>';
+                    container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد تطبيقات مميزة حالياً</p>';
                 }
                 
             } catch (error) {
@@ -2154,6 +2360,8 @@
                 const container = document.getElementById('popularAppsGrid');
                 if (apps && apps.length > 0) {
                     container.innerHTML = apps.map(app => createAppCard(app)).join('');
+                } else {
+                    container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد تطبيقات حالياً</p>';
                 }
                 
             } catch (error) {
@@ -2161,21 +2369,157 @@
             }
         }
         
-        function createAppCard(app) {
+        async function loadExplorePage() {
+            try {
+                const { data: apps, error } = await supabase
+                    .from('apps')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('exploreAppsGrid');
+                if (apps && apps.length > 0) {
+                    container.innerHTML = apps.map(app => createAppCard(app)).join('');
+                } else {
+                    container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد تطبيقات حالياً</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading explore apps:', error);
+            }
+        }
+        
+        async function loadCategoriesPage() {
+            try {
+                const { data: apps, error } = await supabase
+                    .from('apps')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('category', { ascending: true });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('categoriesList');
+                if (apps && apps.length > 0) {
+                    // تجميع التطبيقات حسب التصنيف
+                    const categories = {};
+                    apps.forEach(app => {
+                        if (!categories[app.category]) {
+                            categories[app.category] = [];
+                        }
+                        categories[app.category].push(app);
+                    });
+                    
+                    // عرض التصنيفات والتطبيقات
+                    let html = '';
+                    for (const [category, categoryApps] of Object.entries(categories)) {
+                        html += `
+                            <div style="grid-column: 1 / -1;">
+                                <h3 class="section-title" style="font-size: 1.2rem; margin: 1.5rem 0 1rem;">
+                                    <i class="fas fa-folder"></i>
+                                    ${category} (${categoryApps.length})
+                                </h3>
+                                <div class="apps-grid">
+                                    ${categoryApps.map(app => createAppCard(app)).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد تطبيقات حالياً</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+        
+        async function loadFavoritesPage() {
+            try {
+                if (!userProfile) return;
+                
+                const { data: favorites, error: favError } = await supabase
+                    .from('favorites')
+                    .select('app_id')
+                    .eq('user_id', userProfile.id);
+                
+                if (favError) throw favError;
+                
+                if (favorites && favorites.length > 0) {
+                    const appIds = favorites.map(fav => fav.app_id);
+                    
+                    const { data: apps, error: appsError } = await supabase
+                        .from('apps')
+                        .select('*')
+                        .in('id', appIds)
+                        .eq('is_active', true);
+                    
+                    if (appsError) throw appsError;
+                    
+                    const container = document.getElementById('favoritesGrid');
+                    if (apps && apps.length > 0) {
+                        container.innerHTML = apps.map(app => createAppCard(app, true)).join('');
+                    } else {
+                        container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد تطبيقات في المفضلة</p>';
+                    }
+                } else {
+                    document.getElementById('favoritesGrid').innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد تطبيقات في المفضلة</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+            }
+        }
+        
+        async function loadDownloadsPage() {
+            try {
+                if (!userProfile) return;
+                
+                const { data: downloads, error } = await supabase
+                    .from('downloads')
+                    .select(`
+                        app_id,
+                        apps (*)
+                    `)
+                    .eq('user_id', userProfile.id)
+                    .order('downloaded_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('myDownloadsGrid');
+                if (downloads && downloads.length > 0) {
+                    const apps = downloads.map(d => d.apps).filter(app => app && app.is_active);
+                    container.innerHTML = apps.map(app => createAppCard(app)).join('');
+                } else {
+                    container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">لم تقم بتحميل أي تطبيقات بعد</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error loading downloads:', error);
+            }
+        }
+        
+        function createAppCard(app, isFavorite = false) {
+            const badge = app.is_featured ? '<span class="app-badge">مميز</span>' : '';
+            const icon = app.icon_url ? `<img src="${app.icon_url}" alt="${app.name}">` : `<i class="fas fa-${getAppIcon(app.category)}"></i>`;
+            
             return `
                 <div class="app-card" data-app-id="${app.id}">
+                    ${badge}
                     <div class="app-header">
                         <div class="app-icon">
-                            <i class="fas fa-${getAppIcon(app.category)}"></i>
+                            ${icon}
                         </div>
                         <div class="app-info">
-                            <h3 class="app-title">${app.name}</h3>
-                            <p class="app-category">${app.category}</p>
+                            <h3 class="app-title">${app.name || 'تطبيق'}</h3>
+                            <p class="app-category">${app.category || 'عام'}</p>
                             <div class="app-rating">
                                 ${'★'.repeat(Math.floor(app.average_rating || 0))}
-                                ${app.average_rating % 1 >= 0.5 ? '⭐' : ''}
-                                ${'☆'.repeat(5 - Math.ceil(app.average_rating || 0))}
-                                <span style="color: var(--text-muted); font-size: 0.9rem;">
+                                ${'☆'.repeat(5 - Math.floor(app.average_rating || 0))}
+                                <span style="color: var(--text-muted); font-size: 0.9rem; margin-right: 5px;">
                                     (${(app.average_rating || 0).toFixed(1)})
                                 </span>
                             </div>
@@ -2186,13 +2530,13 @@
                     </div>
                     <div class="app-footer">
                         <span class="app-size">${app.size_mb || 10} MB</span>
-                        <a href="#" class="download-btn" data-app-id="${app.id}">
+                        <button class="download-btn" data-app-id="${app.id}">
                             <i class="fas fa-download"></i>
                             تحميل
-                        </a>
+                        </button>
                         <span class="download-count">
                             <i class="fas fa-download"></i>
-                            ${app.download_count || 0}
+                            ${(app.download_count || 0).toLocaleString()}
                         </span>
                     </div>
                 </div>
@@ -2215,7 +2559,7 @@
         // لوحة تحكم المطور
         // ============================================
         async function loadDeveloperDashboard() {
-            if (!userProfile || userProfile.role !== 'developer') {
+            if (!userProfile || (userProfile.role !== 'developer' && userProfile.role !== 'admin')) {
                 showMessage('لا تملك صلاحيات الوصول إلى لوحة التحكم', 'error');
                 navigateTo('home');
                 return;
@@ -2249,7 +2593,7 @@
                 }
                 
                 // إنشاء المخططات
-                createDeveloperCharts();
+                createDeveloperCharts(apps);
                 
             } catch (error) {
                 console.error('Error loading developer dashboard:', error);
@@ -2257,33 +2601,64 @@
             }
         }
         
-        function createDeveloperCharts() {
+        function createDeveloperCharts(apps = []) {
             // مخطط نظرة عامة
             const overviewChart = echarts.init(document.getElementById('devOverviewChart'), 'dark');
             overviewChart.setOption({
                 tooltip: { trigger: 'axis' },
-                xAxis: { type: 'category', data: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'] },
-                yAxis: { type: 'value' },
+                xAxis: { 
+                    type: 'category', 
+                    data: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                    axisLabel: { color: '#94a3b8' }
+                },
+                yAxis: { 
+                    type: 'value',
+                    axisLabel: { color: '#94a3b8' }
+                },
                 series: [{
                     data: [120, 200, 150, 80, 70, 110],
                     type: 'line',
                     smooth: true,
-                    color: '#3b82f6'
-                }]
+                    color: '#3b82f6',
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(59, 130, 246, 0.3)' },
+                            { offset: 1, color: 'rgba(59, 130, 246, 0.1)' }
+                        ])
+                    }
+                }],
+                grid: { left: '3%', right: '4%', bottom: '3%', top: '10%', containLabel: true }
             });
             
             // مخطط التحميلات
             const downloadsChart = echarts.init(document.getElementById('devDownloadsChart'), 'dark');
-            downloadsChart.setOption({
-                tooltip: { trigger: 'axis' },
-                xAxis: { type: 'category', data: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'] },
-                yAxis: { type: 'value' },
-                series: [{
-                    data: [1500, 2300, 2240, 2180, 1350, 1470],
-                    type: 'bar',
-                    color: '#10b981'
-                }]
-            });
+            if (apps && apps.length > 0) {
+                const appNames = apps.map(app => app.name.substring(0, 10) + (app.name.length > 10 ? '...' : ''));
+                const downloads = apps.map(app => app.download_count || 0);
+                
+                downloadsChart.setOption({
+                    tooltip: { trigger: 'axis' },
+                    xAxis: { 
+                        type: 'category', 
+                        data: appNames,
+                        axisLabel: { 
+                            color: '#94a3b8',
+                            rotate: 45
+                        }
+                    },
+                    yAxis: { 
+                        type: 'value',
+                        axisLabel: { color: '#94a3b8' }
+                    },
+                    series: [{
+                        data: downloads,
+                        type: 'bar',
+                        color: '#10b981',
+                        barWidth: '60%'
+                    }],
+                    grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true }
+                });
+            }
             
             // إعادة رسم المخططات عند تغيير الحجم
             window.addEventListener('resize', function() {
@@ -2296,95 +2671,22 @@
         // نظام رفع التطبيقات
         // ============================================
         function initUploadForm() {
-            if (!userProfile || userProfile.role !== 'developer') {
-                showMessage('يجب أن تكون مطوراً لرفع التطبيقات', 'error');
+            if (!userProfile || (userProfile.role !== 'developer' && userProfile.role !== 'admin')) {
+                showMessage('يجب أن تكون مطوراً أو مديراً لرفع التطبيقات', 'error');
                 navigateTo('home');
                 return;
             }
-            
-            // إعداد رفع الملفات
-            setupFileUploads();
             
             // إعداد نموذج الرفع
             const form = document.getElementById('appUploadForm');
             form.addEventListener('submit', handleAppUpload);
         }
         
-        function setupFileUploads() {
-            // الأيقونة
-            document.getElementById('iconUpload').addEventListener('click', () => {
-                document.getElementById('iconFile').click();
-            });
-            
-            document.getElementById('iconFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    document.getElementById('iconPreview').innerHTML = `
-                        <div class="file-item">
-                            <i class="fas fa-image"></i>
-                            <div>
-                                <div>${file.name}</div>
-                                <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            
-            // ملف APK
-            document.getElementById('apkUpload').addEventListener('click', () => {
-                document.getElementById('apkFile').click();
-            });
-            
-            document.getElementById('apkFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    document.getElementById('apkPreview').innerHTML = `
-                        <div class="file-item">
-                            <i class="fas fa-file-archive"></i>
-                            <div>
-                                <div>${file.name}</div>
-                                <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            
-            // صور الشاشات
-            document.getElementById('screenshotsUpload').addEventListener('click', () => {
-                document.getElementById('screenshotsFile').click();
-            });
-            
-            document.getElementById('screenshotsFile').addEventListener('change', function(e) {
-                const files = e.target.files;
-                const preview = document.getElementById('screenshotsPreview');
-                preview.innerHTML = '';
-                
-                Array.from(files).slice(0, 5).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const item = document.createElement('div');
-                        item.className = 'file-item';
-                        item.innerHTML = `
-                            <i class="fas fa-image"></i>
-                            <div>
-                                <div>${file.name}</div>
-                                <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
-                            </div>
-                        `;
-                        preview.appendChild(item);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
-        }
-        
         async function handleAppUpload(e) {
             e.preventDefault();
             
             try {
-                showLoading('appUploadForm button[type="submit"]');
+                showLoading('appUploadForm button[type="submit"]', 'جاري رفع التطبيق...');
                 
                 const appData = {
                     developer_id: userProfile.id,
@@ -2417,9 +2719,6 @@
                 
                 // إعادة تعيين النموذج
                 e.target.reset();
-                document.getElementById('iconPreview').innerHTML = '';
-                document.getElementById('apkPreview').innerHTML = '';
-                document.getElementById('screenshotsPreview').innerHTML = '';
                 
                 // التحديث التلقائي
                 setTimeout(() => {
@@ -2428,9 +2727,45 @@
                 
             } catch (error) {
                 console.error('App upload error:', error);
-                showMessage(error.message || 'خطأ في رفع التطبيق', 'error');
+                showMessage('خطأ في رفع التطبيق: ' + error.message, 'error');
             } finally {
                 hideLoading('appUploadForm button[type="submit"]');
+            }
+        }
+        
+        // ============================================
+        // صفحة الملف الشخصي
+        // ============================================
+        async function loadProfilePage() {
+            // تم تحميل البيانات في updateUserUI
+        }
+        
+        async function updateProfile() {
+            try {
+                const updates = {
+                    full_name: document.getElementById('editName').value,
+                    bio: document.getElementById('editBio').value,
+                    location: document.getElementById('editLocation').value,
+                    website: document.getElementById('editWebsite').value,
+                    updated_at: new Date().toISOString()
+                };
+                
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .update(updates)
+                    .eq('id', userProfile.id)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                userProfile = data;
+                updateUserUI();
+                showMessage('تم تحديث الملف الشخصي بنجاح', 'success');
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showMessage('خطأ في تحديث الملف الشخصي', 'error');
             }
         }
         
@@ -2459,8 +2794,8 @@
                 if (notifications && notifications.length > 0) {
                     container.innerHTML = notifications.map(notification => `
                         <div class="notification-item ${notification.is_read ? '' : 'unread'}" data-id="${notification.id}">
-                            <h4 style="margin-bottom: 0.3rem; font-size: 0.95rem;">${notification.title}</h4>
-                            <p style="color: var(--text-muted); font-size: 0.85rem;">${notification.message}</p>
+                            <h4 style="margin-bottom: 0.3rem; font-size: 0.95rem;">${notification.title || 'إشعار'}</h4>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">${notification.message || ''}</p>
                             <small style="color: var(--text-muted); font-size: 0.75rem;">
                                 ${new Date(notification.created_at).toLocaleDateString('ar-SA')}
                             </small>
@@ -2483,6 +2818,84 @@
         function toggleNotifications() {
             const panel = document.getElementById('notificationsPanel');
             panel.classList.toggle('active');
+        }
+        
+        // ============================================
+        // تحميل التطبيقات
+        // ============================================
+        async function downloadApp(appId) {
+            try {
+                if (!userProfile) {
+                    showMessage('يجب تسجيل الدخول لتحميل التطبيقات', 'warning');
+                    return;
+                }
+                
+                // تسجيل التحميل
+                const { error: downloadError } = await supabase
+                    .from('downloads')
+                    .insert({
+                        app_id: appId,
+                        user_id: userProfile.id,
+                        device_fingerprint: navigator.userAgent.substring(0, 100)
+                    });
+                
+                if (downloadError) throw downloadError;
+                
+                // زيادة عداد التحميلات
+                const { error: updateError } = await supabase
+                    .from('apps')
+                    .update({ download_count: supabase.raw('download_count + 1') })
+                    .eq('id', appId);
+                
+                if (updateError) throw updateError;
+                
+                showMessage('بدأ التحميل...', 'success');
+                
+                // تحديث الإحصائيات
+                loadStats();
+                updateProfileStats();
+                
+                // تحديث التطبيقات
+                if (currentPage === 'home') {
+                    loadHomePage();
+                } else if (currentPage === 'explore') {
+                    loadExplorePage();
+                } else if (currentPage === 'categories') {
+                    loadCategoriesPage();
+                } else if (currentPage === 'favorites') {
+                    loadFavoritesPage();
+                } else if (currentPage === 'developer-dashboard') {
+                    loadDeveloperDashboard();
+                }
+                
+                // إنشاء إشعار
+                await createNotification({
+                    user_id: userProfile.id,
+                    title: 'تم التحميل بنجاح',
+                    message: 'تم بدء تحميل التطبيق بنجاح',
+                    type: 'success'
+                });
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                showMessage('خطأ في التحميل', 'error');
+            }
+        }
+        
+        async function createNotification(notification) {
+            try {
+                const { error } = await supabase
+                    .from('notifications')
+                    .insert([notification]);
+                
+                if (error) throw error;
+                
+                // تحديث قائمة الإشعارات
+                loadNotifications();
+                
+            } catch (error) {
+                console.error('Error creating notification:', error);
+            }
         }
         
         // ============================================
@@ -2524,6 +2937,12 @@
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
                 const rememberMe = document.getElementById('rememberMe').checked;
+                
+                if (!email || !password) {
+                    showMessage('يرجى ملء جميع الحقول', 'error');
+                    return;
+                }
+                
                 handleLogin(email, password, rememberMe);
             });
             
@@ -2534,6 +2953,11 @@
                 const email = document.getElementById('registerEmail').value;
                 const password = document.getElementById('registerPassword').value;
                 const confirm = document.getElementById('registerConfirm').value;
+                
+                if (!name || !email || !password || !confirm) {
+                    showMessage('يرجى ملء جميع الحقول', 'error');
+                    return;
+                }
                 
                 if (password !== confirm) {
                     showMessage('كلمات المرور غير متطابقة', 'error');
@@ -2547,13 +2971,8 @@
             document.getElementById('googleLogin').addEventListener('click', handleGoogleLogin);
             document.getElementById('googleRegister').addEventListener('click', handleGoogleLogin);
             
-            // تسجيل الدخول بـ GitHub
-            document.getElementById('githubLogin').addEventListener('click', handleGitHubLogin);
-            document.getElementById('githubRegister').addEventListener('click', handleGitHubLogin);
-            
             // إغلاق نافذة تسجيل الدخول
             document.getElementById('closeLogin').addEventListener('click', function() {
-                // لا يمكن إغلاق نافذة تسجيل الدخول - مطلوب تسجيل الدخول
                 showMessage('يجب تسجيل الدخول للوصول إلى المنصة', 'warning');
             });
             
@@ -2573,10 +2992,10 @@
             
             // زر الرفع
             document.getElementById('uploadBtn').addEventListener('click', () => {
-                if (userProfile && userProfile.role === 'developer') {
+                if (userProfile && (userProfile.role === 'developer' || userProfile.role === 'admin')) {
                     navigateTo('upload-app');
                 } else {
-                    showMessage('يجب أن تكون مطوراً لرفع التطبيقات', 'warning');
+                    showMessage('يجب أن تكون مطوراً أو مديراً لرفع التطبيقات', 'warning');
                 }
             });
             
@@ -2632,12 +3051,6 @@
                     const appId = e.target.closest('.download-btn').getAttribute('data-app-id');
                     downloadApp(appId);
                 }
-                
-                // عرض تفاصيل التطبيق
-                if (e.target.closest('.app-card') && !e.target.closest('.download-btn')) {
-                    const appId = e.target.closest('.app-card').getAttribute('data-app-id');
-                    viewAppDetails(appId);
-                }
             });
             
             // التعامل مع تغيير حجم النافذة
@@ -2649,62 +3062,65 @@
                     document.getElementById('menuToggle').style.display = 'flex';
                 }
             });
+            
+            // نسيت كلمة المرور
+            document.getElementById('forgotPassword').addEventListener('click', function(e) {
+                e.preventDefault();
+                const email = prompt('أدخل بريدك الإلكتروني لاستعادة كلمة المرور:');
+                if (email) {
+                    handleForgotPassword(email);
+                }
+            });
+            
+            // تحديث الملف الشخصي
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProfile();
+            });
+            
+            // وضع علامة على جميع الإشعارات كمقروءة
+            document.getElementById('markAllRead').addEventListener('click', async function() {
+                try {
+                    if (!userProfile) return;
+                    
+                    const { error } = await supabase
+                        .from('notifications')
+                        .update({ is_read: true })
+                        .eq('user_id', userProfile.id)
+                        .eq('is_read', false);
+                    
+                    if (error) throw error;
+                    
+                    showMessage('تم وضع علامة مقروء على جميع الإشعارات', 'success');
+                    loadNotifications();
+                    
+                } catch (error) {
+                    console.error('Error marking notifications as read:', error);
+                }
+            });
         }
         
         // ============================================
         // وظائف إضافية
         // ============================================
-        async function downloadApp(appId) {
+        async function handleForgotPassword(email) {
             try {
-                if (!userProfile) {
-                    showMessage('يجب تسجيل الدخول لتحميل التطبيقات', 'warning');
-                    return;
-                }
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin
+                });
                 
-                // تسجيل التحميل
-                const { error: downloadError } = await supabase
-                    .from('downloads')
-                    .insert({
-                        app_id: appId,
-                        user_id: userProfile.id,
-                        device_fingerprint: navigator.userAgent
-                    });
+                if (error) throw error;
                 
-                if (downloadError) throw downloadError;
-                
-                // زيادة عداد التحميلات
-                const { error: updateError } = await supabase
-                    .rpc('increment_downloads', {
-                        app_uuid: appId,
-                        user_uuid: userProfile.id
-                    });
-                
-                if (updateError) throw updateError;
-                
-                showMessage('بدأ التحميل...', 'success');
-                
-                // محاكاة التحميل
-                setTimeout(() => {
-                    showMessage('تم التحميل بنجاح!', 'success');
-                    // تحديث الإحصائيات
-                    loadStats();
-                    // إعادة تحميل التطبيقات
-                    loadPageContent(currentPage);
-                }, 2000);
-                
+                showMessage('تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني', 'success');
             } catch (error) {
-                console.error('Download error:', error);
-                showMessage('خطأ في التحميل', 'error');
+                console.error('Forgot password error:', error);
+                showMessage('خطأ في استعادة كلمة المرور', 'error');
             }
-        }
-        
-        function viewAppDetails(appId) {
-            showMessage('تفاصيل التطبيق - قيد التطوير', 'info');
         }
         
         function searchApps(query) {
             console.log('Searching for:', query);
-            // سيتم تنفيذ البحث لاحقاً
+            showMessage(`البحث عن: ${query}`, 'info');
         }
         
         function switchToLogin() {
@@ -2723,12 +3139,18 @@
             
             if (event === 'SIGNED_IN') {
                 currentUser = session.user;
+                console.log('User signed in:', currentUser.email);
                 loadUserProfile();
                 showApp();
+                showMessage('تم تسجيل الدخول بنجاح!', 'success');
             } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
                 userProfile = null;
                 showLogin();
+            } else if (event === 'USER_UPDATED') {
+                console.log('User updated');
+            } else if (event === 'TOKEN_REFRESHED') {
+                console.log('Token refreshed');
             }
         });
         
