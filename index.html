@@ -1155,8 +1155,12 @@
     </style>
 
 <style>
+/* التأكد من أن Modal فوق Lock Screen */
 .modal {
     z-index: 999999999 !important;
+    pointer-events: auto !important;
+}
+.modal-content {
     pointer-events: auto !important;
 }
 </style>
@@ -1673,14 +1677,7 @@
 
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-<!-- 
-⚠️ تحذير أمني مهم:
-مفاتيح Supabase موجودة في الكود للتطوير فقط!
-في بيئة الإنتاج: يجب نقلها إلى environment variables
--->
-
-<script>
+    <script>
         // ==================== التطبيق الرئيسي ====================
         const App = {
             // معلومات Supabase
@@ -3724,140 +3721,5 @@
         // جعل App متاحاً عالمياً
         window.App = App;
     </script>
-
-<script>
-// إصلاح: فتح نافذة تسجيل الدخول حتى لو App لم يُحمّل
-(function() {
-    function forceOpenLoginModal() {
-        // محاولة 1: عبر App
-        if (window.App && window.App.openModal) {
-            window.App.openModal('loginModal');
-            console.log('✅ فتحت نافذة الدخول عبر App');
-            return true;
-        }
-        
-        // محاولة 2: مباشرة عبر DOM
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) {
-            loginModal.style.display = 'block';
-            console.log('✅ فتحت نافذة الدخول مباشرة');
-            return true;
-        }
-        
-        return false;
-    }
-    
-    // محاولة فتح النافذة بشكل متكرر حتى تنجح
-    let attempts = 0;
-    const maxAttempts = 20;
-    
-    const openModalInterval = setInterval(() => {
-        attempts++;
-        
-        if (forceOpenLoginModal()) {
-            clearInterval(openModalInterval);
-            console.log('✅ نجحت في فتح نافذة تسجيل الدخول');
-        } else if (attempts >= maxAttempts) {
-            clearInterval(openModalInterval);
-            console.error('❌ فشل فتح نافذة تسجيل الدخول');
-            
-            // كحل أخير: إعادة تحميل الصفحة
-            setTimeout(() => location.reload(), 2000);
-        }
-    }, 200); // كل 200ms
-})();
-</script>
-
-
-<script>
-// ============================================= 
-// نظام ذكي لتسجيل الدخول/الخروج
-// ============================================= 
-(function() {
-    let modalCheckInterval = null;
-    
-    function smartAuthCheck() {
-        const lockScreen = document.getElementById('authLockScreen');
-        const loginModal = document.getElementById('loginModal');
-        const hasUser = (window.App && window.App.state && window.App.state.user) || localStorage.getItem('google_user');
-        
-        if (!hasUser) {
-            // غير مسجل - أظهر Lock Screen وافتح النافذة
-            if (lockScreen) lockScreen.classList.add('active');
-            
-            // افتح النافذة إذا لم تكن مفتوحة
-            if (loginModal && loginModal.style.display !== 'block') {
-                if (window.App && window.App.openModal) {
-                    window.App.openModal('loginModal');
-                } else {
-                    loginModal.style.display = 'block';
-                }
-            }
-        } else {
-            // مسجل - أخفِ Lock Screen وأغلق النافذة
-            if (lockScreen) lockScreen.classList.remove('active');
-            
-            if (loginModal && loginModal.style.display === 'block') {
-                if (window.App && window.App.closeModal) {
-                    window.App.closeModal('loginModal');
-                    window.App.closeModal('registerModal');
-                } else {
-                    loginModal.style.display = 'none';
-                }
-            }
-        }
-    }
-    
-    // فحص دوري كل ثانية
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            smartAuthCheck();
-            if (modalCheckInterval) clearInterval(modalCheckInterval);
-            modalCheckInterval = setInterval(smartAuthCheck, 1000);
-        }, 500);
-    });
-    
-    // Hook على login
-    setTimeout(() => {
-        const origLogin = window.App?.login;
-        if (origLogin) {
-            window.App.login = async function(...args) {
-                await origLogin.apply(this, args);
-                setTimeout(() => {
-                    smartAuthCheck();
-                    location.reload();
-                }, 300);
-            };
-        }
-        
-        const origRegister = window.App?.register;
-        if (origRegister) {
-            window.App.register = async function(...args) {
-                await origRegister.apply(this, args);
-                setTimeout(() => {
-                    smartAuthCheck();
-                    location.reload();
-                }, 300);
-            };
-        }
-        
-        const origLogout = window.App?.logout;
-        if (origLogout) {
-            window.App.logout = async function() {
-                await origLogout.call(this);
-                localStorage.clear();
-                if (this.state) {
-                    this.state.user = null;
-                    this.state.isAdmin = false;
-                }
-                location.reload();
-            };
-        }
-    }, 1500);
-    
-    console.log('✅ نظام تسجيل الدخول/الخروج الذكي جاهز');
-})();
-</script>
-
 </body>
 </html>
