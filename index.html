@@ -1153,24 +1153,6 @@
             margin: 0 auto;
         }
     </style>
-
-<style>
-/* إصلاح Lock Screen */
-#authLock, #authLockScreen, #lockScreen, #smartLockScreen {
-    pointer-events: none !important;
-}
-
-/* Modal فوق كل شيء */
-.modal {
-    z-index: 999999999 !important;
-    pointer-events: auto !important;
-}
-
-.modal-content {
-    pointer-events: auto !important;
-}
-</style>
-
 </head>
 <body>
     <!-- تحميل الشاشة -->
@@ -3727,5 +3709,126 @@
         // جعل App متاحاً عالمياً
         window.App = App;
     </script>
+
+<script>
+// ============================================= 
+// نظام بسيط: نافذة تسجيل الدخول دائمة
+// ============================================= 
+(function() {
+    'use strict';
+    
+    let checkInterval = null;
+    
+    function enforceLoginModal() {
+        const hasUser = (window.App && window.App.state && window.App.state.user) || 
+                       localStorage.getItem('google_user');
+        
+        if (!hasUser) {
+            // غير مسجل - افتح النافذة وامنع إغلاقها
+            const loginModal = document.getElementById('loginModal');
+            
+            if (loginModal) {
+                // فتح النافذة
+                if (loginModal.style.display !== 'block') {
+                    if (window.App && window.App.openModal) {
+                        window.App.openModal('loginModal');
+                    } else {
+                        loginModal.style.display = 'block';
+                    }
+                }
+                
+                // منع إغلاق النافذة
+                const closeBtn = loginModal.querySelector('.modal-close, .close, button[onclick*="closeModal"]');
+                if (closeBtn) {
+                    closeBtn.style.display = 'none';
+                }
+            }
+            
+            // إخفاء المحتوى خلف الخلفية المعتمة
+            const mainContent = document.querySelector('main, .main-content, #app');
+            if (mainContent) {
+                mainContent.style.filter = 'blur(10px)';
+                mainContent.style.pointerEvents = 'none';
+            }
+        } else {
+            // مسجل - أغلق النافذة وأظهر المحتوى
+            if (window.App) {
+                if (window.App.closeModal) {
+                    window.App.closeModal('loginModal');
+                    window.App.closeModal('registerModal');
+                }
+            }
+            
+            const mainContent = document.querySelector('main, .main-content, #app');
+            if (mainContent) {
+                mainContent.style.filter = 'none';
+                mainContent.style.pointerEvents = 'auto';
+            }
+            
+            // إيقاف الفحص
+            if (checkInterval) {
+                clearInterval(checkInterval);
+                checkInterval = null;
+            }
+        }
+    }
+    
+    // Hook على login/register
+    function setupHooks() {
+        ['login', 'register'].forEach(method => {
+            const original = window.App?.[method];
+            if (original) {
+                window.App[method] = async function(...args) {
+                    await original.apply(this, args);
+                    setTimeout(() => {
+                        enforceLoginModal();
+                        location.reload();
+                    }, 300);
+                };
+            }
+        });
+        
+        // Hook على logout
+        const originalLogout = window.App?.logout;
+        if (originalLogout) {
+            window.App.logout = async function() {
+                await originalLogout.call(this);
+                localStorage.clear();
+                if (this.state) {
+                    this.state.user = null;
+                }
+                location.reload();
+            };
+        }
+    }
+    
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            enforceLoginModal();
+            setupHooks();
+            
+            // فحص دوري كل ثانية
+            if (checkInterval) clearInterval(checkInterval);
+            checkInterval = setInterval(enforceLoginModal, 1000);
+            
+            console.log('✅ نظام تسجيل الدخول الإلزامي جاهز');
+        }, 500);
+    });
+})();
+</script>
+
+<style>
+/* إخفاء Lock Screen القديم إن وُجد */
+#authLock, #authLockScreen, #lockScreen, #smartLockScreen {
+    display: none !important;
+}
+
+/* التأكد من أن Modal مرئي */
+.modal {
+    z-index: 999999999 !important;
+}
+</style>
+
 </body>
 </html>
