@@ -1153,18 +1153,6 @@
             margin: 0 auto;
         }
     </style>
-
-<style>
-/* التأكد من أن Modal فوق Lock Screen */
-.modal {
-    z-index: 999999999 !important;
-    pointer-events: auto !important;
-}
-.modal-content {
-    pointer-events: auto !important;
-}
-</style>
-
 </head>
 <body>
     <!-- تحميل الشاشة -->
@@ -3721,5 +3709,238 @@
         // جعل App متاحاً عالمياً
         window.App = App;
     </script>
+
+<!-- ============================================= -->
+<!-- إضافات محسّنة لـ Exotisa Store -->
+<!-- ============================================= -->
+
+<!-- Lock Screen محسّن -->
+<div id="smartLockScreen" style="position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 999; display: none; align-items: center; justify-content: center; pointer-events: none;">
+    <div style="text-align: center; color: white;">
+        <h1 style="font-size: 36px; margin-bottom: 20px;">🔒 Exotisa Store</h1>
+        <p style="font-size: 18px;">يرجى تسجيل الدخول للمتابعة</p>
+    </div>
+</div>
+
+<style>
+/* Lock Screen */
+#smartLockScreen.active { display: flex !important; }
+
+/* Modal فوق Lock Screen */
+.modal { z-index: 999999999 !important; pointer-events: auto !important; }
+.modal-content { pointer-events: auto !important; }
+
+/* Header مصغّر */
+header, .header { padding: 10px 20px !important; min-height: 55px !important; }
+header h1 { font-size: 20px !important; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header, .header { padding: 8px 15px !important; }
+    header h1 { font-size: 18px !important; }
+    .modal-content { width: 95% !important; }
+}
+</style>
+
+<script>
+// ============================================= 
+// نظام شامل ومحسّن
+// ============================================= 
+(function() {
+    'use strict';
+    
+    const SB_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWت6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+    
+    let googleClient = null;
+    let authInterval = null;
+    
+    // ============================================= 
+    // 1. Lock Screen الذكي
+    // ============================================= 
+    
+    function updateLockScreen() {
+        const lock = document.getElementById('smartLockScreen');
+        const hasUser = (window.App && window.App.state && window.App.state.user) || localStorage.getItem('google_user');
+        
+        if (!hasUser) {
+            if (lock) lock.classList.add('active');
+            // فتح نافذة تسجيل الدخول
+            setTimeout(() => {
+                if (window.App && window.App.openModal) {
+                    window.App.openModal('loginModal');
+                } else {
+                    const modal = document.getElementById('loginModal');
+                    if (modal) modal.style.display = 'block';
+                }
+            }, 300);
+        } else {
+            if (lock) lock.classList.remove('active');
+            // إغلاق نوافذ التسجيل
+            if (window.App) {
+                if (window.App.closeModal) {
+                    window.App.closeModal('loginModal');
+                    window.App.closeModal('registerModal');
+                }
+            }
+        }
+    }
+    
+    // ============================================= 
+    // 2. Google OAuth
+    // ============================================= 
+    
+    async function initGoogleAuth() {
+        googleClient = window.supabase?.createClient(SB_URL, SB_KEY);
+        if (!googleClient) return;
+        
+        // معالجة callback
+        const { data: { session } } = await googleClient.auth.getSession();
+        if (session && session.user) {
+            const user = {
+                id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.email,
+                role: 'user',
+                is_active: true
+            };
+            localStorage.setItem('google_user', JSON.stringify(user));
+            if (window.App && window.App.state) window.App.state.user = user;
+            updateLockScreen();
+        }
+    }
+    
+    function addGoogleButton() {
+        const form = document.getElementById('loginForm');
+        if (!form || document.getElementById('googleAuthBtn')) return;
+        
+        const btn = document.createElement('button');
+        btn.id = 'googleAuthBtn';
+        btn.type = 'button';
+        btn.style.cssText = 'width: 100%; background: white; color: #444; border: 1px solid #ddd; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 12px;';
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20"><path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.39-.24-1.99H10v3.57h5.38c-.11.85-.74 2.13-2.12 2.99l3.22 2.49c1.98-1.83 3.12-4.53 3.12-7.06z"/><path fill="#34A853" d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.22-2.49c-.89.6-2.02.95-3.4.95-2.61 0-4.82-1.76-5.61-4.12L1 14.42C2.66 17.76 6.09 20 10 20z"/><path fill="#FBBC05" d="M4.39 11.92c-.21-.6-.33-1.25-.33-1.92s.12-1.32.33-1.92L1 5.58C.35 6.87 0 8.39 0 10c0 1.61.35 3.13 1 4.42l3.39-2.5z"/><path fill="#EA4335" d="M10 3.98c1.47 0 2.78.51 3.82 1.5l2.86-2.86C15.96.99 13.16 0 10 0 6.09 0 2.66 2.24 1 5.58l3.39 2.5C5.18 5.74 7.39 3.98 10 3.98z"/></svg><span>تسجيل الدخول عبر Google</span>`;
+        btn.onclick = () => googleClient && googleClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: 'https://exotisa-store.vercel.app' } });
+        form.appendChild(btn);
+        console.log('✅ Google button added');
+    }
+    
+    // ============================================= 
+    // 3. نظام التقييم
+    // ============================================= 
+    
+    function setupRating() {
+        if (!window.App) return;
+        
+        window.App.rateApp = function(appId, appName) {
+            if (!this.state?.user) { alert('يجب تسجيل الدخول'); return; }
+            
+            const m = document.createElement('div');
+            m.className = 'modal';
+            m.style.cssText = 'display: block; z-index: 99999999999;';
+            m.innerHTML = `<div class="modal-content" style="max-width: 500px; padding: 30px;"><button onclick="this.closest('.modal').remove()" style="position: absolute; top: 15px; left: 15px; background: #f44336; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 20px;">&times;</button><h2 style="margin: 0 0 25px 0; text-align: center;">⭐ قيّم: ${appName}</h2><div id="stars" style="display: flex; gap: 12px; justify-content: center; margin: 30px 0;">${[1,2,3,4,5].map(i => `<span class="star" data-val="${i}" style="font-size: 55px; cursor: pointer; color: #ddd;">☆</span>`).join('')}</div><textarea id="comment" placeholder="تعليقك (اختياري)" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; min-height: 90px;"></textarea><button id="send" style="width: 100%; margin-top: 20px; padding: 16px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 17px;">📤 إرسال</button></div>`;
+            document.body.appendChild(m);
+            
+            let r = 0;
+            m.querySelectorAll('.star').forEach(s => {
+                s.onclick = function() {
+                    r = parseInt(this.dataset.val);
+                    m.querySelectorAll('.star').forEach((st, i) => {
+                        st.textContent = i < r ? '★' : '☆';
+                        st.style.color = i < r ? '#ffc107' : '#ddd';
+                    });
+                };
+            });
+            
+            m.querySelector('#send').onclick = async () => {
+                if (r === 0) { alert('اختر تقييمك'); return; }
+                window.App.showLoading();
+                try {
+                    await window.App.supabase.from('ratings').delete().eq('app_id', appId).eq('user_id', window.App.state.user.id);
+                    await window.App.supabase.from('ratings').insert({ app_id: appId, user_id: window.App.state.user.id, rating: r, comment: m.querySelector('#comment').value || null });
+                    const { data } = await window.App.supabase.from('ratings').select('rating').eq('app_id', appId);
+                    if (data) {
+                        const avg = data.reduce((s, x) => s + x.rating, 0) / data.length;
+                        await window.App.supabase.from('apps').update({ average_rating: avg, rating_count: data.length }).eq('id', appId);
+                    }
+                    alert('شكراً! ⭐');
+                    m.remove();
+                } catch (e) { alert('خطأ'); } finally { window.App.hideLoading(); }
+            };
+        };
+        
+        // إضافة زر التقييم
+        const orig = window.App.loadAppDetails;
+        if (orig) {
+            window.App.loadAppDetails = async function(appId) {
+                await orig.call(this, appId);
+                setTimeout(() => {
+                    if (!this.state?.user) return;
+                    const mb = document.querySelector('.modal[style*="display: block"] .modal-body');
+                    if (mb && !document.getElementById('rateBtn')) {
+                        const btn = document.createElement('button');
+                        btn.id = 'rateBtn';
+                        btn.style.cssText = 'width: 100%; margin-top: 20px; padding: 14px; background: #ff9800; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;';
+                        btn.textContent = '⭐ قيّم هذا التطبيق';
+                        btn.onclick = () => this.rateApp(appId, this.state.currentApp?.name || 'التطبيق');
+                        mb.appendChild(btn);
+                    }
+                }, 700);
+            };
+        }
+    }
+    
+    // ============================================= 
+    // 4. Hooks
+    // ============================================= 
+    
+    function setupHooks() {
+        ['login', 'register'].forEach(m => {
+            const o = window.App?.[m];
+            if (o) {
+                window.App[m] = async function(...args) {
+                    await o.apply(this, args);
+                    setTimeout(() => { updateLockScreen(); location.reload(); }, 300);
+                };
+            }
+        });
+        
+        const origLogout = window.App?.logout;
+        if (origLogout) {
+            window.App.logout = async function() {
+                await origLogout.call(this);
+                if (googleClient) await googleClient.auth.signOut();
+                localStorage.clear();
+                if (this.state) { this.state.user = null; this.state.isAdmin = false; }
+                location.reload();
+            };
+        }
+    }
+    
+    // ============================================= 
+    // Init
+    // ============================================= 
+    
+    window.addEventListener('DOMContentLoaded', async () => {
+        console.log('🚀 تحميل Exotisa Enhanced...');
+        
+        await initGoogleAuth();
+        
+        setTimeout(() => {
+            updateLockScreen();
+            addGoogleButton();
+            setupRating();
+            setupHooks();
+            
+            if (authInterval) clearInterval(authInterval);
+            authInterval = setInterval(updateLockScreen, 2000);
+            
+            console.log('✅ جميع الأنظمة جاهزة');
+        }, 1000);
+    });
+})();
+</script>
+
 </body>
+</html>
+
 </html>
