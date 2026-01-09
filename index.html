@@ -8,579 +8,1040 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * {margin: 0;padding: 0;box-sizing: border-box;}
+        * {margin:0;padding:0;box-sizing:border-box;}
         :root {
-            --bg: #0a0e27;--card: #1a1f3a;--text: #ffffff;--text-sec: #b8c1ec;--accent: #6366f1;
-            --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-            --success: #10b981;--error: #ef4444;--warning: #f59e0b;
+            --bg-1:#1a1625;--bg-2:#251e35;--bg-3:#332a45;--card:#2d2438;--card-hover:#3a3048;
+            --text:#fef3f7;--text-2:#e8d5e0;--text-3:#c9b3c0;
+            --accent:#ff6b9d;--accent-2:#c44569;--gradient:linear-gradient(135deg,#ff6b9d 0%,#c44569 40%,#8e44ad 100%);
+            --success:#2ecc71;--error:#e74c3c;--warning:#f39c12;--info:#3498db;
         }
-        body {font-family: 'Cairo', sans-serif;background: var(--bg);color: var(--text);overflow-x: hidden;}
-        .hidden {display: none !important;}
-        .container {max-width: 1280px;margin: 0 auto;padding: 0 1.5rem;}
+        body {
+            font-family:'Tajawal',sans-serif;background:var(--bg-1);color:var(--text);
+            overflow-x:hidden;min-height:100vh;position:relative;
+        }
+        .hidden {display:none!important;}
         
-        /* Auth Page */
+        /* ANIMATED BACKGROUND */
+        .bg-animation {
+            position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
+            background:radial-gradient(circle at 20% 30%,rgba(255,107,157,0.08) 0%,transparent 50%),
+                       radial-gradient(circle at 80% 70%,rgba(142,68,173,0.08) 0%,transparent 50%);
+            animation:bgPulse 10s ease-in-out infinite;
+        }
+        @keyframes bgPulse {
+            0%,100% {opacity:0.5;transform:scale(1);}
+            50% {opacity:1;transform:scale(1.05);}
+        }
+        
+        /* THREE.JS BACKGROUND */
+        #threeCanvas {position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.4;}
+        
+        /* TOAST NOTIFICATIONS */
+        .toast-container {position:fixed;top:20px;left:20px;z-index:9999;display:flex;flex-direction:column;gap:12px;}
+        .toast {
+            min-width:320px;padding:16px 20px;background:var(--card);border-radius:12px;
+            box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;align-items:center;gap:12px;
+            border-right:4px solid var(--accent);animation:slideIn 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+        .toast.success {border-right-color:var(--success);}
+        .toast.error {border-right-color:var(--error);}
+        @keyframes slideIn {
+            from {transform:translateX(-120%);opacity:0;}
+            to {transform:translateX(0);opacity:1;}
+        }
+        
+        /* AUTH PAGE */
         #authPage {
-            min-height: 100vh;display: flex;align-items: center;justify-content: center;
-            background: linear-gradient(135deg, #0a0e27 0%, #141937 50%, #1e2444 100%);
+            min-height:100vh;display:flex;align-items:center;justify-content:center;
+            padding:20px;
         }
-        .auth-box {
-            background: var(--card);border-radius: 1.5rem;padding: 3rem;width: 90%;max-width: 450px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);position: relative;overflow: hidden;
+        .auth-container {
+            background:rgba(45,36,56,0.7);backdrop-filter:blur(30px);
+            border:1px solid rgba(255,107,157,0.15);border-radius:24px;
+            padding:48px;width:100%;max-width:480px;
+            box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 100px rgba(255,107,157,0.15);
+            position:relative;overflow:hidden;
         }
-        .auth-box::before {
-            content: '';position: absolute;top: 0;left: 0;right: 0;height: 4px;
-            background: var(--gradient);
+        .auth-container::before {
+            content:'';position:absolute;top:0;left:0;right:0;height:4px;
+            background:var(--gradient);
         }
-        .logo-big {
-            text-align: center;font-size: 4rem;margin-bottom: 1rem;
-            background: var(--gradient);-webkit-background-clip: text;-webkit-text-fill-color: transparent;
-            font-weight: 900;
+        .auth-container::after {
+            content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+            background:radial-gradient(circle,rgba(255,107,157,0.1) 0%,transparent 70%);
+            animation:rotate 20s linear infinite;pointer-events:none;
         }
-        .auth-title {font-size: 2rem;text-align: center;margin-bottom: 2rem;font-weight: 700;}
-        .form-group {margin-bottom: 1.5rem;}
-        .form-label {display: block;margin-bottom: 0.5rem;font-weight: 600;color: var(--text-sec);}
-        .form-input, .form-select {
-            width: 100%;padding: 1rem;background: #141937;border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: 0.75rem;color: var(--text);font-family: 'Cairo';font-size: 1rem;
-            transition: all 0.3s;
+        @keyframes rotate {
+            from {transform:rotate(0deg);}
+            to {transform:rotate(360deg);}
         }
-        .form-input:focus, .form-select:focus {
-            outline: none;border-color: var(--accent);box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        
+        .logo-hero {text-align:center;margin-bottom:32px;position:relative;z-index:1;}
+        .logo-icon {font-size:80px;filter:drop-shadow(0 0 30px rgba(255,107,157,0.6));}
+        .logo-text {
+            font-size:40px;font-weight:900;background:var(--gradient);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            letter-spacing:-1px;margin-top:8px;
         }
+        .auth-subtitle {
+            text-align:center;color:var(--text-2);font-size:18px;
+            margin-bottom:32px;font-weight:500;
+        }
+        
+        .form-group {margin-bottom:24px;position:relative;z-index:1;}
+        .form-label {display:block;margin-bottom:8px;font-weight:600;color:var(--text-2);font-size:14px;}
+        .input-wrapper {position:relative;}
+        .form-input,.form-select {
+            width:100%;padding:14px 18px;background:rgba(26,22,37,0.6);
+            border:2px solid rgba(255,107,157,0.2);border-radius:12px;
+            color:var(--text);font-family:'Tajawal';font-size:16px;
+            transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .form-input:focus,.form-select:focus {
+            outline:none;border-color:var(--accent);
+            background:rgba(26,22,37,0.9);
+            box-shadow:0 0 0 4px rgba(255,107,157,0.1),0 0 30px rgba(255,107,157,0.2);
+            transform:translateY(-2px);
+        }
+        .form-input.with-toggle {padding-left:48px;}
+        
+        .password-toggle {
+            position:absolute;left:14px;top:50%;transform:translateY(-50%);
+            background:none;border:none;color:var(--text-3);cursor:pointer;
+            padding:6px;display:flex;align-items:center;transition:color 0.3s;
+        }
+        .password-toggle:hover {color:var(--accent);}
+        
         .btn {
-            padding: 1rem 2rem;border: none;border-radius: 0.75rem;font-family: 'Cairo';
-            font-weight: 600;cursor: pointer;transition: all 0.3s;display: inline-flex;
-            align-items: center;gap: 0.5rem;justify-content: center;text-decoration: none;
+            padding:14px 28px;border:none;border-radius:12px;
+            font-family:'Tajawal';font-weight:700;cursor:pointer;
+            transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+            display:inline-flex;align-items:center;justify-content:center;gap:10px;
+            font-size:16px;position:relative;overflow:hidden;
         }
+        .btn::before {
+            content:'';position:absolute;top:50%;left:50%;width:0;height:0;
+            border-radius:50%;background:rgba(255,255,255,0.15);
+            transform:translate(-50%,-50%);transition:width 0.6s,height 0.6s;
+        }
+        .btn:hover::before {width:400px;height:400px;}
+        
         .btn-primary {
-            background: var(--gradient);color: white;width: 100%;font-size: 1.1rem;
+            background:var(--gradient);color:white;width:100%;
+            box-shadow:0 8px 24px rgba(255,107,157,0.3);
         }
-        .btn-primary:hover {transform: translateY(-2px);box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);}
-        .btn-secondary {
-            background: var(--card);color: var(--text);border: 2px solid rgba(99, 102, 241, 0.2);
-            width: 100%;
+        .btn-primary:hover {
+            transform:translateY(-3px);
+            box-shadow:0 12px 32px rgba(255,107,157,0.4);
         }
-        .btn-secondary:hover {border-color: var(--accent);background: #252b4a;}
-        .btn-outline {background: transparent;color: var(--accent);border: 2px solid var(--accent);}
-        .btn-outline:hover {background: var(--accent);color: white;}
-        .auth-switch {
-            text-align: center;margin-top: 1.5rem;color: var(--text-sec);
+        
+        .btn-google {
+            background:white;color:#333;width:100%;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
         }
-        .auth-switch a {color: var(--accent);text-decoration: none;font-weight: 600;}
-        .auth-switch a:hover {text-decoration: underline;}
+        .btn-google:hover {
+            transform:translateY(-3px);
+            box-shadow:0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn-outline {
+            background:transparent;color:var(--accent);
+            border:2px solid var(--accent);padding:12px 24px;
+        }
+        .btn-outline:hover {
+            background:var(--accent);color:white;
+            transform:translateY(-3px);
+            box-shadow:0 8px 20px rgba(255,107,157,0.3);
+        }
+        
         .divider {
-            margin: 1.5rem 0;text-align: center;color: var(--text-sec);position: relative;
+            margin:24px 0;text-align:center;color:var(--text-3);
+            font-size:14px;position:relative;
         }
-        .divider::before, .divider::after {
-            content: '';position: absolute;top: 50%;width: 40%;height: 1px;
-            background: rgba(99, 102, 241, 0.2);
+        .divider::before,.divider::after {
+            content:'';position:absolute;top:50%;width:42%;height:1px;
+            background:linear-gradient(to right,transparent,rgba(255,107,157,0.3),transparent);
         }
-        .divider::before {left: 0;}
-        .divider::after {right: 0;}
+        .divider::before {left:0;}
+        .divider::after {right:0;}
         
-        /* Main App */
-        #mainApp {min-height: 100vh;}
+        .auth-switch {text-align:center;margin-top:24px;color:var(--text-2);font-size:15px;}
+        .auth-switch a {
+            color:var(--accent);text-decoration:none;font-weight:700;
+            transition:color 0.3s;
+        }
+        .auth-switch a:hover {color:#ff8cb3;text-decoration:underline;}
+        
+        /* MAIN APP */
+        #mainApp {min-height:100vh;padding-bottom:60px;}
         header {
-            position: sticky;top: 0;z-index: 1000;background: rgba(10, 14, 39, 0.8);
-            backdrop-filter: blur(20px);border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-            padding: 1rem 0;
+            position:sticky;top:0;z-index:1000;
+            background:rgba(26,22,37,0.8);backdrop-filter:blur(20px);
+            border-bottom:1px solid rgba(255,107,157,0.1);
+            padding:16px 0;box-shadow:0 4px 20px rgba(0,0,0,0.3);
         }
-        .nav {display: flex;align-items: center;justify-content: space-between;}
+        .nav {display:flex;align-items:center;justify-content:space-between;}
         .logo {
-            display: flex;align-items: center;gap: 0.5rem;font-size: 1.5rem;font-weight: 900;
-            background: var(--gradient);-webkit-background-clip: text;-webkit-text-fill-color: transparent;
-            cursor: pointer;
+            display:flex;align-items:center;gap:12px;font-size:28px;font-weight:900;
+            background:var(--gradient);-webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;cursor:pointer;
+            transition:transform 0.3s;
         }
-        .nav-actions {display: flex;gap: 1rem;align-items: center;}
-        .user-info {
-            display: flex;align-items: center;gap: 1rem;padding: 0.5rem 1rem;
-            background: var(--card);border-radius: 2rem;
+        .logo:hover {transform:scale(1.05);}
+        
+        .nav-menu {display:flex;gap:8px;list-style:none;}
+        .nav-menu a {
+            padding:10px 20px;color:var(--text-2);text-decoration:none;
+            border-radius:10px;transition:all 0.3s;font-weight:600;
         }
-        .user-name {font-weight: 600;}
+        .nav-menu a:hover,.nav-menu a.active {
+            background:rgba(255,107,157,0.15);color:var(--accent);
+        }
+        
+        .nav-right {display:flex;gap:12px;align-items:center;}
+        .user-badge {
+            display:flex;align-items:center;gap:12px;padding:8px 16px;
+            background:rgba(45,36,56,0.8);border:1px solid rgba(255,107,157,0.2);
+            border-radius:24px;transition:all 0.3s;
+        }
+        .user-badge:hover {
+            background:rgba(45,36,56,1);border-color:var(--accent);
+            box-shadow:0 0 24px rgba(255,107,157,0.2);
+        }
+        .user-avatar {
+            width:36px;height:36px;border-radius:50%;
+            background:var(--gradient);display:flex;align-items:center;
+            justify-content:center;font-weight:700;font-size:16px;color:white;
+        }
+        .user-details {display:flex;flex-direction:column;}
+        .user-name {font-weight:700;font-size:14px;}
         .user-role {
-            padding: 0.25rem 0.75rem;background: rgba(99, 102, 241, 0.2);
-            border-radius: 1rem;font-size: 0.75rem;color: var(--accent);
+            font-size:11px;color:var(--accent);font-weight:600;
+            background:rgba(255,107,157,0.1);padding:2px 8px;
+            border-radius:8px;display:inline-block;margin-top:2px;
         }
         
-        /* Content */
-        .hero {padding: 3rem 0;text-align: center;}
+        .container {max-width:1320px;margin:0 auto;padding:0 24px;}
+        
+        /* HERO */
+        .hero {padding:80px 0 60px;text-align:center;}
         .hero-title {
-            font-size: clamp(2rem, 5vw, 4rem);font-weight: 900;
-            background: var(--gradient);-webkit-background-clip: text;-webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.1;
+            background:var(--gradient);-webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;margin-bottom:20px;
+            filter:drop-shadow(0 0 40px rgba(255,107,157,0.3));
         }
-        .hero-subtitle {font-size: 1.25rem;color: var(--text-sec);margin-bottom: 2rem;}
-        .hero-actions {display: flex;gap: 1rem;justify-content: center;flex-wrap: wrap;}
+        .hero-subtitle {font-size:22px;color:var(--text-2);margin-bottom:40px;font-weight:500;}
+        .hero-cta {display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
         
-        .stats-grid {
-            display: grid;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;margin: 3rem 0;
+        /* STATS */
+        .stats {
+            display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:24px;margin:60px 0;
         }
-        .stat-card {
-            text-align: center;padding: 2rem;background: var(--card);border-radius: 1rem;
-            position: relative;overflow: hidden;
+        .stat-box {
+            background:rgba(45,36,56,0.5);backdrop-filter:blur(10px);
+            border:1px solid rgba(255,107,157,0.15);border-radius:20px;
+            padding:32px;text-align:center;position:relative;overflow:hidden;
+            transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
         }
-        .stat-card::before {
-            content: '';position: absolute;top: 0;left: 0;right: 0;height: 3px;
-            background: var(--gradient);transform: scaleX(0);transition: transform 0.3s;
+        .stat-box::before {
+            content:'';position:absolute;top:0;left:0;right:0;height:3px;
+            background:var(--gradient);transform:scaleX(0);transition:transform 0.4s;
         }
-        .stat-card:hover::before {transform: scaleX(1);}
+        .stat-box:hover::before {transform:scaleX(1);}
+        .stat-box:hover {
+            transform:translateY(-10px);
+            box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 40px rgba(255,107,157,0.2);
+            border-color:var(--accent);background:rgba(45,36,56,0.8);
+        }
+        .stat-emoji {font-size:48px;margin-bottom:16px;filter:drop-shadow(0 0 20px rgba(255,107,157,0.3));}
         .stat-value {
-            font-size: 2rem;font-weight: 900;background: var(--gradient);
-            -webkit-background-clip: text;-webkit-text-fill-color: transparent;
+            font-size:42px;font-weight:900;background:var(--gradient);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            margin-bottom:8px;
         }
-        .stat-label {color: var(--text-sec);margin-top: 0.5rem;}
+        .stat-label {color:var(--text-2);font-weight:600;font-size:16px;}
         
-        .category-chips {display: flex;gap: 1rem;flex-wrap: wrap;justify-content: center;margin: 2rem 0;}
-        .category-chip {
-            padding: 0.5rem 1.5rem;background: var(--card);border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: 2rem;cursor: pointer;transition: all 0.3s;display: flex;
-            align-items: center;gap: 0.5rem;
+        /* CATEGORIES */
+        .categories {display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:40px 0;}
+        .cat-chip {
+            padding:10px 24px;background:rgba(45,36,56,0.6);
+            border:2px solid rgba(255,107,157,0.2);border-radius:24px;
+            cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:8px;
+            font-weight:600;font-size:15px;
         }
-        .category-chip:hover, .category-chip.active {
-            background: var(--gradient);border-color: transparent;color: white;
-            transform: translateY(-2px);
+        .cat-chip:hover {
+            background:rgba(45,36,56,0.9);border-color:var(--accent);
+            transform:translateY(-4px);box-shadow:0 8px 20px rgba(255,107,157,0.2);
+        }
+        .cat-chip.active {
+            background:var(--gradient);border-color:transparent;color:white;
+            transform:translateY(-4px);box-shadow:0 8px 20px rgba(255,107,157,0.3);
         }
         
-        .app-grid {
-            display: grid;grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;margin-top: 2rem;
+        /* APPS GRID */
+        .apps-grid {
+            display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+            gap:28px;margin-top:40px;
         }
         .app-card {
-            background: var(--card);border-radius: 1rem;overflow: hidden;
-            cursor: pointer;transition: all 0.3s;
+            background:rgba(45,36,56,0.6);backdrop-filter:blur(10px);
+            border:1px solid rgba(255,107,157,0.15);border-radius:20px;
+            overflow:hidden;cursor:pointer;position:relative;
+            transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
         }
+        .app-card::before {
+            content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+            background:radial-gradient(circle at 50% 0%,rgba(255,107,157,0.15) 0%,transparent 70%);
+            opacity:0;transition:opacity 0.4s;
+        }
+        .app-card:hover::before {opacity:1;}
         .app-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
+            transform:translateY(-12px) scale(1.02);
+            box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 50px rgba(255,107,157,0.25);
+            border-color:var(--accent);
         }
-        .app-icon {width: 100%;aspect-ratio: 1;object-fit: cover;border-bottom: 1px solid rgba(99, 102, 241, 0.1);}
-        .app-info {padding: 1rem;}
-        .app-title {font-size: 1.125rem;font-weight: 700;margin-bottom: 0.25rem;}
-        .app-developer {font-size: 0.875rem;color: var(--text-sec);margin-bottom: 0.5rem;}
-        .app-stats {
-            display: flex;justify-content: space-between;align-items: center;
-            margin-top: 1rem;padding-top: 1rem;border-top: 1px solid rgba(99, 102, 241, 0.1);
+        .app-icon {width:100%;aspect-ratio:1;object-fit:cover;border-bottom:1px solid rgba(255,107,157,0.1);}
+        .app-body {padding:20px;}
+        .app-name {font-size:20px;font-weight:700;margin-bottom:6px;color:var(--text);}
+        .app-dev {font-size:14px;color:var(--text-3);margin-bottom:16px;}
+        .app-footer {
+            display:flex;justify-content:space-between;align-items:center;
+            padding-top:16px;margin-top:16px;
+            border-top:1px solid rgba(255,107,157,0.1);
         }
-        .rating {display: flex;align-items: center;gap: 0.25rem;color: var(--warning);}
-        .downloads {display: flex;align-items: center;gap: 0.25rem;color: var(--text-sec);font-size: 0.875rem;}
+        .app-rating {display:flex;align-items:center;gap:6px;color:var(--warning);font-weight:700;}
+        .app-downloads {display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:14px;font-weight:600;}
         
-        .section-title {font-size: 1.5rem;font-weight: 700;margin: 3rem 0 1rem;}
-        
-        .toast-container {
-            position: fixed;top: 1rem;left: 1rem;z-index: 3000;
-            display: flex;flex-direction: column;gap: 0.5rem;
-        }
-        .toast {
-            padding: 1rem 1.5rem;background: var(--card);border-radius: 0.75rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);display: flex;
-            align-items: center;gap: 1rem;min-width: 300px;
-            animation: slideIn 0.3s ease-out;
-        }
-        .toast.success {border-right: 4px solid var(--success);}
-        .toast.error {border-right: 4px solid var(--error);}
-        @keyframes slideIn {
-            from {transform: translateX(-100%);opacity: 0;}
-            to {transform: translateX(0);opacity: 1;}
+        .section-heading {
+            font-size:36px;font-weight:800;margin:60px 0 24px;
+            background:var(--gradient);-webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
         }
         
-        .loading {
-            display: flex;align-items: center;justify-content: center;
-            padding: 3rem;
-        }
+        /* LOADING */
+        .loading {display:flex;flex-direction:column;align-items:center;padding:80px 20px;}
         .spinner {
-            width: 40px;height: 40px;border: 4px solid rgba(99, 102, 241, 0.2);
-            border-top-color: var(--accent);border-radius: 50%;
-            animation: spin 1s linear infinite;
+            width:56px;height:56px;border:5px solid rgba(255,107,157,0.2);
+            border-top-color:var(--accent);border-radius:50%;
+            animation:spin 0.8s linear infinite;
         }
-        @keyframes spin {
-            to {transform: rotate(360deg);}
-        }
+        @keyframes spin {to {transform:rotate(360deg);}}
+        .loading-text {margin-top:20px;color:var(--text-2);font-weight:600;font-size:16px;}
         
-        #threeBackground {
-            position: fixed;top: 0;left: 0;width: 100%;height: 100%;
-            z-index: -1;opacity: 0.3;
+        /* MODAL */
+        .modal-overlay {
+            position:fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);
+            z-index:2000;display:flex;align-items:center;justify-content:center;
+            opacity:0;pointer-events:none;transition:opacity 0.3s;
         }
+        .modal-overlay.active {opacity:1;pointer-events:all;}
+        .modal {
+            background:var(--card);border:1px solid rgba(255,107,157,0.2);
+            border-radius:24px;max-width:900px;width:95%;max-height:90vh;
+            overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.6);
+            transform:scale(0.9);transition:transform 0.3s;
+        }
+        .modal-overlay.active .modal {transform:scale(1);}
+        .modal-header {
+            padding:24px 28px;border-bottom:1px solid rgba(255,107,157,0.1);
+            display:flex;justify-content:space-between;align-items:center;
+        }
+        .modal-title {font-size:28px;font-weight:800;}
+        .modal-close {
+            background:none;border:none;color:var(--text-3);cursor:pointer;
+            padding:8px;border-radius:50%;transition:all 0.3s;
+        }
+        .modal-close:hover {background:rgba(231,76,60,0.15);color:var(--error);}
+        .modal-body {padding:28px;}
         
-        @media (max-width: 768px) {
-            .app-grid {grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));gap: 1rem;}
-            .auth-box {padding: 2rem;}
-            .hero-title {font-size: 2rem;}
+        /* TABLES */
+        .table {width:100%;border-collapse:collapse;margin-top:20px;}
+        .table th,.table td {padding:16px;text-align:right;border-bottom:1px solid rgba(255,107,157,0.1);}
+        .table th {background:rgba(45,36,56,0.5);font-weight:700;color:var(--text-2);}
+        .table tr:hover {background:rgba(45,36,56,0.3);}
+        .table img {width:48px;height:48px;border-radius:10px;}
+        
+        .badge {
+            display:inline-block;padding:6px 14px;border-radius:20px;
+            font-size:12px;font-weight:700;
+        }
+        .badge.success {background:rgba(46,204,113,0.2);color:var(--success);}
+        .badge.warning {background:rgba(243,156,18,0.2);color:var(--warning);}
+        .badge.error {background:rgba(231,76,60,0.2);color:var(--error);}
+        
+        @media (max-width:768px) {
+            .nav-menu {display:none;}
+            .apps-grid {grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
+            .auth-container {padding:32px 24px;}
+            .hero-title {font-size:36px;}
+            .stats {grid-template-columns:1fr 1fr;gap:16px;}
         }
     </style>
 </head>
 <body>
+    <div class="bg-animation"></div>
     <div class="toast-container" id="toastContainer"></div>
-    <div id="threeBackground"></div>
+    <div id="threeCanvas"></div>
     
-    <!-- Auth Page -->
+    <!-- AUTH PAGE -->
     <div id="authPage">
-        <div class="auth-box">
-            <div class="logo-big">🚀 Exotisa</div>
+        <div class="auth-container">
+            <div class="logo-hero">
+                <div class="logo-icon">🚀</div>
+                <div class="logo-text">Exotisa</div>
+            </div>
             
-            <!-- Login Form -->
-            <div id="loginForm" class="auth-form">
-                <h2 class="auth-title">تسجيل الدخول</h2>
-                <form onsubmit="handleLogin(event)">
+            <!-- LOGIN FORM -->
+            <div id="loginView">
+                <h2 class="auth-subtitle">مرحباً بعودتك! سجل دخولك للمتابعة</h2>
+                <form onsubmit="return doLogin(event)">
                     <div class="form-group">
                         <label class="form-label">البريد الإلكتروني</label>
-                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
+                        <input type="email" class="form-input" id="loginEmail" required 
+                               placeholder="your@email.com" autocomplete="email">
                     </div>
                     <div class="form-group">
                         <label class="form-label">كلمة المرور</label>
-                        <input type="password" class="form-input" name="password" required placeholder="••••••••">
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input with-toggle" id="loginPassword" 
+                                   required placeholder="••••••••" autocomplete="current-password">
+                            <button type="button" class="password-toggle" onclick="togglePass('loginPassword')">
+                                <span class="material-icons">visibility_off</span>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
                         <span class="material-icons">login</span>
-                        دخول
+                        <span>دخول</span>
                     </button>
                 </form>
                 
                 <div class="divider">أو</div>
                 
-                <button class="btn btn-secondary" onclick="loginWithGoogle()">
-                    <span class="material-icons">login</span>
-                    تسجيل الدخول بواسطة Google
+                <button class="btn btn-google" onclick="doGoogleLogin()">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    <span>تسجيل الدخول بواسطة Google</span>
                 </button>
                 
                 <div class="auth-switch">
-                    ليس لديك حساب؟ <a href="#" onclick="showRegister()">سجل الآن</a>
+                    ليس لديك حساب؟ <a href="#" onclick="showReg();return false;">سجل الآن مجاناً</a>
                 </div>
             </div>
             
-            <!-- Register Form -->
-            <div id="registerForm" class="auth-form hidden">
-                <h2 class="auth-title">إنشاء حساب جديد</h2>
-                <form onsubmit="handleRegister(event)">
+            <!-- REGISTER FORM -->
+            <div id="registerView" class="hidden">
+                <h2 class="auth-subtitle">انضم إلينا وابدأ رحلتك الآن</h2>
+                <form onsubmit="return doRegister(event)">
                     <div class="form-group">
                         <label class="form-label">الاسم الكامل</label>
-                        <input type="text" class="form-input" name="fullName" required>
+                        <input type="text" class="form-input" id="regName" required 
+                               placeholder="اسمك الكامل" autocomplete="name">
                     </div>
                     <div class="form-group">
                         <label class="form-label">البريد الإلكتروني</label>
-                        <input type="email" class="form-input" name="email" required>
+                        <input type="email" class="form-input" id="regEmail" required 
+                               placeholder="your@email.com" autocomplete="email">
                     </div>
                     <div class="form-group">
                         <label class="form-label">كلمة المرور</label>
-                        <input type="password" class="form-input" name="password" required minlength="6">
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input with-toggle" id="regPassword" 
+                                   required minlength="6" placeholder="6 أحرف على الأقل" 
+                                   autocomplete="new-password">
+                            <button type="button" class="password-toggle" onclick="togglePass('regPassword')">
+                                <span class="material-icons">visibility_off</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">نوع الحساب</label>
-                        <select class="form-select" name="role">
-                            <option value="user">مستخدم عادي</option>
-                            <option value="developer">مطور</option>
+                        <select class="form-select" id="regRole">
+                            <option value="user">👤 مستخدم عادي</option>
+                            <option value="developer">💻 مطور تطبيقات</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">
                         <span class="material-icons">person_add</span>
-                        إنشاء الحساب
+                        <span>إنشاء الحساب</span>
                     </button>
                 </form>
                 
                 <div class="auth-switch">
-                    لديك حساب بالفعل؟ <a href="#" onclick="showLogin()">سجل الدخول</a>
+                    لديك حساب؟ <a href="#" onclick="showLog();return false;">سجل دخولك</a>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Main App -->
+    <!-- MAIN APP -->
     <div id="mainApp" class="hidden">
         <header>
             <nav class="container nav">
-                <div class="logo" onclick="loadHome()">
+                <div class="logo" onclick="loadPage('home')">
                     <span>🚀</span>
                     <span>Exotisa</span>
                 </div>
-                <div class="nav-actions">
-                    <div class="user-info">
-                        <span class="user-name" id="userName"></span>
-                        <span class="user-role" id="userRole"></span>
+                
+                <ul class="nav-menu">
+                    <li><a href="#" onclick="loadPage('home');return false;" class="active" id="navHome">الرئيسية</a></li>
+                    <li><a href="#" onclick="loadPage('apps');return false;" id="navApps">التطبيقات</a></li>
+                    <li><a href="#" onclick="loadPage('categories');return false;" id="navCats">التصنيفات</a></li>
+                    <li class="hidden" id="navDevLi"><a href="#" onclick="loadPage('dashboard');return false;" id="navDev">لوحة التحكم</a></li>
+                    <li class="hidden" id="navAdminLi"><a href="#" onclick="loadPage('admin');return false;" id="navAdmin">الإدارة</a></li>
+                </ul>
+                
+                <div class="nav-right">
+                    <div class="user-badge">
+                        <div class="user-avatar" id="userAv"></div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName"></div>
+                            <div class="user-role" id="userRole"></div>
+                        </div>
                     </div>
-                    <button class="btn btn-outline" onclick="logout()">
+                    <button class="btn btn-outline" onclick="doLogout()">
                         <span class="material-icons">logout</span>
-                        خروج
+                        <span>خروج</span>
                     </button>
                 </div>
             </nav>
         </header>
         
-        <main class="container" id="mainContent">
+        <main class="container" id="content">
             <div class="loading">
                 <div class="spinner"></div>
+                <div class="loading-text">جارٍ التحميل...</div>
             </div>
         </main>
     </div>
     
+    <!-- APP DETAILS MODAL -->
+    <div class="modal-overlay" id="appModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="appModalTitle"></h2>
+                <button class="modal-close" onclick="closeModal('appModal')">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="modal-body" id="appModalBody"></div>
+        </div>
+    </div>
+    
     <script>
-        // Supabase Config
-        const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // ============================================================
+        // CONFIGURATION
+        // ============================================================
+        const CFG = {
+            supabaseUrl: 'https://qjfpkwyglveukzfazmzo.supabase.co',
+            supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc'
+        };
         
-        let currentUser = null;
-        let currentUserData = null;
+        const sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+        let user = null;
+        let userData = null;
         
-        // Toast Notification
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `
-                <span class="material-icons">${type === 'success' ? 'check_circle' : 'error'}</span>
-                <span>${message}</span>
-            `;
-            container.appendChild(toast);
+        // ============================================================
+        // UTILITIES
+        // ============================================================
+        
+        function toast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            const icons = {success: 'check_circle', error: 'error', info: 'info', warning: 'warning'};
+            t.innerHTML = `<span class="material-icons">${icons[type]}</span><span>${msg}</span>`;
+            c.appendChild(t);
             setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+                t.style.opacity = '0';
+                t.style.transform = 'translateX(-120%)';
+                setTimeout(() => t.remove(), 400);
+            }, 4000);
         }
         
-        // Format Numbers
-        function formatNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-            return num.toString();
+        function fmt(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return n.toString();
         }
         
-        // Auth Functions
-        function showLogin() {
-            document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('registerForm').classList.add('hidden');
-        }
-        
-        function showRegister() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('registerForm').classList.remove('hidden');
-        }
-        
-        async function handleLogin(event) {
-            event.preventDefault();
-            const form = event.target;
-            const email = form.email.value;
-            const password = form.password.value;
-            
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({email, password});
-                if (error) throw error;
-                showToast('تم تسجيل الدخول بنجاح!', 'success');
-            } catch (error) {
-                showToast('خطأ: ' + error.message, 'error');
+        function togglePass(id) {
+            const inp = document.getElementById(id);
+            const btn = inp.parentElement.querySelector('.password-toggle .material-icons');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                btn.textContent = 'visibility';
+            } else {
+                inp.type = 'password';
+                btn.textContent = 'visibility_off';
             }
         }
         
-        async function handleRegister(event) {
-            event.preventDefault();
-            const form = event.target;
-            const email = form.email.value;
-            const password = form.password.value;
-            const fullName = form.fullName.value;
-            const role = form.role.value;
+        function showLog() {
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('registerView').classList.add('hidden');
+        }
+        
+        function showReg() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('registerView').classList.remove('hidden');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        
+        // ============================================================
+        // AUTHENTICATION
+        // ============================================================
+        
+        async function doLogin(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const orig = btn.innerHTML;
             
             try {
-                const { data, error } = await supabase.auth.signUp({
-                    email, password,
-                    options: {data: {full_name: fullName, role: role}}
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-icons">hourglass_empty</span><span>جارٍ الدخول...</span>';
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                
+                const {data, error} = await sb.auth.signInWithPassword({email, password});
+                
+                if (error) throw error;
+                
+                toast('تم تسجيل الدخول بنجاح! 🎉', 'success');
+                
+            } catch (err) {
+                console.error('Login error:', err);
+                let msg = 'خطأ في تسجيل الدخول';
+                if (err.message.includes('Invalid login')) msg = 'البريد أو كلمة المرور غير صحيحة';
+                else if (err.message.includes('Email not confirmed')) msg = 'يرجى تأكيد بريدك الإلكتروني';
+                else msg = err.message;
+                toast(msg, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+            
+            return false;
+        }
+        
+        async function doRegister(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const orig = btn.innerHTML;
+            
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-icons">hourglass_empty</span><span>جارٍ الإنشاء...</span>';
+                
+                const email = document.getElementById('regEmail').value.trim();
+                const password = document.getElementById('regPassword').value;
+                const name = document.getElementById('regName').value.trim();
+                const role = document.getElementById('regRole').value;
+                
+                const {data, error} = await sb.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name,
+                            role: role
+                        }
+                    }
                 });
+                
                 if (error) throw error;
-                showToast('تم إنشاء الحساب! تحقق من بريدك الإلكتروني.', 'success');
-                showLogin();
-            } catch (error) {
-                showToast('خطأ: ' + error.message, 'error');
+                
+                toast('تم إنشاء الحساب! تحقق من بريدك للتأكيد 📧', 'success');
+                e.target.reset();
+                setTimeout(() => showLog(), 2000);
+                
+            } catch (err) {
+                console.error('Register error:', err);
+                let msg = 'خطأ في إنشاء الحساب';
+                if (err.message.includes('already registered')) msg = 'البريد مسجل بالفعل';
+                else if (err.message.includes('Password')) msg = 'كلمة المرور ضعيفة (6 أحرف على الأقل)';
+                else msg = err.message;
+                toast(msg, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = orig;
             }
+            
+            return false;
         }
         
-        async function loginWithGoogle() {
+        async function doGoogleLogin() {
             try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
+                const {data, error} = await sb.auth.signInWithOAuth({
                     provider: 'google',
                     options: {redirectTo: window.location.origin}
                 });
+                
                 if (error) throw error;
-            } catch (error) {
-                showToast('خطأ: ' + error.message, 'error');
+                
+            } catch (err) {
+                console.error('Google login error:', err);
+                toast('خطأ في Google OAuth: ' + err.message, 'error');
             }
         }
         
-        async function logout() {
+        async function doLogout() {
             try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                showToast('تم تسجيل الخروج بنجاح', 'success');
-            } catch (error) {
-                showToast('خطأ: ' + error.message, 'error');
+                await sb.auth.signOut();
+                toast('تم تسجيل الخروج', 'success');
+            } catch (err) {
+                toast('خطأ: ' + err.message, 'error');
             }
         }
         
-        // Auth State Listener
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'SIGNED_IN') {
-                currentUser = session.user;
-                const { data: userData } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
+        // ============================================================
+        // AUTH STATE LISTENER
+        // ============================================================
+        
+        sb.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth event:', event);
+            
+            if (event === 'SIGNED_IN' && session) {
+                user = session.user;
+                
+                let retries = 3;
+                while (retries > 0) {
+                    const {data, error} = await sb.from('users').select('*').eq('id', user.id).single();
+                    if (data) {
+                        userData = data;
+                        break;
+                    }
+                    retries--;
+                    await new Promise(r => setTimeout(r, 1000));
+                }
                 
                 if (userData) {
-                    currentUserData = userData;
                     document.getElementById('authPage').classList.add('hidden');
                     document.getElementById('mainApp').classList.remove('hidden');
-                    document.getElementById('userName').textContent = userData.full_name || userData.email;
-                    document.getElementById('userRole').textContent = userData.role === 'admin' ? 'مدير' : userData.role === 'developer' ? 'مطور' : 'مستخدم';
-                    await loadHome();
+                    
+                    const initials = (userData.full_name || userData.email)
+                        .split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
+                    
+                    document.getElementById('userAv').textContent = initials;
+                    document.getElementById('userName').textContent = userData.full_name || userData.email.split('@')[0];
+                    
+                    const roles = {admin:'👑 مدير',developer:'💻 مطور',user:'👤 مستخدم'};
+                    document.getElementById('userRole').textContent = roles[userData.role] || '👤 مستخدم';
+                    
+                    if (userData.role === 'developer' || userData.role === 'admin') {
+                        document.getElementById('navDevLi').classList.remove('hidden');
+                    }
+                    if (userData.role === 'admin') {
+                        document.getElementById('navAdminLi').classList.remove('hidden');
+                    }
+                    
+                    await loadPage('home');
                 }
+                
             } else if (event === 'SIGNED_OUT') {
-                currentUser = null;
-                currentUserData = null;
+                user = null;
+                userData = null;
                 document.getElementById('authPage').classList.remove('hidden');
                 document.getElementById('mainApp').classList.add('hidden');
-                showLogin();
+                document.getElementById('navDevLi').classList.add('hidden');
+                document.getElementById('navAdminLi').classList.add('hidden');
+                showLog();
             }
         });
         
-        // Load Home Page
-        async function loadHome() {
-            const content = document.getElementById('mainContent');
-            content.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        // ============================================================
+        // PAGES
+        // ============================================================
+        
+        async function loadPage(page) {
+            const c = document.getElementById('content');
+            c.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">جارٍ التحميل...</div></div>';
+            
+            document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+            const navId = 'nav' + page.charAt(0).toUpperCase() + page.slice(1);
+            const navEl = document.getElementById(navId);
+            if (navEl) navEl.classList.add('active');
             
             try {
-                const [statsResult, appsResult, categoriesResult] = await Promise.all([
-                    supabase.from('apps').select('id', {count: 'exact', head: true}),
-                    supabase.from('apps_with_stats').select('*').eq('status', 'approved').order('downloads_count', {ascending: false}).limit(12),
-                    supabase.from('categories').select('*').order('name')
-                ]);
-                
-                const stats = {apps: statsResult.count || 0};
-                const apps = appsResult.data || [];
-                const categories = categoriesResult.data || [];
-                
-                content.innerHTML = `
-                    <section class="hero">
-                        <h1 class="hero-title">Exotisa App Store</h1>
-                        <p class="hero-subtitle">اكتشف أفضل التطبيقات العربية في مكان واحد</p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" onclick="loadApps()">
-                                <span class="material-icons">apps</span>
-                                تصفح التطبيقات
+                if (page === 'home') await renderHome(c);
+                else if (page === 'apps') await renderApps(c);
+                else if (page === 'categories') await renderCategories(c);
+                else if (page === 'dashboard') await renderDashboard(c);
+                else if (page === 'admin') await renderAdmin(c);
+            } catch (err) {
+                console.error('Page load error:', err);
+                c.innerHTML = `<div class="loading"><p style="color:var(--error);">خطأ: ${err.message}</p></div>`;
+                toast('خطأ في تحميل الصفحة', 'error');
+            }
+        }
+        
+        async function renderHome(c) {
+            const [stats, apps, cats] = await Promise.all([
+                sb.from('apps').select('id', {count:'exact',head:true}),
+                sb.from('apps_with_stats').select('*').eq('status','approved').order('downloads_count',{ascending:false}).limit(12),
+                sb.from('categories').select('*').order('name')
+            ]);
+            
+            const appsList = apps.data || [];
+            const catsList = cats.data || [];
+            
+            c.innerHTML = `
+                <section class="hero">
+                    <h1 class="hero-title">Exotisa App Store</h1>
+                    <p class="hero-subtitle">اكتشف أفضل التطبيقات العربية في مكان واحد</p>
+                    <div class="hero-cta">
+                        <button class="btn btn-primary" onclick="loadPage('apps')">
+                            <span class="material-icons">apps</span>
+                            <span>استكشف التطبيقات</span>
+                        </button>
+                        ${userData.role === 'developer' || userData.role === 'admin' ? `
+                            <button class="btn btn-outline" onclick="loadPage('dashboard')">
+                                <span class="material-icons">dashboard</span>
+                                <span>لوحة التحكم</span>
                             </button>
-                        </div>
-                    </section>
-                    
-                    <section class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">${formatNumber(stats.apps)}</div>
-                            <div class="stat-label">تطبيق متاح</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${formatNumber(categories.length)}</div>
-                            <div class="stat-label">تصنيف</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">100%</div>
-                            <div class="stat-label">آمن ومجاني</div>
-                        </div>
-                    </section>
-                    
-                    <h2 class="section-title">الأكثر تحميلاً</h2>
-                    <div class="app-grid" id="appsGrid">
-                        ${apps.map(app => `
-                            <div class="app-card" onclick="showAppDetails('${app.id}')">
-                                <img src="${app.icon_url}" alt="${app.name}" class="app-icon">
-                                <div class="app-info">
-                                    <div class="app-title">${app.name}</div>
-                                    <div class="app-developer">${app.developer_name}</div>
-                                    <div class="app-stats">
-                                        <div class="rating">
-                                            <span class="material-icons">star</span>
-                                            <span>${app.rating || 0}</span>
-                                        </div>
-                                        <div class="downloads">
-                                            <span class="material-icons">download</span>
-                                            <span>${formatNumber(app.downloads_count)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
+                        ` : ''}
                     </div>
-                `;
-            } catch (error) {
-                content.innerHTML = `<div class="loading"><p>حدث خطأ في تحميل البيانات</p></div>`;
-                showToast('خطأ: ' + error.message, 'error');
-            }
+                </section>
+                
+                <section class="stats">
+                    <div class="stat-box">
+                        <div class="stat-emoji">📱</div>
+                        <div class="stat-value">${fmt(stats.count || 0)}</div>
+                        <div class="stat-label">تطبيق متاح</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-emoji">🗂️</div>
+                        <div class="stat-value">${fmt(catsList.length)}</div>
+                        <div class="stat-label">تصنيف</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-emoji">🔒</div>
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">آمن ومجاني</div>
+                    </div>
+                </section>
+                
+                ${appsList.length > 0 ? `
+                    <h2 class="section-heading">✨ الأكثر شعبية</h2>
+                    <div class="apps-grid">
+                        ${appsList.map(app => renderAppCard(app)).join('')}
+                    </div>
+                ` : '<p style="text-align:center;color:var(--text-3);padding:60px 20px;font-size:18px;">لا توجد تطبيقات حالياً</p>'}
+            `;
         }
         
-        // Load Apps Page
-        async function loadApps() {
-            const content = document.getElementById('mainContent');
-            content.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        async function renderApps(c) {
+            const [apps, cats] = await Promise.all([
+                sb.from('apps_with_stats').select('*').eq('status','approved').order('downloads_count',{ascending:false}),
+                sb.from('categories').select('*').order('name')
+            ]);
             
-            try {
-                const [appsResult, categoriesResult] = await Promise.all([
-                    supabase.from('apps_with_stats').select('*').eq('status', 'approved').order('downloads_count', {ascending: false}),
-                    supabase.from('categories').select('*').order('name')
-                ]);
+            const appsList = apps.data || [];
+            const catsList = cats.data || [];
+            
+            c.innerHTML = `
+                <h1 class="section-heading">📱 جميع التطبيقات</h1>
                 
-                const apps = appsResult.data || [];
-                const categories = categoriesResult.data || [];
-                
-                content.innerHTML = `
-                    <h1 class="section-title">جميع التطبيقات</h1>
-                    
-                    <div class="category-chips">
-                        <div class="category-chip active" onclick="filterApps('all')">
-                            <span>الكل</span>
+                <div class="categories">
+                    <div class="cat-chip active" onclick="filterByCategory(null,event)">
+                        <span>الكل</span>
+                    </div>
+                    ${catsList.map(cat => `
+                        <div class="cat-chip" onclick="filterByCategory('${cat.id}',event)">
+                            <span>${cat.icon}</span>
+                            <span>${cat.name}</span>
                         </div>
-                        ${categories.map(cat => `
-                            <div class="category-chip" onclick="filterApps('${cat.id}')">
-                                <span>${cat.icon}</span>
-                                <span>${cat.name}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    
-                    <div class="app-grid" id="appsGrid">
-                        ${apps.map(app => `
-                            <div class="app-card" data-category="${app.category_id}">
-                                <img src="${app.icon_url}" alt="${app.name}" class="app-icon">
-                                <div class="app-info">
-                                    <div class="app-title">${app.name}</div>
-                                    <div class="app-developer">${app.developer_name}</div>
-                                    <div class="app-stats">
-                                        <div class="rating">
-                                            <span class="material-icons">star</span>
-                                            <span>${app.rating || 0}</span>
-                                        </div>
-                                        <div class="downloads">
-                                            <span class="material-icons">download</span>
-                                            <span>${formatNumber(app.downloads_count)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } catch (error) {
-                content.innerHTML = `<div class="loading"><p>حدث خطأ في تحميل التطبيقات</p></div>`;
-                showToast('خطأ: ' + error.message, 'error');
-            }
+                    `).join('')}
+                </div>
+                
+                <div class="apps-grid" id="appsGrid">
+                    ${appsList.map(app => renderAppCard(app)).join('')}
+                </div>
+            `;
         }
         
-        // Filter Apps by Category
-        function filterApps(categoryId) {
-            const allCards = document.querySelectorAll('.app-card');
-            const chips = document.querySelectorAll('.category-chip');
+        async function renderCategories(c) {
+            const {data} = await sb.from('categories').select('*').order('name');
+            const cats = data || [];
             
-            chips.forEach(chip => chip.classList.remove('active'));
-            event.target.closest('.category-chip').classList.add('active');
+            c.innerHTML = `
+                <h1 class="section-heading">🗂️ التصنيفات</h1>
+                <div class="apps-grid">
+                    ${cats.map(cat => `
+                        <div class="app-card" onclick="loadPage('apps');setTimeout(()=>filterByCategory('${cat.id}'),100)">
+                            <div style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:80px;background:rgba(45,36,56,0.4);">
+                                ${cat.icon}
+                            </div>
+                            <div class="app-body">
+                                <div class="app-name">${cat.name}</div>
+                                <div class="app-dev">${cat.description}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        async function renderDashboard(c) {
+            if (!userData || (userData.role !== 'developer' && userData.role !== 'admin')) {
+                c.innerHTML = '<p style="text-align:center;color:var(--error);padding:60px;">غير مصرح</p>';
+                return;
+            }
             
-            allCards.forEach(card => {
-                if (categoryId === 'all' || card.dataset.category === categoryId) {
+            const {data} = await sb.from('apps_with_stats').select('*').eq('developer_id',user.id).order('created_at',{ascending:false});
+            const myApps = data || [];
+            
+            c.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
+                    <h1 class="section-heading" style="margin:0;">💻 لوحة تحكم المطور</h1>
+                    <button class="btn btn-primary" onclick="toast('رفع التطبيقات قريباً!','info')">
+                        <span class="material-icons">add</span>
+                        <span>رفع تطبيق</span>
+                    </button>
+                </div>
+                
+                <div style="background:rgba(45,36,56,0.5);border:1px solid rgba(255,107,157,0.15);border-radius:20px;padding:28px;">
+                    <h2 style="font-size:24px;font-weight:700;margin-bottom:20px;">تطبيقاتي</h2>
+                    
+                    ${myApps.length > 0 ? `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>التطبيق</th>
+                                    <th>الإصدار</th>
+                                    <th>الحالة</th>
+                                    <th>التحميلات</th>
+                                    <th>التقييم</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${myApps.map(app => `
+                                    <tr>
+                                        <td>
+                                            <div style="display:flex;align-items:center;gap:12px;">
+                                                <img src="${app.icon_url}" alt="${app.name}">
+                                                <span style="font-weight:700;">${app.name}</span>
+                                            </div>
+                                        </td>
+                                        <td>${app.version}</td>
+                                        <td>
+                                            <span class="badge ${app.status==='approved'?'success':app.status==='pending'?'warning':'error'}">
+                                                ${app.status==='approved'?'مفعّل':app.status==='pending'?'قيد المراجعة':'مرفوض'}
+                                            </span>
+                                        </td>
+                                        <td>${fmt(app.downloads_count)}</td>
+                                        <td>
+                                            <div class="app-rating">
+                                                <span class="material-icons">star</span>
+                                                <span>${app.rating||0}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    ` : '<p style="text-align:center;color:var(--text-3);padding:40px;">لم ترفع أي تطبيقات بعد</p>'}
+                </div>
+            `;
+        }
+        
+        async function renderAdmin(c) {
+            if (!userData || userData.role !== 'admin') {
+                c.innerHTML = '<p style="text-align:center;color:var(--error);padding:60px;">غير مصرح</p>';
+                return;
+            }
+            
+            const {data} = await sb.from('apps_with_developer').select('*').eq('status','pending').order('created_at',{ascending:false});
+            const pending = data || [];
+            
+            c.innerHTML = `
+                <h1 class="section-heading">👑 لوحة الإدارة</h1>
+                
+                <div style="background:rgba(45,36,56,0.5);border:1px solid rgba(255,107,157,0.15);border-radius:20px;padding:28px;">
+                    <h2 style="font-size:24px;font-weight:700;margin-bottom:20px;">التطبيقات قيد المراجعة (${pending.length})</h2>
+                    
+                    ${pending.length > 0 ? `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>التطبيق</th>
+                                    <th>المطور</th>
+                                    <th>الإصدار</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${pending.map(app => `
+                                    <tr>
+                                        <td>
+                                            <div style="display:flex;align-items:center;gap:12px;">
+                                                <img src="${app.icon_url}" alt="${app.name}">
+                                                <span style="font-weight:700;">${app.name}</span>
+                                            </div>
+                                        </td>
+                                        <td>${app.developer_name}</td>
+                                        <td>${app.version}</td>
+                                        <td>
+                                            <button class="btn btn-outline" onclick="approveApp('${app.id}')" 
+                                                    style="padding:8px 16px;font-size:14px;">
+                                                <span class="material-icons">check</span>
+                                                <span>قبول</span>
+                                            </button>
+                                            <button class="btn btn-outline" onclick="rejectApp('${app.id}')" 
+                                                    style="padding:8px 16px;font-size:14px;color:var(--error);border-color:var(--error);">
+                                                <span class="material-icons">close</span>
+                                                <span>رفض</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    ` : '<p style="text-align:center;color:var(--text-3);padding:40px;">لا توجد تطبيقات قيد المراجعة</p>'}
+                </div>
+            `;
+        }
+        
+        function renderAppCard(app) {
+            return `
+                <div class="app-card" data-category="${app.category_id||''}" onclick="showAppModal('${app.id}')">
+                    <img src="${app.icon_url}" alt="${app.name}" class="app-icon" 
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232d2438%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ff6b9d%22 font-size=%2240%22>📱</text></svg>'">
+                    <div class="app-body">
+                        <div class="app-name">${app.name}</div>
+                        <div class="app-dev">${app.developer_name||'مطور'}</div>
+                        <div class="app-footer">
+                            <div class="app-rating">
+                                <span class="material-icons">star</span>
+                                <span>${app.rating||0}</span>
+                            </div>
+                            <div class="app-downloads">
+                                <span class="material-icons">download</span>
+                                <span>${fmt(app.downloads_count)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function filterByCategory(catId, e) {
+            const cards = document.querySelectorAll('.app-card');
+            const chips = document.querySelectorAll('.cat-chip');
+            
+            chips.forEach(ch => ch.classList.remove('active'));
+            e.target.closest('.cat-chip').classList.add('active');
+            
+            cards.forEach(card => {
+                if (!catId || card.dataset.category === catId) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
@@ -588,49 +1049,136 @@
             });
         }
         
-        // Show App Details (placeholder)
-        function showAppDetails(appId) {
-            showToast('تفاصيل التطبيق قريباً...', 'info');
+        async function showAppModal(appId) {
+            const {data:app} = await sb.from('apps_with_developer').select('*').eq('id',appId).single();
+            if (!app) return;
+            
+            document.getElementById('appModalTitle').textContent = app.name;
+            document.getElementById('appModalBody').innerHTML = `
+                <div style="display:grid;grid-template-columns:180px 1fr;gap:24px;margin-bottom:28px;">
+                    <img src="${app.icon_url}" style="width:180px;height:180px;border-radius:20px;">
+                    <div>
+                        <div style="font-size:18px;color:var(--text-2);margin-bottom:12px;">
+                            <strong>المطور:</strong> ${app.developer_name}
+                        </div>
+                        <div style="font-size:16px;color:var(--text-2);margin-bottom:12px;">
+                            <strong>الإصدار:</strong> ${app.version}
+                        </div>
+                        <div style="font-size:16px;color:var(--text-2);margin-bottom:20px;">
+                            <strong>التصنيف:</strong> ${app.category_icon||''} ${app.category_name||'غير محدد'}
+                        </div>
+                        <div style="display:flex;gap:12px;">
+                            <button class="btn btn-primary" onclick="downloadApp('${app.id}','${app.apk_url}')">
+                                <span class="material-icons">download</span>
+                                <span>تحميل APK</span>
+                            </button>
+                            <button class="btn btn-outline" onclick="toast('المفضلة قريباً!','info')">
+                                <span class="material-icons">favorite</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:28px;">
+                    <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;">📝 الوصف</h3>
+                    <p style="color:var(--text-2);line-height:1.8;">${app.full_description}</p>
+                </div>
+                
+                ${app.screenshots && app.screenshots.length > 0 ? `
+                    <div style="margin-bottom:28px;">
+                        <h3 style="font-size:20px;font-weight:700;margin-bottom:16px;">📸 لقطات الشاشة</h3>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+                            ${app.screenshots.map(url => `
+                                <img src="${url}" style="width:100%;border-radius:12px;">
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div>
+                    <h3 style="font-size:20px;font-weight:700;margin-bottom:16px;">⭐ التقييمات</h3>
+                    <p style="color:var(--text-3);">نظام التقييمات قريباً...</p>
+                </div>
+            `;
+            
+            document.getElementById('appModal').classList.add('active');
         }
         
-        // Three.js Background
-        function initThreeBackground() {
-            const container = document.getElementById('threeBackground');
+        async function downloadApp(appId, apkUrl) {
+            try {
+                await sb.from('downloads').insert({
+                    app_id: appId,
+                    user_id: user.id,
+                    device_fingerprint: navigator.userAgent
+                });
+                
+                window.open(apkUrl, '_blank');
+                toast('بدأ التحميل! 📥', 'success');
+            } catch (err) {
+                console.error('Download error:', err);
+                toast('خطأ في التحميل', 'error');
+            }
+        }
+        
+        async function approveApp(appId) {
+            try {
+                await sb.from('apps').update({status:'approved'}).eq('id',appId);
+                toast('تم قبول التطبيق!','success');
+                await loadPage('admin');
+            } catch (err) {
+                toast('خطأ: '+err.message,'error');
+            }
+        }
+        
+        async function rejectApp(appId) {
+            try {
+                await sb.from('apps').update({status:'rejected'}).eq('id',appId);
+                toast('تم رفض التطبيق','info');
+                await loadPage('admin');
+            } catch (err) {
+                toast('خطأ: '+err.message,'error');
+            }
+        }
+        
+        // ============================================================
+        // THREE.JS BACKGROUND
+        // ============================================================
+        
+        function initThree() {
+            const canvas = document.getElementById('threeCanvas');
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({alpha: true});
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
             
             renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
             
-            const geometry = new THREE.IcosahedronGeometry(1, 1);
-            const material = new THREE.MeshBasicMaterial({color: 0x6366f1, wireframe: true});
+            const geo = new THREE.TorusGeometry(1, 0.4, 16, 100);
+            const mat = new THREE.MeshBasicMaterial({color:0xff6b9d, wireframe:true});
             
-            const particles = [];
-            for (let i = 0; i < 50; i++) {
-                const mesh = new THREE.Mesh(geometry, material);
+            const shapes = [];
+            for (let i = 0; i < 40; i++) {
+                const mesh = new THREE.Mesh(geo, mat);
                 mesh.position.set(
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20
+                    Math.random() * 60 - 30,
+                    Math.random() * 60 - 30,
+                    Math.random() * 60 - 30
                 );
-                mesh.scale.setScalar(Math.random() * 0.5 + 0.1);
+                mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                mesh.scale.setScalar(Math.random() * 0.5 + 0.2);
                 scene.add(mesh);
-                particles.push(mesh);
+                shapes.push({mesh, speedX: Math.random() * 0.002, speedY: Math.random() * 0.003});
             }
             
-            camera.position.z = 15;
+            camera.position.z = 20;
             
             function animate() {
                 requestAnimationFrame(animate);
-                particles.forEach((particle, i) => {
-                    particle.rotation.x += 0.001;
-                    particle.rotation.y += 0.002;
-                    particle.position.y += Math.sin(Date.now() * 0.001 + i) * 0.001;
+                shapes.forEach(s => {
+                    s.mesh.rotation.x += s.speedX;
+                    s.mesh.rotation.y += s.speedY;
                 });
                 renderer.render(scene, camera);
             }
-            
             animate();
             
             window.addEventListener('resize', () => {
@@ -640,15 +1188,19 @@
             });
         }
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            initThreeBackground();
-            supabase.auth.getSession().then(({data: {session}}) => {
-                if (!session) {
-                    document.getElementById('authPage').classList.remove('hidden');
-                    document.getElementById('mainApp').classList.add('hidden');
-                }
-            });
+        // ============================================================
+        // INIT
+        // ============================================================
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Exotisa App Store initialized');
+            initThree();
+            
+            const {data:{session}} = await sb.auth.getSession();
+            if (!session) {
+                document.getElementById('authPage').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+            }
         });
     </script>
 </body>
