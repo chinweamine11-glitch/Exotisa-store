@@ -1,983 +1,259 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Exotisa App Store - Your premium destination for Android applications">
-    <meta name="keywords" content="android, apps, download, exotisa, app store">
-    <meta name="author" content="Exotisa Team">
     <title>Exotisa App Store - Premium Android Apps</title>
-    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    
     <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;}
         :root {
-            --bg-primary: #0a0e27;
-            --bg-secondary: #141937;
-            --bg-tertiary: #1e2444;
-            --bg-card: #1a1f3a;
-            --bg-card-hover: #252b4a;
-            --text-primary: #ffffff;
-            --text-secondary: #b8c1ec;
-            --text-tertiary: #8891b8;
-            --accent-primary: #6366f1;
-            --accent-secondary: #8b5cf6;
-            --accent-tertiary: #ec4899;
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --info: #3b82f6;
-            --spacing-xs: 0.25rem;
-            --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            --spacing-2xl: 3rem;
-            --font-family: 'Cairo', sans-serif;
-            --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-md: 1rem;
-            --font-size-lg: 1.125rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-            --font-size-3xl: 2rem;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
-            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
-            --radius-sm: 0.375rem;
-            --radius-md: 0.5rem;
-            --radius-lg: 0.75rem;
-            --radius-xl: 1rem;
-            --radius-2xl: 1.5rem;
-            --radius-full: 9999px;
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #0a0e27;--card: #1a1f3a;--text: #ffffff;--text-sec: #b8c1ec;--accent: #6366f1;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            --success: #10b981;--error: #ef4444;--warning: #f59e0b;
         }
+        body {font-family: 'Cairo', sans-serif;background: var(--bg);color: var(--text);overflow-x: hidden;}
+        .hidden {display: none !important;}
+        .container {max-width: 1280px;margin: 0 auto;padding: 0 1.5rem;}
         
-        [data-theme="light"] {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-tertiary: #f1f5f9;
-            --bg-card: #ffffff;
-            --bg-card-hover: #f8fafc;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-tertiary: #64748b;
+        /* Auth Page */
+        #authPage {
+            min-height: 100vh;display: flex;align-items: center;justify-content: center;
+            background: linear-gradient(135deg, #0a0e27 0%, #141937 50%, #1e2444 100%);
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .auth-box {
+            background: var(--card);border-radius: 1.5rem;padding: 3rem;width: 90%;max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);position: relative;overflow: hidden;
         }
-        
-        html {
-            scroll-behavior: smooth;
+        .auth-box::before {
+            content: '';position: absolute;top: 0;left: 0;right: 0;height: 4px;
+            background: var(--gradient);
         }
-        
-        body {
-            font-family: var(--font-family);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-        
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .items-center { align-items: center; }
-        .justify-center { justify-content: center; }
-        .justify-between { justify-content: space-between; }
-        .gap-sm { gap: var(--spacing-sm); }
-        .gap-md { gap: var(--spacing-md); }
-        .gap-lg { gap: var(--spacing-lg); }
-        .hidden { display: none !important; }
-        .visible { display: block !important; }
-        .text-center { text-align: center; }
-        .text-sm { font-size: var(--font-size-sm); }
-        .text-lg { font-size: var(--font-size-lg); }
-        .text-xl { font-size: var(--font-size-xl); }
-        .text-2xl { font-size: var(--font-size-2xl); }
-        .text-3xl { font-size: var(--font-size-3xl); }
-        .font-bold { font-weight: 700; }
-        .font-semibold { font-weight: 600; }
-        .mt-sm { margin-top: var(--spacing-sm); }
-        .mt-md { margin-top: var(--spacing-md); }
-        .mt-lg { margin-top: var(--spacing-lg); }
-        .mb-md { margin-bottom: var(--spacing-md); }
-        .mb-lg { margin-bottom: var(--spacing-lg); }
-        
-        #three-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.3;
-        }
-        
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(10, 14, 39, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-            padding: var(--spacing-md) 0;
-        }
-        
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            font-size: var(--font-size-2xl);
+        .logo-big {
+            text-align: center;font-size: 4rem;margin-bottom: 1rem;
+            background: var(--gradient);-webkit-background-clip: text;-webkit-text-fill-color: transparent;
             font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-            transition: transform var(--transition-fast);
         }
-        
-        .logo:hover {
-            transform: scale(1.05);
+        .auth-title {font-size: 2rem;text-align: center;margin-bottom: 2rem;font-weight: 700;}
+        .form-group {margin-bottom: 1.5rem;}
+        .form-label {display: block;margin-bottom: 0.5rem;font-weight: 600;color: var(--text-sec);}
+        .form-input, .form-select {
+            width: 100%;padding: 1rem;background: #141937;border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 0.75rem;color: var(--text);font-family: 'Cairo';font-size: 1rem;
+            transition: all 0.3s;
         }
-        
-        .nav-links {
-            display: flex;
-            gap: var(--spacing-lg);
-            list-style: none;
+        .form-input:focus, .form-select:focus {
+            outline: none;border-color: var(--accent);box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
         }
-        
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-md);
-            transition: all var(--transition-fast);
-            position: relative;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent-primary);
-            background: rgba(99, 102, 241, 0.1);
-        }
-        
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 3px;
-            background: var(--accent-gradient);
-            border-radius: var(--radius-full);
-        }
-        
-        .nav-actions {
-            display: flex;
-            gap: var(--spacing-md);
-            align-items: center;
-        }
-        
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: var(--spacing-sm);
-            border-radius: var(--radius-full);
-            transition: all var(--transition-fast);
-        }
-        
-        .theme-toggle:hover {
-            background: rgba(99, 102, 241, 0.1);
-            transform: rotate(180deg);
-        }
-        
-        .search-container {
-            position: relative;
-            width: 400px;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: var(--spacing-sm) var(--spacing-md);
-            padding-right: 45px;
-            background: var(--bg-card);
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: var(--radius-full);
-            color: var(--text-primary);
-            font-family: var(--font-family);
-            transition: all var(--transition-fast);
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: var(--spacing-md);
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-tertiary);
-        }
-        
-        .search-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            margin-top: var(--spacing-sm);
-            box-shadow: var(--shadow-xl);
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 100;
-        }
-        
-        .suggestion-item {
-            padding: var(--spacing-md);
-            cursor: pointer;
-            transition: background var(--transition-fast);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-        
-        .suggestion-item:hover {
-            background: var(--bg-card-hover);
-        }
-        
-        .suggestion-item img {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-md);
-        }
-        
         .btn {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            border: none;
-            border-radius: var(--radius-lg);
-            font-family: var(--font-family);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            text-decoration: none;
+            padding: 1rem 2rem;border: none;border-radius: 0.75rem;font-family: 'Cairo';
+            font-weight: 600;cursor: pointer;transition: all 0.3s;display: inline-flex;
+            align-items: center;gap: 0.5rem;justify-content: center;text-decoration: none;
         }
-        
         .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: var(--shadow-md);
+            background: var(--gradient);color: white;width: 100%;font-size: 1.1rem;
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg), var(--shadow-glow);
-        }
-        
+        .btn-primary:hover {transform: translateY(-2px);box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);}
         .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border: 2px solid rgba(99, 102, 241, 0.2);
+            background: var(--card);color: var(--text);border: 2px solid rgba(99, 102, 241, 0.2);
+            width: 100%;
+        }
+        .btn-secondary:hover {border-color: var(--accent);background: #252b4a;}
+        .btn-outline {background: transparent;color: var(--accent);border: 2px solid var(--accent);}
+        .btn-outline:hover {background: var(--accent);color: white;}
+        .auth-switch {
+            text-align: center;margin-top: 1.5rem;color: var(--text-sec);
+        }
+        .auth-switch a {color: var(--accent);text-decoration: none;font-weight: 600;}
+        .auth-switch a:hover {text-decoration: underline;}
+        .divider {
+            margin: 1.5rem 0;text-align: center;color: var(--text-sec);position: relative;
+        }
+        .divider::before, .divider::after {
+            content: '';position: absolute;top: 50%;width: 40%;height: 1px;
+            background: rgba(99, 102, 241, 0.2);
+        }
+        .divider::before {left: 0;}
+        .divider::after {right: 0;}
+        
+        /* Main App */
+        #mainApp {min-height: 100vh;}
+        header {
+            position: sticky;top: 0;z-index: 1000;background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(20px);border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 1rem 0;
+        }
+        .nav {display: flex;align-items: center;justify-content: space-between;}
+        .logo {
+            display: flex;align-items: center;gap: 0.5rem;font-size: 1.5rem;font-weight: 900;
+            background: var(--gradient);-webkit-background-clip: text;-webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+        .nav-actions {display: flex;gap: 1rem;align-items: center;}
+        .user-info {
+            display: flex;align-items: center;gap: 1rem;padding: 0.5rem 1rem;
+            background: var(--card);border-radius: 2rem;
+        }
+        .user-name {font-weight: 600;}
+        .user-role {
+            padding: 0.25rem 0.75rem;background: rgba(99, 102, 241, 0.2);
+            border-radius: 1rem;font-size: 0.75rem;color: var(--accent);
         }
         
-        .btn-secondary:hover {
-            border-color: var(--accent-primary);
-            background: var(--bg-card-hover);
+        /* Content */
+        .hero {padding: 3rem 0;text-align: center;}
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 4rem);font-weight: 900;
+            background: var(--gradient);-webkit-background-clip: text;-webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
         }
+        .hero-subtitle {font-size: 1.25rem;color: var(--text-sec);margin-bottom: 2rem;}
+        .hero-actions {display: flex;gap: 1rem;justify-content: center;flex-wrap: wrap;}
         
-        .btn-outline {
-            background: transparent;
-            color: var(--accent-primary);
-            border: 2px solid var(--accent-primary);
+        .stats-grid {
+            display: grid;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;margin: 3rem 0;
         }
-        
-        .btn-outline:hover {
-            background: var(--accent-primary);
-            color: white;
+        .stat-card {
+            text-align: center;padding: 2rem;background: var(--card);border-radius: 1rem;
+            position: relative;overflow: hidden;
         }
-        
-        .btn-danger {
-            background: var(--error);
-            color: white;
+        .stat-card::before {
+            content: '';position: absolute;top: 0;left: 0;right: 0;height: 3px;
+            background: var(--gradient);transform: scaleX(0);transition: transform 0.3s;
         }
-        
-        .btn-danger:hover {
-            background: #dc2626;
+        .stat-card:hover::before {transform: scaleX(1);}
+        .stat-value {
+            font-size: 2rem;font-weight: 900;background: var(--gradient);
+            -webkit-background-clip: text;-webkit-text-fill-color: transparent;
         }
+        .stat-label {color: var(--text-sec);margin-top: 0.5rem;}
         
-        .btn-icon {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-full);
+        .category-chips {display: flex;gap: 1rem;flex-wrap: wrap;justify-content: center;margin: 2rem 0;}
+        .category-chip {
+            padding: 0.5rem 1.5rem;background: var(--card);border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 2rem;cursor: pointer;transition: all 0.3s;display: flex;
+            align-items: center;gap: 0.5rem;
         }
-        
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            transition: all var(--transition-base);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent-gradient);
-            transform: scaleX(0);
-            transition: transform var(--transition-base);
-        }
-        
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-xl);
+        .category-chip:hover, .category-chip.active {
+            background: var(--gradient);border-color: transparent;color: white;
+            transform: translateY(-2px);
         }
         
         .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-xl);
+            display: grid;grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;margin-top: 2rem;
         }
-        
         .app-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            position: relative;
+            background: var(--card);border-radius: 1rem;overflow: hidden;
+            cursor: pointer;transition: all 0.3s;
         }
-        
         .app-card:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--shadow-xl), 0 0 30px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
         }
-        
-        .app-icon {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-        }
-        
-        .app-info {
-            padding: var(--spacing-md);
-        }
-        
-        .app-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            margin-bottom: var(--spacing-xs);
-            color: var(--text-primary);
-        }
-        
-        .app-developer {
-            font-size: var(--font-size-sm);
-            color: var(--text-tertiary);
-            margin-bottom: var(--spacing-sm);
-        }
-        
+        .app-icon {width: 100%;aspect-ratio: 1;object-fit: cover;border-bottom: 1px solid rgba(99, 102, 241, 0.1);}
+        .app-info {padding: 1rem;}
+        .app-title {font-size: 1.125rem;font-weight: 700;margin-bottom: 0.25rem;}
+        .app-developer {font-size: 0.875rem;color: var(--text-sec);margin-bottom: 0.5rem;}
         .app-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: var(--spacing-md);
-            padding-top: var(--spacing-md);
-            border-top: 1px solid rgba(99, 102, 241, 0.1);
+            display: flex;justify-content: space-between;align-items: center;
+            margin-top: 1rem;padding-top: 1rem;border-top: 1px solid rgba(99, 102, 241, 0.1);
         }
+        .rating {display: flex;align-items: center;gap: 0.25rem;color: var(--warning);}
+        .downloads {display: flex;align-items: center;gap: 0.25rem;color: var(--text-sec);font-size: 0.875rem;}
         
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            color: var(--warning);
-        }
-        
-        .downloads {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            color: var(--text-tertiary);
-            font-size: var(--font-size-sm);
-        }
-        
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity var(--transition-base);
-        }
-        
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .modal {
-            background: var(--bg-card);
-            border-radius: var(--radius-2xl);
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-xl);
-            transform: scale(0.9);
-            transition: transform var(--transition-base);
-        }
-        
-        .modal-overlay.active .modal {
-            transform: scale(1);
-        }
-        
-        .modal-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-title {
-            font-size: var(--font-size-2xl);
-            font-weight: 700;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-tertiary);
-            cursor: pointer;
-            padding: var(--spacing-sm);
-            border-radius: var(--radius-full);
-            transition: all var(--transition-fast);
-        }
-        
-        .modal-close:hover {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error);
-        }
-        
-        .modal-body {
-            padding: var(--spacing-lg);
-        }
-        
-        .modal-footer {
-            padding: var(--spacing-lg);
-            border-top: 1px solid rgba(99, 102, 241, 0.1);
-            display: flex;
-            justify-content: flex-end;
-            gap: var(--spacing-md);
-        }
-        
-        .form-group {
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: var(--spacing-sm);
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: var(--spacing-md);
-            background: var(--bg-tertiary);
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: var(--radius-lg);
-            color: var(--text-primary);
-            font-family: var(--font-family);
-            transition: all var(--transition-fast);
-        }
-        
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-        
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        
-        .form-error {
-            color: var(--error);
-            font-size: var(--font-size-sm);
-            margin-top: var(--spacing-xs);
-        }
-        
-        .file-upload {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .file-upload input[type="file"] {
-            position: absolute;
-            left: -9999px;
-        }
-        
-        .file-upload-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-xl);
-            background: var(--bg-tertiary);
-            border: 2px dashed rgba(99, 102, 241, 0.3);
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-        
-        .file-upload-label:hover {
-            border-color: var(--accent-primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-        
-        .hero {
-            padding: var(--spacing-2xl) 0;
-            text-align: center;
-            position: relative;
-        }
-        
-        .hero-title {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: var(--spacing-md);
-            animation: fadeInUp 0.8s ease-out;
-        }
-        
-        .hero-subtitle {
-            font-size: var(--font-size-xl);
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-xl);
-            animation: fadeInUp 0.8s ease-out 0.2s backwards;
-        }
-        
-        .hero-actions {
-            display: flex;
-            gap: var(--spacing-md);
-            justify-content: center;
-            animation: fadeInUp 0.8s ease-out 0.4s backwards;
-            flex-wrap: wrap;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--spacing-lg);
-            margin: var(--spacing-2xl) 0;
-        }
-        
-        .stat-card {
-            text-align: center;
-            padding: var(--spacing-xl);
-        }
-        
-        .stat-value {
-            font-size: var(--font-size-3xl);
-            font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .stat-label {
-            color: var(--text-secondary);
-            margin-top: var(--spacing-sm);
-        }
-        
-        .category-chips {
-            display: flex;
-            gap: var(--spacing-md);
-            flex-wrap: wrap;
-            margin: var(--spacing-xl) 0;
-            justify-content: center;
-        }
-        
-        .category-chip {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            background: var(--bg-card);
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-        
-        .category-chip:hover,
-        .category-chip.active {
-            background: var(--accent-gradient);
-            border-color: transparent;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(99, 102, 241, 0.2);
-            border-top-color: var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: var(--spacing-xl) auto;
-        }
+        .section-title {font-size: 1.5rem;font-weight: 700;margin: 3rem 0 1rem;}
         
         .toast-container {
-            position: fixed;
-            top: var(--spacing-lg);
-            left: var(--spacing-lg);
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
+            position: fixed;top: 1rem;left: 1rem;z-index: 3000;
+            display: flex;flex-direction: column;gap: 0.5rem;
         }
-        
         .toast {
-            padding: var(--spacing-md) var(--spacing-lg);
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            min-width: 300px;
-            animation: slideInLeft 0.3s ease-out;
+            padding: 1rem 1.5rem;background: var(--card);border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);display: flex;
+            align-items: center;gap: 1rem;min-width: 300px;
+            animation: slideIn 0.3s ease-out;
+        }
+        .toast.success {border-right: 4px solid var(--success);}
+        .toast.error {border-right: 4px solid var(--error);}
+        @keyframes slideIn {
+            from {transform: translateX(-100%);opacity: 0;}
+            to {transform: translateX(0);opacity: 1;}
         }
         
-        .toast.success { border-right: 4px solid var(--success); }
-        .toast.error { border-right: 4px solid var(--error); }
-        .toast.warning { border-right: 4px solid var(--warning); }
-        .toast.info { border-right: 4px solid var(--info); }
-        
-        @keyframes slideInLeft {
-            from {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .loading {
+            display: flex;align-items: center;justify-content: center;
+            padding: 3rem;
+        }
+        .spinner {
+            width: 40px;height: 40px;border: 4px solid rgba(99, 102, 241, 0.2);
+            border-top-color: var(--accent);border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {transform: rotate(360deg);}
         }
         
-        .stars {
-            display: flex;
-            gap: 2px;
-        }
-        
-        .star {
-            color: #ddd;
-            cursor: pointer;
-            font-size: 24px;
-            transition: color 0.2s;
-        }
-        
-        .star.filled {
-            color: var(--warning);
-        }
-        
-        .star:hover,
-        .star:hover ~ .star {
-            color: var(--warning);
-        }
-        
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: var(--spacing-lg);
-        }
-        
-        .table th,
-        .table td {
-            padding: var(--spacing-md);
-            text-align: right;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-        }
-        
-        .table th {
-            background: var(--bg-tertiary);
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-        
-        .table tr:hover {
-            background: var(--bg-card-hover);
-        }
-        
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: var(--radius-full);
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-        }
-        
-        .badge-success {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-        
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-        }
-        
-        .badge-error {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--error);
-        }
-        
-        .badge-info {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--info);
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-full);
-            overflow: hidden;
-            margin-top: var(--spacing-sm);
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: var(--accent-gradient);
-            transition: width var(--transition-base);
+        #threeBackground {
+            position: fixed;top: 0;left: 0;width: 100%;height: 100%;
+            z-index: -1;opacity: 0.3;
         }
         
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .search-container {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .app-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: var(--spacing-md);
-            }
-            
-            .hero-actions {
-                flex-direction: column;
-            }
-            
-            .modal {
-                width: 95%;
-            }
+            .app-grid {grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));gap: 1rem;}
+            .auth-box {padding: 2rem;}
+            .hero-title {font-size: 2rem;}
         }
     </style>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
-    <div id="three-background"></div>
+    <div id="threeBackground"></div>
     
-    <header>
-        <nav class="container nav-container">
-            <div class="logo" onclick="router.navigate('home')">
-                <span>🚀</span>
-                <span>Exotisa</span>
-            </div>
+    <!-- Auth Page -->
+    <div id="authPage">
+        <div class="auth-box">
+            <div class="logo-big">🚀 Exotisa</div>
             
-            <ul class="nav-links">
-                <li><a href="#" onclick="router.navigate('home')" class="active">الرئيسية</a></li>
-                <li><a href="#" onclick="router.navigate('apps')">التطبيقات</a></li>
-                <li><a href="#" onclick="router.navigate('categories')">التصنيفات</a></li>
-                <li id="devLink" class="hidden"><a href="#" onclick="router.navigate('dashboard')">لوحة التحكم</a></li>
-                <li id="adminLink" class="hidden"><a href="#" onclick="router.navigate('admin')">الإدارة</a></li>
-            </ul>
-            
-            <div class="nav-actions">
-                <div class="search-container">
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        placeholder="ابحث عن تطبيق..." 
-                        id="searchInput"
-                        oninput="search.handleSearch(this.value)"
-                    >
-                    <span class="material-icons search-icon">search</span>
-                    <div class="search-suggestions hidden" id="searchSuggestions"></div>
-                </div>
-                
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span class="material-icons">dark_mode</span>
-                </button>
-                
-                <div id="authButtons">
-                    <button class="btn btn-primary" onclick="showModal('loginModal')">تسجيل الدخول</button>
-                </div>
-                
-                <div id="userMenu" class="hidden">
-                    <button class="btn btn-secondary" onclick="router.navigate('profile')">
-                        <span class="material-icons">person</span>
-                    </button>
-                    <button class="btn btn-outline" onclick="auth.logout()">
-                        <span class="material-icons">logout</span>
-                    </button>
-                </div>
-            </div>
-        </nav>
-    </header>
-    
-    <main id="mainContent" class="container">
-    </main>
-    
-    <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">تسجيل الدخول</h2>
-                <button class="modal-close" onclick="hideModal('loginModal')">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm" onsubmit="auth.login(event)">
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <h2 class="auth-title">تسجيل الدخول</h2>
+                <form onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label class="form-label">البريد الإلكتروني</label>
-                        <input type="email" class="form-input" name="email" required>
+                        <input type="email" class="form-input" name="email" required placeholder="your@email.com">
                     </div>
                     <div class="form-group">
                         <label class="form-label">كلمة المرور</label>
-                        <input type="password" class="form-input" name="password" required>
+                        <input type="password" class="form-input" name="password" required placeholder="••••••••">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        تسجيل الدخول
+                    <button type="submit" class="btn btn-primary">
+                        <span class="material-icons">login</span>
+                        دخول
                     </button>
                 </form>
                 
-                <div style="margin: var(--spacing-lg) 0; text-align: center; color: var(--text-tertiary);">
-                    أو
-                </div>
+                <div class="divider">أو</div>
                 
-                <button class="btn btn-secondary" style="width: 100%;" onclick="auth.loginWithGoogle()">
+                <button class="btn btn-secondary" onclick="loginWithGoogle()">
                     <span class="material-icons">login</span>
                     تسجيل الدخول بواسطة Google
                 </button>
                 
-                <div style="margin-top: var(--spacing-lg); text-align: center;">
-                    <a href="#" onclick="showModal('registerModal'); hideModal('loginModal');" 
-                       style="color: var(--accent-primary);">
-                        ليس لديك حساب؟ سجل الآن
-                    </a>
-                </div>
-                
-                <div style="margin-top: var(--spacing-md); text-align: center;">
-                    <a href="#" onclick="showModal('forgotPasswordModal'); hideModal('loginModal');" 
-                       style="color: var(--text-tertiary); font-size: var(--font-size-sm);">
-                        نسيت كلمة المرور؟
-                    </a>
+                <div class="auth-switch">
+                    ليس لديك حساب؟ <a href="#" onclick="showRegister()">سجل الآن</a>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Register Modal -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">إنشاء حساب جديد</h2>
-                <button class="modal-close" onclick="hideModal('registerModal')">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="registerForm" onsubmit="auth.register(event)">
+            
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form hidden">
+                <h2 class="auth-title">إنشاء حساب جديد</h2>
+                <form onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label class="form-label">الاسم الكامل</label>
                         <input type="text" class="form-input" name="fullName" required>
@@ -997,331 +273,152 @@
                             <option value="developer">مطور</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="material-icons">person_add</span>
                         إنشاء الحساب
                     </button>
                 </form>
                 
-                <div style="margin-top: var(--spacing-lg); text-align: center;">
-                    <a href="#" onclick="showModal('loginModal'); hideModal('registerModal');" 
-                       style="color: var(--accent-primary);">
-                        لديك حساب بالفعل؟ سجل الدخول
-                    </a>
+                <div class="auth-switch">
+                    لديك حساب بالفعل؟ <a href="#" onclick="showLogin()">سجل الدخول</a>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Forgot Password Modal -->
-    <div class="modal-overlay" id="forgotPasswordModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">استرجاع كلمة المرور</h2>
-                <button class="modal-close" onclick="hideModal('forgotPasswordModal')">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="forgotPasswordForm" onsubmit="auth.resetPassword(event)">
-                    <div class="form-group">
-                        <label class="form-label">البريد الإلكتروني</label>
-                        <input type="email" class="form-input" name="email" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        إرسال رابط الاسترجاع
-                    </button>
-                </form>
-                
-                <div style="margin-top: var(--spacing-lg); text-align: center;">
-                    <a href="#" onclick="showModal('loginModal'); hideModal('forgotPasswordModal');" 
-                       style="color: var(--accent-primary);">
-                        العودة لتسجيل الدخول
-                    </a>
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <header>
+            <nav class="container nav">
+                <div class="logo" onclick="loadHome()">
+                    <span>🚀</span>
+                    <span>Exotisa</span>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- App Details Modal -->
-    <div class="modal-overlay" id="appDetailsModal">
-        <div class="modal" style="max-width: 900px;">
-            <div class="modal-header">
-                <h2 class="modal-title" id="appDetailsTitle"></h2>
-                <button class="modal-close" onclick="hideModal('appDetailsModal')">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body" id="appDetailsBody">
-            </div>
-        </div>
-    </div>
-    
-    <!-- Upload App Modal -->
-    <div class="modal-overlay" id="uploadAppModal">
-        <div class="modal" style="max-width: 800px;">
-            <div class="modal-header">
-                <h2 class="modal-title">رفع تطبيق جديد</h2>
-                <button class="modal-close" onclick="hideModal('uploadAppModal')">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="uploadAppForm" onsubmit="developer.uploadApp(event)">
-                    <div class="form-group">
-                        <label class="form-label">اسم التطبيق *</label>
-                        <input type="text" class="form-input" name="name" required>
+                <div class="nav-actions">
+                    <div class="user-info">
+                        <span class="user-name" id="userName"></span>
+                        <span class="user-role" id="userRole"></span>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Package Name *</label>
-                        <input type="text" class="form-input" name="packageName" 
-                               placeholder="com.example.app" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">التصنيف *</label>
-                        <select class="form-select" name="category" required id="categorySelect">
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">الإصدار *</label>
-                        <input type="text" class="form-input" name="version" 
-                               placeholder="1.0.0" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">الوصف القصير *</label>
-                        <input type="text" class="form-input" name="shortDescription" 
-                               maxlength="80" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">الوصف الكامل *</label>
-                        <textarea class="form-textarea" name="fullDescription" 
-                                  rows="6" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">سجل التغييرات</label>
-                        <textarea class="form-textarea" name="changelog" 
-                                  rows="4"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">أيقونة التطبيق *</label>
-                        <div class="file-upload">
-                            <input type="file" id="iconFile" name="icon" 
-                                   accept="image/*" required>
-                            <label for="iconFile" class="file-upload-label">
-                                <span class="material-icons">image</span>
-                                <span>اختر صورة (PNG/JPG)</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">ملف APK *</label>
-                        <div class="file-upload">
-                            <input type="file" id="apkFile" name="apk" 
-                                   accept=".apk" required>
-                            <label for="apkFile" class="file-upload-label">
-                                <span class="material-icons">android</span>
-                                <span>اختر ملف APK</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">لقطات الشاشة (حتى 5 صور)</label>
-                        <div class="file-upload">
-                            <input type="file" id="screenshotsFile" name="screenshots" 
-                                   accept="image/*" multiple>
-                            <label for="screenshotsFile" class="file-upload-label">
-                                <span class="material-icons">collections</span>
-                                <span>اختر الصور</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">رابط فيديو المعاينة (اختياري)</label>
-                        <input type="url" class="form-input" name="videoUrl" 
-                               placeholder="https://youtube.com/watch?v=...">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        <span class="material-icons">cloud_upload</span>
-                        رفع التطبيق
+                    <button class="btn btn-outline" onclick="logout()">
+                        <span class="material-icons">logout</span>
+                        خروج
                     </button>
-                </form>
+                </div>
+            </nav>
+        </header>
+        
+        <main class="container" id="mainContent">
+            <div class="loading">
+                <div class="spinner"></div>
             </div>
-        </div>
+        </main>
     </div>
     
     <script>
-        // ============================================================
-        // CONFIGURATION
-        // ============================================================
+        // Supabase Config
         const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
-        const CODEWORDS_WORKFLOW_URL = 'https://runtime.codewords.ai/workflow/exotisa_new_app_notifier_30ce09c3';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let currentUser = null;
-        let currentUserRole = null;
+        let currentUserData = null;
         
-        // ============================================================
-        // UTILITY FUNCTIONS
-        // ============================================================
+        // Toast Notification
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <span class="material-icons">
-                    ${type === 'success' ? 'check_circle' : 
-                      type === 'error' ? 'error' : 
-                      type === 'warning' ? 'warning' : 'info'}
-                </span>
+                <span class="material-icons">${type === 'success' ? 'check_circle' : 'error'}</span>
                 <span>${message}</span>
             `;
             container.appendChild(toast);
-            
             setTimeout(() => {
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
         
-        function showModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-        
-        function hideModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-        
+        // Format Numbers
         function formatNumber(num) {
             if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
             if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
             return num.toString();
         }
         
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diff = now - date;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            
-            if (days === 0) return 'اليوم';
-            if (days === 1) return 'أمس';
-            if (days < 7) return `منذ ${days} أيام`;
-            if (days < 30) return `منذ ${Math.floor(days / 7)} أسابيع`;
-            if (days < 365) return `منذ ${Math.floor(days / 30)} أشهر`;
-            return `منذ ${Math.floor(days / 365)} سنوات`;
+        // Auth Functions
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
         }
         
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
         }
         
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+        async function handleLogin(event) {
+            event.preventDefault();
+            const form = event.target;
+            const email = form.email.value;
+            const password = form.password.value;
             
-            const icon = document.querySelector('.theme-toggle .material-icons');
-            icon.textContent = newTheme === 'dark' ? 'dark_mode' : 'light_mode';
-        }
-        
-        // Load theme preference
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        
-        // ============================================================
-        // THREE.JS BACKGROUND
-        // ============================================================
-        function initThreeBackground() {
-            const container = document.getElementById('three-background');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true });
-            
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-            
-            const geometry = new THREE.IcosahedronGeometry(1, 1);
-            const material = new THREE.MeshBasicMaterial({
-                color: 0x6366f1,
-                wireframe: true
-            });
-            
-            const particles = [];
-            for (let i = 0; i < 50; i++) {
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set(
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20,
-                    Math.random() * 40 - 20
-                );
-                mesh.scale.setScalar(Math.random() * 0.5 + 0.1);
-                scene.add(mesh);
-                particles.push(mesh);
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({email, password});
+                if (error) throw error;
+                showToast('تم تسجيل الدخول بنجاح!', 'success');
+            } catch (error) {
+                showToast('خطأ: ' + error.message, 'error');
             }
-            
-            camera.position.z = 15;
-            
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                particles.forEach((particle, i) => {
-                    particle.rotation.x += 0.001;
-                    particle.rotation.y += 0.002;
-                    particle.position.y += Math.sin(Date.now() * 0.001 + i) * 0.001;
-                });
-                
-                renderer.render(scene, camera);
-            }
-            
-            animate();
-            
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
         }
         
-        // ============================================================
-        // AUTHENTICATION SYSTEM
-        // ============================================================
-        const auth = {
-            async init() {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    await this.handleSession(session);
-                }
-                
-                supabase.auth.onAuthStateChange(async (event, session) => {
-                    if (event === 'SIGNED_IN') {
-                        await this.handleSession(session);
-                    } else if (event === 'SIGNED_OUT') {
-                        this.handleSignOut();
-                    }
-                });
-            },
+        async function handleRegister(event) {
+            event.preventDefault();
+            const form = event.target;
+            const email = form.email.value;
+            const password = form.password.value;
+            const fullName = form.fullName.value;
+            const role = form.role.value;
             
-            async handleSession(session) {
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email, password,
+                    options: {data: {full_name: fullName, role: role}}
+                });
+                if (error) throw error;
+                showToast('تم إنشاء الحساب! تحقق من بريدك الإلكتروني.', 'success');
+                showLogin();
+            } catch (error) {
+                showToast('خطأ: ' + error.message, 'error');
+            }
+        }
+        
+        async function loginWithGoogle() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {redirectTo: window.location.origin}
+                });
+                if (error) throw error;
+            } catch (error) {
+                showToast('خطأ: ' + error.message, 'error');
+            }
+        }
+        
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                showToast('تم تسجيل الخروج بنجاح', 'success');
+            } catch (error) {
+                showToast('خطأ: ' + error.message, 'error');
+            }
+        }
+        
+        // Auth State Listener
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN') {
                 currentUser = session.user;
-                
                 const { data: userData } = await supabase
                     .from('users')
                     .select('*')
@@ -1329,230 +426,69 @@
                     .single();
                 
                 if (userData) {
-                    currentUserRole = userData.role;
-                    this.updateUI(userData);
+                    currentUserData = userData;
+                    document.getElementById('authPage').classList.add('hidden');
+                    document.getElementById('mainApp').classList.remove('hidden');
+                    document.getElementById('userName').textContent = userData.full_name || userData.email;
+                    document.getElementById('userRole').textContent = userData.role === 'admin' ? 'مدير' : userData.role === 'developer' ? 'مطور' : 'مستخدم';
+                    await loadHome();
                 }
-            },
-            
-            updateUI(userData) {
-                document.getElementById('authButtons').classList.add('hidden');
-                document.getElementById('userMenu').classList.remove('hidden');
-                
-                if (userData.role === 'developer' || userData.role === 'admin') {
-                    document.getElementById('devLink').classList.remove('hidden');
-                }
-                
-                if (userData.role === 'admin') {
-                    document.getElementById('adminLink').classList.remove('hidden');
-                }
-            },
-            
-            handleSignOut() {
+            } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
-                currentUserRole = null;
-                document.getElementById('authButtons').classList.remove('hidden');
-                document.getElementById('userMenu').classList.add('hidden');
-                document.getElementById('devLink').classList.add('hidden');
-                document.getElementById('adminLink').classList.add('hidden');
-                router.navigate('home');
-            },
-            
-            async login(event) {
-                event.preventDefault();
-                const form = event.target;
-                const email = form.email.value;
-                const password = form.password.value;
-                
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    hideModal('loginModal');
-                    showToast('تم تسجيل الدخول بنجاح!', 'success');
-                    router.navigate('home');
-                } catch (error) {
-                    showToast('خطأ في تسجيل الدخول: ' + error.message, 'error');
-                }
-            },
-            
-            async loginWithGoogle() {
-                try {
-                    const { data, error } = await supabase.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: window.location.origin
-                        }
-                    });
-                    
-                    if (error) throw error;
-                } catch (error) {
-                    showToast('خطأ في تسجيل الدخول: ' + error.message, 'error');
-                }
-            },
-            
-            async register(event) {
-                event.preventDefault();
-                const form = event.target;
-                const email = form.email.value;
-                const password = form.password.value;
-                const fullName = form.fullName.value;
-                const role = form.role.value;
-                
-                try {
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: {
-                                full_name: fullName,
-                                role: role
-                            }
-                        }
-                    });
-                    
-                    if (error) throw error;
-                    
-                    hideModal('registerModal');
-                    showToast('تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني.', 'success');
-                } catch (error) {
-                    showToast('خطأ في إنشاء الحساب: ' + error.message, 'error');
-                }
-            },
-            
-            async resetPassword(event) {
-                event.preventDefault();
-                const form = event.target;
-                const email = form.email.value;
-                
-                try {
-                    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-                        redirectTo: window.location.origin + '/reset-password'
-                    });
-                    
-                    if (error) throw error;
-                    
-                    hideModal('forgotPasswordModal');
-                    showToast('تم إرسال رابط استرجاع كلمة المرور!', 'success');
-                } catch (error) {
-                    showToast('خطأ: ' + error.message, 'error');
-                }
-            },
-            
-            async logout() {
-                try {
-                    const { error } = await supabase.auth.signOut();
-                    if (error) throw error;
-                    showToast('تم تسجيل الخروج بنجاح', 'success');
-                } catch (error) {
-                    showToast('خطأ في تسجيل الخروج: ' + error.message, 'error');
-                }
+                currentUserData = null;
+                document.getElementById('authPage').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                showLogin();
             }
-        };
+        });
         
-        // ============================================================
-        // SEARCH SYSTEM
-        // ============================================================
-        const search = {
-            debounceTimer: null,
+        // Load Home Page
+        async function loadHome() {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             
-            async handleSearch(query) {
-                clearTimeout(this.debounceTimer);
+            try {
+                const [statsResult, appsResult, categoriesResult] = await Promise.all([
+                    supabase.from('apps').select('id', {count: 'exact', head: true}),
+                    supabase.from('apps_with_stats').select('*').eq('status', 'approved').order('downloads_count', {ascending: false}).limit(12),
+                    supabase.from('categories').select('*').order('name')
+                ]);
                 
-                if (!query.trim()) {
-                    document.getElementById('searchSuggestions').classList.add('hidden');
-                    return;
-                }
+                const stats = {apps: statsResult.count || 0};
+                const apps = appsResult.data || [];
+                const categories = categoriesResult.data || [];
                 
-                this.debounceTimer = setTimeout(async () => {
-                    await this.performSearch(query);
-                }, 300);
-            },
-            
-            async performSearch(query) {
-                try {
-                    const { data, error } = await supabase
-                        .from('apps_with_developer')
-                        .select('*')
-                        .eq('status', 'approved')
-                        .or(`name.ilike.%${query}%,short_description.ilike.%${query}%,developer_name.ilike.%${query}%`)
-                        .limit(5);
-                    
-                    if (error) throw error;
-                    
-                    this.displaySuggestions(data);
-                } catch (error) {
-                    console.error('Search error:', error);
-                }
-            },
-            
-            displaySuggestions(apps) {
-                const container = document.getElementById('searchSuggestions');
-                
-                if (apps.length === 0) {
-                    container.classList.add('hidden');
-                    return;
-                }
-                
-                container.innerHTML = apps.map(app => `
-                    <div class="suggestion-item" onclick="apps.showDetails('${app.id}'); document.getElementById('searchSuggestions').classList.add('hidden');">
-                        <img src="${app.icon_url}" alt="${app.name}">
-                        <div>
-                            <div class="font-semibold">${app.name}</div>
-                            <div class="text-sm" style="color: var(--text-tertiary);">${app.developer_name}</div>
+                content.innerHTML = `
+                    <section class="hero">
+                        <h1 class="hero-title">Exotisa App Store</h1>
+                        <p class="hero-subtitle">اكتشف أفضل التطبيقات العربية في مكان واحد</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" onclick="loadApps()">
+                                <span class="material-icons">apps</span>
+                                تصفح التطبيقات
+                            </button>
                         </div>
-                    </div>
-                `).join('');
-                
-                container.classList.remove('hidden');
-            }
-        };
-        
-        // ============================================================
-        // APPS SYSTEM
-        // ============================================================
-        const apps = {
-            currentFilter: 'all',
-            currentSort: 'downloads',
-            
-            async loadAll(categoryId = null, sortBy = 'downloads') {
-                try {
-                    let query = supabase
-                        .from('apps_with_stats')
-                        .select('*')
-                        .eq('status', 'approved');
+                    </section>
                     
-                    if (categoryId && categoryId !== 'all') {
-                        query = query.eq('category_id', categoryId);
-                    }
+                    <section class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${formatNumber(stats.apps)}</div>
+                            <div class="stat-label">تطبيق متاح</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${formatNumber(categories.length)}</div>
+                            <div class="stat-label">تصنيف</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">آمن ومجاني</div>
+                        </div>
+                    </section>
                     
-                    if (sortBy === 'downloads') {
-                        query = query.order('downloads_count', { ascending: false });
-                    } else if (sortBy === 'rating') {
-                        query = query.order('rating', { ascending: false });
-                    } else if (sortBy === 'newest') {
-                        query = query.order('created_at', { ascending: false });
-                    }
-                    
-                    const { data, error } = await query;
-                    
-                    if (error) throw error;
-                    
-                    return data;
-                } catch (error) {
-                    console.error('Error loading apps:', error);
-                    return [];
-                }
-            },
-            
-            renderGrid(apps) {
-                return `
-                    <div class="app-grid">
+                    <h2 class="section-title">الأكثر تحميلاً</h2>
+                    <div class="app-grid" id="appsGrid">
                         ${apps.map(app => `
-                            <div class="app-card" onclick="apps.showDetails('${app.id}')">
+                            <div class="app-card" onclick="showAppDetails('${app.id}')">
                                 <img src="${app.icon_url}" alt="${app.name}" class="app-icon">
                                 <div class="app-info">
                                     <div class="app-title">${app.name}</div>
@@ -1572,804 +508,147 @@
                         `).join('')}
                     </div>
                 `;
-            },
-            
-            async showDetails(appId) {
-                try {
-                    const { data: app, error } = await supabase
-                        .from('apps_with_developer')
-                        .select('*')
-                        .eq('id', appId)
-                        .single();
-                    
-                    if (error) throw error;
-                    
-                    const { data: ratings } = await supabase
-                        .from('ratings')
-                        .select('*, users(full_name, avatar_url)')
-                        .eq('app_id', appId)
-                        .eq('status', 'active')
-                        .order('created_at', { ascending: false });
-                    
-                    document.getElementById('appDetailsTitle').textContent = app.name;
-                    document.getElementById('appDetailsBody').innerHTML = `
-                        <div style="display: grid; grid-template-columns: 200px 1fr; gap: var(--spacing-xl);">
-                            <img src="${app.icon_url}" alt="${app.name}" 
-                                 style="width: 200px; height: 200px; border-radius: var(--radius-xl);">
-                            <div>
-                                <div style="display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
-                                    <div class="rating" style="font-size: var(--font-size-xl);">
-                                        <span class="material-icons">star</span>
-                                        <span>${app.rating || 0}</span>
-                                    </div>
-                                    <div class="downloads" style="font-size: var(--font-size-lg);">
-                                        <span class="material-icons">download</span>
-                                        <span>${formatNumber(app.downloads_count)} تحميل</span>
-                                    </div>
-                                </div>
-                                <div style="margin-bottom: var(--spacing-md);">
-                                    <strong>المطور:</strong> ${app.developer_name}
-                                </div>
-                                <div style="margin-bottom: var(--spacing-md);">
-                                    <strong>الإصدار:</strong> ${app.version}
-                                </div>
-                                <div style="margin-bottom: var(--spacing-md);">
-                                    <strong>الحجم:</strong> ${formatBytes(app.size)}
-                                </div>
-                                <div style="margin-bottom: var(--spacing-md);">
-                                    <strong>آخر تحديث:</strong> ${formatDate(app.updated_at)}
-                                </div>
-                                <button class="btn btn-primary" onclick="apps.download('${app.id}', '${app.apk_url}', '${app.name}')">
-                                    <span class="material-icons">download</span>
-                                    تحميل APK
-                                </button>
-                                <button class="btn btn-outline" onclick="apps.toggleFavorite('${app.id}')">
-                                    <span class="material-icons">favorite</span>
-                                    إضافة للمفضلة
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: var(--spacing-xl);">
-                            <h3>الوصف</h3>
-                            <p style="color: var(--text-secondary); margin-top: var(--spacing-md);">
-                                ${app.full_description}
-                            </p>
-                        </div>
-                        
-                        ${app.screenshots && app.screenshots.length > 0 ? `
-                            <div style="margin-top: var(--spacing-xl);">
-                                <h3>لقطات الشاشة</h3>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-md);">
-                                    ${app.screenshots.map(url => `
-                                        <img src="${url}" style="width: 100%; border-radius: var(--radius-md);">
-                                    `).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
-                        
-                        ${app.changelog ? `
-                            <div style="margin-top: var(--spacing-xl);">
-                                <h3>سجل التغييرات</h3>
-                                <p style="color: var(--text-secondary); margin-top: var(--spacing-md);">
-                                    ${app.changelog}
-                                </p>
-                            </div>
-                        ` : ''}
-                        
-                        <div style="margin-top: var(--spacing-xl);">
-                            <h3>التقييمات والمراجعات</h3>
-                            
-                            ${currentUser ? `
-                                <div class="card" style="margin-top: var(--spacing-md);">
-                                    <form onsubmit="apps.submitRating(event, '${app.id}')">
-                                        <div class="form-group">
-                                            <label class="form-label">تقييمك</label>
-                                            <div class="stars" id="ratingStars">
-                                                ${[1,2,3,4,5].map(i => `
-                                                    <span class="star" data-rating="${i}" onclick="apps.setRating(${i})">★</span>
-                                                `).join('')}
-                                            </div>
-                                            <input type="hidden" name="rating" id="ratingValue" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label">تعليقك</label>
-                                            <textarea class="form-textarea" name="comment" rows="3"></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">إرسال التقييم</button>
-                                    </form>
-                                </div>
-                            ` : '<p style="color: var(--text-tertiary);">سجل الدخول لإضافة تقييم</p>'}
-                            
-                            <div style="margin-top: var(--spacing-lg);">
-                                ${ratings && ratings.length > 0 ? ratings.map(rating => `
-                                    <div class="card" style="margin-bottom: var(--spacing-md);">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
-                                            <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-                                                <div style="font-weight: 600;">${rating.users.full_name}</div>
-                                            </div>
-                                            <div class="rating">
-                                                <span class="material-icons">star</span>
-                                                <span>${rating.rating}</span>
-                                            </div>
-                                        </div>
-                                        ${rating.comment ? `<p style="color: var(--text-secondary);">${rating.comment}</p>` : ''}
-                                        <div style="color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--spacing-sm);">
-                                            ${formatDate(rating.created_at)}
-                                        </div>
-                                    </div>
-                                `).join('') : '<p style="color: var(--text-tertiary);">لا توجد تقييمات بعد</p>'}
-                            </div>
-                        </div>
-                    `;
-                    
-                    showModal('appDetailsModal');
-                } catch (error) {
-                    console.error('Error showing app details:', error);
-                    showToast('حدث خطأ أثناء تحميل التفاصيل', 'error');
-                }
-            },
-            
-            setRating(value) {
-                document.getElementById('ratingValue').value = value;
-                const stars = document.querySelectorAll('#ratingStars .star');
-                stars.forEach((star, index) => {
-                    if (index < value) {
-                        star.classList.add('filled');
-                    } else {
-                        star.classList.remove('filled');
-                    }
-                });
-            },
-            
-            async submitRating(event, appId) {
-                event.preventDefault();
-                
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول أولاً', 'warning');
-                    return;
-                }
-                
-                const form = event.target;
-                const rating = parseInt(form.rating.value);
-                const comment = form.comment.value;
-                
-                try {
-                    const { error } = await supabase
-                        .from('ratings')
-                        .upsert({
-                            app_id: appId,
-                            user_id: currentUser.id,
-                            rating: rating,
-                            comment: comment
-                        }, {
-                            onConflict: 'app_id,user_id'
-                        });
-                    
-                    if (error) throw error;
-                    
-                    showToast('تم إضافة التقييم بنجاح!', 'success');
-                    this.showDetails(appId);
-                } catch (error) {
-                    showToast('خطأ في إضافة التقييم: ' + error.message, 'error');
-                }
-            },
-            
-            async download(appId, apkUrl, appName) {
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول للتحميل', 'warning');
-                    showModal('loginModal');
-                    return;
-                }
-                
-                try {
-                    const { error } = await supabase
-                        .from('downloads')
-                        .insert({
-                            app_id: appId,
-                            user_id: currentUser.id,
-                            device_fingerprint: navigator.userAgent,
-                            ip_address: null
-                        });
-                    
-                    if (error) throw error;
-                    
-                    window.open(apkUrl, '_blank');
-                    showToast('بدأ التحميل!', 'success');
-                } catch (error) {
-                    console.error('Download error:', error);
-                    showToast('حدث خطأ أثناء التحميل', 'error');
-                }
-            },
-            
-            async toggleFavorite(appId) {
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول أولاً', 'warning');
-                    return;
-                }
-                
-                try {
-                    const { data: existing } = await supabase
-                        .from('favorites')
-                        .select('id')
-                        .eq('app_id', appId)
-                        .eq('user_id', currentUser.id)
-                        .single();
-                    
-                    if (existing) {
-                        await supabase
-                            .from('favorites')
-                            .delete()
-                            .eq('id', existing.id);
-                        showToast('تم إزالة التطبيق من المفضلة', 'info');
-                    } else {
-                        await supabase
-                            .from('favorites')
-                            .insert({
-                                app_id: appId,
-                                user_id: currentUser.id
-                            });
-                        showToast('تم إضافة التطبيق للمفضلة!', 'success');
-                    }
-                } catch (error) {
-                    console.error('Favorite error:', error);
-                }
+            } catch (error) {
+                content.innerHTML = `<div class="loading"><p>حدث خطأ في تحميل البيانات</p></div>`;
+                showToast('خطأ: ' + error.message, 'error');
             }
-        };
+        }
         
-        // ============================================================
-        // DEVELOPER SYSTEM
-        // ============================================================
-        const developer = {
-            async uploadApp(event) {
-                event.preventDefault();
-                
-                if (!currentUser || (currentUserRole !== 'developer' && currentUserRole !== 'admin')) {
-                    showToast('يجب أن تكون مطوراً لرفع التطبيقات', 'error');
-                    return;
-                }
-                
-                const form = event.target;
-                const formData = new FormData(form);
-                
-                try {
-                    showToast('جارٍ رفع التطبيق...', 'info');
-                    
-                    const iconFile = form.icon.files[0];
-                    const apkFile = form.apk.files[0];
-                    const screenshotsFiles = form.screenshots.files;
-                    
-                    const iconPath = `icons/${Date.now()}_${iconFile.name}`;
-                    const { data: iconData, error: iconError } = await supabase.storage
-                        .from('apps')
-                        .upload(iconPath, iconFile);
-                    
-                    if (iconError) throw iconError;
-                    
-                    const { data: { publicUrl: iconUrl } } = supabase.storage
-                        .from('apps')
-                        .getPublicUrl(iconPath);
-                    
-                    const apkPath = `apks/${Date.now()}_${apkFile.name}`;
-                    const { data: apkData, error: apkError } = await supabase.storage
-                        .from('apps')
-                        .upload(apkPath, apkFile);
-                    
-                    if (apkError) throw apkError;
-                    
-                    const { data: { publicUrl: apkUrl } } = supabase.storage
-                        .from('apps')
-                        .getPublicUrl(apkPath);
-                    
-                    const screenshotUrls = [];
-                    for (let i = 0; i < Math.min(screenshotsFiles.length, 5); i++) {
-                        const file = screenshotsFiles[i];
-                        const path = `screenshots/${Date.now()}_${i}_${file.name}`;
-                        const { data, error } = await supabase.storage
-                            .from('apps')
-                            .upload(path, file);
-                        
-                        if (!error) {
-                            const { data: { publicUrl } } = supabase.storage
-                                .from('apps')
-                                .getPublicUrl(path);
-                            screenshotUrls.push(publicUrl);
-                        }
-                    }
-                    
-                    const { data: appData, error: appError } = await supabase
-                        .from('apps')
-                        .insert({
-                            name: formData.get('name'),
-                            package_name: formData.get('packageName'),
-                            developer_id: currentUser.id,
-                            category_id: formData.get('category'),
-                            version: formData.get('version'),
-                            size: apkFile.size,
-                            icon_url: iconUrl,
-                            apk_url: apkUrl,
-                            screenshots: screenshotUrls,
-                            video_url: formData.get('videoUrl') || null,
-                            short_description: formData.get('shortDescription'),
-                            full_description: formData.get('fullDescription'),
-                            changelog: formData.get('changelog') || null,
-                            status: currentUserRole === 'admin' ? 'approved' : 'pending'
-                        })
-                        .select()
-                        .single();
-                    
-                    if (appError) throw appError;
-                    
-                    try {
-                        await fetch(CODEWORDS_WORKFLOW_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                app_id: appData.id,
-                                app_name: appData.name,
-                                developer: currentUser.email,
-                                version: appData.version,
-                                short_description: appData.short_description,
-                                supabase_url: SUPABASE_URL,
-                                supabase_key: SUPABASE_ANON_KEY
-                            })
-                        });
-                    } catch (notifError) {
-                        console.error('Notification error:', notifError);
-                    }
-                    
-                    hideModal('uploadAppModal');
-                    form.reset();
-                    showToast('تم رفع التطبيق بنجاح! ' + (currentUserRole === 'admin' ? 'التطبيق مفعّل الآن.' : 'في انتظار المراجعة.'), 'success');
-                    router.navigate('dashboard');
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    showToast('خطأ في رفع التطبيق: ' + error.message, 'error');
-                }
-            },
+        // Load Apps Page
+        async function loadApps() {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             
-            async loadMyApps() {
-                if (!currentUser) return [];
+            try {
+                const [appsResult, categoriesResult] = await Promise.all([
+                    supabase.from('apps_with_stats').select('*').eq('status', 'approved').order('downloads_count', {ascending: false}),
+                    supabase.from('categories').select('*').order('name')
+                ]);
                 
-                try {
-                    const { data, error } = await supabase
-                        .from('apps_with_stats')
-                        .select('*')
-                        .eq('developer_id', currentUser.id)
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    return data;
-                } catch (error) {
-                    console.error('Error loading developer apps:', error);
-                    return [];
-                }
-            },
-            
-            async deleteApp(appId) {
-                if (!confirm('هل أنت متأكد من حذف هذا التطبيق؟')) return;
-                
-                try {
-                    const { error } = await supabase
-                        .from('apps')
-                        .delete()
-                        .eq('id', appId)
-                        .eq('developer_id', currentUser.id);
-                    
-                    if (error) throw error;
-                    
-                    showToast('تم حذف التطبيق بنجاح', 'success');
-                    router.navigate('dashboard');
-                } catch (error) {
-                    showToast('خطأ في حذف التطبيق: ' + error.message, 'error');
-                }
-            }
-        };
-        
-        // ============================================================
-        // ADMIN SYSTEM
-        // ============================================================
-        const admin = {
-            async loadPendingApps() {
-                try {
-                    const { data, error } = await supabase
-                        .from('apps_with_developer')
-                        .select('*')
-                        .eq('status', 'pending')
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    return data;
-                } catch (error) {
-                    console.error('Error loading pending apps:', error);
-                    return [];
-                }
-            },
-            
-            async approveApp(appId) {
-                try {
-                    const { error } = await supabase
-                        .from('apps')
-                        .update({ status: 'approved' })
-                        .eq('id', appId);
-                    
-                    if (error) throw error;
-                    
-                    showToast('تم قبول التطبيق!', 'success');
-                    router.navigate('admin');
-                } catch (error) {
-                    showToast('خطأ: ' + error.message, 'error');
-                }
-            },
-            
-            async rejectApp(appId) {
-                try {
-                    const { error } = await supabase
-                        .from('apps')
-                        .update({ status: 'rejected' })
-                        .eq('id', appId);
-                    
-                    if (error) throw error;
-                    
-                    showToast('تم رفض التطبيق', 'info');
-                    router.navigate('admin');
-                } catch (error) {
-                    showToast('خطأ: ' + error.message, 'error');
-                }
-            },
-            
-            async getStats() {
-                try {
-                    const [apps, users, downloads, ratings] = await Promise.all([
-                        supabase.from('apps').select('id', { count: 'exact', head: true }),
-                        supabase.from('users').select('id', { count: 'exact', head: true }),
-                        supabase.from('downloads').select('id', { count: 'exact', head: true }),
-                        supabase.from('ratings').select('id', { count: 'exact', head: true })
-                    ]);
-                    
-                    return {
-                        totalApps: apps.count || 0,
-                        totalUsers: users.count || 0,
-                        totalDownloads: downloads.count || 0,
-                        totalRatings: ratings.count || 0
-                    };
-                } catch (error) {
-                    console.error('Stats error:', error);
-                    return { totalApps: 0, totalUsers: 0, totalDownloads: 0, totalRatings: 0 };
-                }
-            }
-        };
-        
-        // ============================================================
-        // ROUTER SYSTEM
-        // ============================================================
-        const router = {
-            async navigate(page) {
-                const content = document.getElementById('mainContent');
-                
-                document.querySelectorAll('.nav-links a').forEach(link => {
-                    link.classList.remove('active');
-                });
-                
-                switch(page) {
-                    case 'home':
-                        await this.renderHome(content);
-                        break;
-                    case 'apps':
-                        await this.renderApps(content);
-                        break;
-                    case 'categories':
-                        await this.renderCategories(content);
-                        break;
-                    case 'dashboard':
-                        if (currentUserRole === 'developer' || currentUserRole === 'admin') {
-                            await this.renderDashboard(content);
-                        }
-                        break;
-                    case 'admin':
-                        if (currentUserRole === 'admin') {
-                            await this.renderAdmin(content);
-                        }
-                        break;
-                }
-            },
-            
-            async renderHome(content) {
-                const stats = await admin.getStats();
-                const topApps = await apps.loadAll(null, 'downloads');
-                const recentApps = await apps.loadAll(null, 'newest');
+                const apps = appsResult.data || [];
+                const categories = categoriesResult.data || [];
                 
                 content.innerHTML = `
-                    <section class="hero">
-                        <h1 class="hero-title">Exotisa App Store</h1>
-                        <p class="hero-subtitle">اكتشف أفضل التطبيقات العربية في مكان واحد</p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" onclick="router.navigate('apps')">
-                                <span class="material-icons">apps</span>
-                                تصفح التطبيقات
-                            </button>
-                            ${currentUser && (currentUserRole === 'developer' || currentUserRole === 'admin') ? `
-                                <button class="btn btn-outline" onclick="showModal('uploadAppModal')">
-                                    <span class="material-icons">cloud_upload</span>
-                                    رفع تطبيق
-                                </button>
-                            ` : ''}
-                        </div>
-                    </section>
-                    
-                    <section class="stats-grid">
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalApps)}</div>
-                            <div class="stat-label">تطبيق متاح</div>
-                        </div>
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalDownloads)}</div>
-                            <div class="stat-label">تحميل</div>
-                        </div>
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalUsers)}</div>
-                            <div class="stat-label">مستخدم</div>
-                        </div>
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalRatings)}</div>
-                            <div class="stat-label">تقييم</div>
-                        </div>
-                    </section>
-                    
-                    <section>
-                        <h2 class="text-2xl font-bold mb-lg">الأكثر تحميلاً</h2>
-                        ${apps.renderGrid(topApps.slice(0, 8))}
-                    </section>
-                    
-                    <section style="margin-top: var(--spacing-2xl);">
-                        <h2 class="text-2xl font-bold mb-lg">أحدث التطبيقات</h2>
-                        ${apps.renderGrid(recentApps.slice(0, 8))}
-                    </section>
-                `;
-            },
-            
-            async renderApps(content) {
-                const categories = await this.loadCategories();
-                const allApps = await apps.loadAll();
-                
-                content.innerHTML = `
-                    <h1 class="text-3xl font-bold mb-lg">جميع التطبيقات</h1>
+                    <h1 class="section-title">جميع التطبيقات</h1>
                     
                     <div class="category-chips">
-                        <div class="category-chip active" onclick="router.filterApps('all')">
+                        <div class="category-chip active" onclick="filterApps('all')">
                             <span>الكل</span>
                         </div>
                         ${categories.map(cat => `
-                            <div class="category-chip" onclick="router.filterApps('${cat.id}')">
+                            <div class="category-chip" onclick="filterApps('${cat.id}')">
                                 <span>${cat.icon}</span>
                                 <span>${cat.name}</span>
                             </div>
                         `).join('')}
                     </div>
                     
-                    <div style="display: flex; gap: var(--spacing-md); margin: var(--spacing-lg) 0;">
-                        <button class="btn btn-secondary" onclick="router.sortApps('downloads')">
-                            الأكثر تحميلاً
-                        </button>
-                        <button class="btn btn-secondary" onclick="router.sortApps('rating')">
-                            الأعلى تقييماً
-                        </button>
-                        <button class="btn btn-secondary" onclick="router.sortApps('newest')">
-                            الأحدث
-                        </button>
-                    </div>
-                    
-                    <div id="appsContainer">
-                        ${apps.renderGrid(allApps)}
-                    </div>
-                `;
-            },
-            
-            async filterApps(categoryId) {
-                const filtered = await apps.loadAll(categoryId);
-                document.getElementById('appsContainer').innerHTML = apps.renderGrid(filtered);
-                
-                document.querySelectorAll('.category-chip').forEach(chip => {
-                    chip.classList.remove('active');
-                });
-                event.target.closest('.category-chip').classList.add('active');
-            },
-            
-            async sortApps(sortBy) {
-                const sorted = await apps.loadAll(null, sortBy);
-                document.getElementById('appsContainer').innerHTML = apps.renderGrid(sorted);
-            },
-            
-            async renderCategories(content) {
-                const categories = await this.loadCategories();
-                
-                content.innerHTML = `
-                    <h1 class="text-3xl font-bold mb-lg">التصنيفات</h1>
-                    
-                    <div class="app-grid">
-                        ${categories.map(cat => `
-                            <div class="card" onclick="router.navigate('apps'); setTimeout(() => router.filterApps('${cat.id}'), 100);" 
-                                 style="cursor: pointer; text-align: center; padding: var(--spacing-xl);">
-                                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">${cat.icon}</div>
-                                <h3 class="font-bold text-xl">${cat.name}</h3>
-                                <p style="color: var(--text-tertiary); margin-top: var(--spacing-sm);">${cat.description}</p>
+                    <div class="app-grid" id="appsGrid">
+                        ${apps.map(app => `
+                            <div class="app-card" data-category="${app.category_id}">
+                                <img src="${app.icon_url}" alt="${app.name}" class="app-icon">
+                                <div class="app-info">
+                                    <div class="app-title">${app.name}</div>
+                                    <div class="app-developer">${app.developer_name}</div>
+                                    <div class="app-stats">
+                                        <div class="rating">
+                                            <span class="material-icons">star</span>
+                                            <span>${app.rating || 0}</span>
+                                        </div>
+                                        <div class="downloads">
+                                            <span class="material-icons">download</span>
+                                            <span>${formatNumber(app.downloads_count)}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
                 `;
-            },
+            } catch (error) {
+                content.innerHTML = `<div class="loading"><p>حدث خطأ في تحميل التطبيقات</p></div>`;
+                showToast('خطأ: ' + error.message, 'error');
+            }
+        }
+        
+        // Filter Apps by Category
+        function filterApps(categoryId) {
+            const allCards = document.querySelectorAll('.app-card');
+            const chips = document.querySelectorAll('.category-chip');
             
-            async renderDashboard(content) {
-                const myApps = await developer.loadMyApps();
-                
-                content.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
-                        <h1 class="text-3xl font-bold">لوحة تحكم المطور</h1>
-                        <button class="btn btn-primary" onclick="showModal('uploadAppModal')">
-                            <span class="material-icons">add</span>
-                            رفع تطبيق جديد
-                        </button>
-                    </div>
-                    
-                    <div class="card">
-                        <h2 class="text-2xl font-bold mb-lg">تطبيقاتي</h2>
-                        
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>التطبيق</th>
-                                    <th>الإصدار</th>
-                                    <th>الحالة</th>
-                                    <th>التحميلات</th>
-                                    <th>التقييم</th>
-                                    <th>إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${myApps.map(app => `
-                                    <tr>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                                                <img src="${app.icon_url}" style="width: 40px; height: 40px; border-radius: var(--radius-md);">
-                                                <span class="font-semibold">${app.name}</span>
-                                            </div>
-                                        </td>
-                                        <td>${app.version}</td>
-                                        <td>
-                                            <span class="badge badge-${app.status === 'approved' ? 'success' : app.status === 'pending' ? 'warning' : 'error'}">
-                                                ${app.status === 'approved' ? 'مفعّل' : app.status === 'pending' ? 'قيد المراجعة' : 'مرفوض'}
-                                            </span>
-                                        </td>
-                                        <td>${formatNumber(app.downloads_count)}</td>
-                                        <td>
-                                            <div class="rating">
-                                                <span class="material-icons">star</span>
-                                                <span>${app.rating || 0}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-outline btn-icon" onclick="apps.showDetails('${app.id}')">
-                                                <span class="material-icons">visibility</span>
-                                            </button>
-                                            <button class="btn btn-danger btn-icon" onclick="developer.deleteApp('${app.id}')">
-                                                <span class="material-icons">delete</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            },
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.closest('.category-chip').classList.add('active');
             
-            async renderAdmin(content) {
-                const pending = await admin.loadPendingApps();
-                const stats = await admin.getStats();
-                
-                content.innerHTML = `
-                    <h1 class="text-3xl font-bold mb-lg">لوحة الإدارة</h1>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalApps)}</div>
-                            <div class="stat-label">إجمالي التطبيقات</div>
-                        </div>
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalUsers)}</div>
-                            <div class="stat-label">إجمالي المستخدمين</div>
-                        </div>
-                        <div class="stat-card card">
-                            <div class="stat-value">${formatNumber(stats.totalDownloads)}</div>
-                            <div class="stat-label">إجمالي التحميلات</div>
-                        </div>
-                        <div class="stat-card card">
-                            <div class="stat-value">${pending.length}</div>
-                            <div class="stat-label">في انتظار المراجعة</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card" style="margin-top: var(--spacing-xl);">
-                        <h2 class="text-2xl font-bold mb-lg">التطبيقات قيد المراجعة</h2>
-                        
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>التطبيق</th>
-                                    <th>المطور</th>
-                                    <th>الإصدار</th>
-                                    <th>تاريخ الرفع</th>
-                                    <th>إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${pending.map(app => `
-                                    <tr>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                                                <img src="${app.icon_url}" style="width: 40px; height: 40px; border-radius: var(--radius-md);">
-                                                <span class="font-semibold">${app.name}</span>
-                                            </div>
-                                        </td>
-                                        <td>${app.developer_name}</td>
-                                        <td>${app.version}</td>
-                                        <td>${formatDate(app.created_at)}</td>
-                                        <td>
-                                            <button class="btn btn-outline btn-icon" onclick="apps.showDetails('${app.id}')">
-                                                <span class="material-icons">visibility</span>
-                                            </button>
-                                            <button class="btn btn-primary btn-icon" onclick="admin.approveApp('${app.id}')">
-                                                <span class="material-icons">check</span>
-                                            </button>
-                                            <button class="btn btn-danger btn-icon" onclick="admin.rejectApp('${app.id}')">
-                                                <span class="material-icons">close</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            },
-            
-            async loadCategories() {
-                try {
-                    const { data, error } = await supabase
-                        .from('categories')
-                        .select('*')
-                        .order('name');
-                    
-                    if (error) throw error;
-                    return data;
-                } catch (error) {
-                    console.error('Error loading categories:', error);
-                    return [];
+            allCards.forEach(card => {
+                if (categoryId === 'all' || card.dataset.category === categoryId) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
                 }
-            }
-        };
+            });
+        }
         
-        // ============================================================
-        // INITIALIZATION
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', async () => {
-            initThreeBackground();
-            await auth.init();
-            await router.navigate('home');
+        // Show App Details (placeholder)
+        function showAppDetails(appId) {
+            showToast('تفاصيل التطبيق قريباً...', 'info');
+        }
+        
+        // Three.js Background
+        function initThreeBackground() {
+            const container = document.getElementById('threeBackground');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({alpha: true});
             
-            const categories = await router.loadCategories();
-            const select = document.getElementById('categorySelect');
-            if (select) {
-                select.innerHTML = categories.map(cat => 
-                    `<option value="${cat.id}">${cat.icon} ${cat.name}</option>`
-                ).join('');
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+            
+            const geometry = new THREE.IcosahedronGeometry(1, 1);
+            const material = new THREE.MeshBasicMaterial({color: 0x6366f1, wireframe: true});
+            
+            const particles = [];
+            for (let i = 0; i < 50; i++) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20
+                );
+                mesh.scale.setScalar(Math.random() * 0.5 + 0.1);
+                scene.add(mesh);
+                particles.push(mesh);
             }
-        });
+            
+            camera.position.z = 15;
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.forEach((particle, i) => {
+                    particle.rotation.x += 0.001;
+                    particle.rotation.y += 0.002;
+                    particle.position.y += Math.sin(Date.now() * 0.001 + i) * 0.001;
+                });
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
         
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                document.getElementById('searchSuggestions').classList.add('hidden');
-            }
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initThreeBackground();
+            supabase.auth.getSession().then(({data: {session}}) => {
+                if (!session) {
+                    document.getElementById('authPage').classList.remove('hidden');
+                    document.getElementById('mainApp').classList.add('hidden');
+                }
+            });
         });
     </script>
 </body>
