@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
+        /* جميع الأنماط السابقة تبقى كما هي مع تحسينات بسيطة */
         :root {
             --primary: #3b82f6;
             --primary-dark: #2563eb;
@@ -423,24 +424,34 @@
             background: var(--primary-dark);
         }
         
-        .test-accounts {
+        .admin-info {
             margin-top: 1rem;
             padding: 1rem;
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(245, 158, 11, 0.1);
             border-radius: var(--radius-sm);
-            border: 1px solid var(--primary);
+            border: 1px solid var(--warning);
         }
         
-        .test-accounts h4 {
-            color: var(--primary);
+        .admin-info h4 {
+            color: var(--warning);
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
         
-        .test-accounts p {
+        .admin-info p {
             color: var(--text-secondary);
             font-size: 0.8rem;
             line-height: 1.4;
+        }
+        
+        .debug-info {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(100, 116, 139, 0.1);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--text-muted);
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
     </style>
 </head>
@@ -462,11 +473,11 @@
             <!-- رسائل النظام -->
             <div id="authMessages"></div>
             
-            <!-- حسابات تجريبية -->
-            <div class="test-accounts">
-                <h4>💡 حسابات تجريبية للاختبار:</h4>
-                <p>• user1@exotisa.com / user123</p>
-                <p>• user2@exotisa.com / user123</p>
+            <!-- معلومات الحسابات -->
+            <div class="admin-info">
+                <h4>👑 حساب المسؤول:</h4>
+                <p>• البريد: chinweamine11@gmail.com</p>
+                <p>• كلمة المرور: admin123</p>
             </div>
             
             <!-- نموذج تسجيل الدخول -->
@@ -499,6 +510,12 @@
                         <i class="fab fa-google"></i>
                         تسجيل الدخول بـ Google
                     </button>
+                    
+                    <!-- معلومات التصحيح -->
+                    <div class="debug-info">
+                        <p><strong>معلومات التصحيح:</strong></p>
+                        <p id="debugStatus">جاري التحقق من الاتصال...</p>
+                    </div>
                 </form>
             </div>
             
@@ -559,10 +576,13 @@
                 <h1 style="color: var(--primary);">Exotisa</h1>
                 <p style="color: var(--text-muted); font-size: 0.9rem;">مرحباً بك في منصة التطبيقات العربية</p>
             </div>
-            <button class="logout-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i>
-                تسجيل الخروج
-            </button>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span id="userEmail" style="color: var(--text-secondary); font-size: 0.9rem;"></span>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
         </header>
         
         <div class="content">
@@ -585,8 +605,9 @@
 
     <script>
         // ============================================
-        // تهيئة التطبيق
+        // نظام تسجيل الدخول المصحح بالكامل
         // ============================================
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Exotisa App - Starting...');
             
@@ -598,6 +619,9 @@
             
             // التحقق من حالة تسجيل الدخول
             checkAuthState();
+            
+            // اختبار الاتصال
+            testConnection();
         });
         
         // ============================================
@@ -607,7 +631,7 @@
             const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
             const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
             
-            window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
                 auth: {
                     autoRefreshToken: true,
                     persistSession: true,
@@ -618,6 +642,35 @@
             });
             
             console.log('✅ Supabase initialized');
+        }
+        
+        // ============================================
+        // اختبار الاتصال
+        // ============================================
+        async function testConnection() {
+            try {
+                document.getElementById('debugStatus').textContent = 'جاري اختبار الاتصال...';
+                
+                // اختبار الاتصال بـ Supabase
+                const { data, error } = await window.supabase
+                    .from('apps')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) {
+                    document.getElementById('debugStatus').innerHTML = 
+                        '❌ خطأ في الاتصال: ' + error.message;
+                    console.error('Connection test failed:', error);
+                } else {
+                    document.getElementById('debugStatus').innerHTML = 
+                        '✅ الاتصال ناجح! النظام جاهز';
+                    console.log('✅ Connection test passed');
+                }
+            } catch (error) {
+                document.getElementById('debugStatus').innerHTML = 
+                    '⚠️ خطأ غير متوقع: ' + error.message;
+                console.error('Connection test error:', error);
+            }
         }
         
         // ============================================
@@ -688,7 +741,7 @@
         // ============================================
         async function checkAuthState() {
             try {
-                const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+                const { data: { session }, error } = await window.supabase.auth.getSession();
                 
                 if (error) {
                     console.error('❌ Session error:', error);
@@ -698,6 +751,10 @@
                 if (session) {
                     console.log('✅ User is logged in:', session.user.email);
                     showApp();
+                    updateUserEmail(session.user.email);
+                    
+                    // تحميل بيانات المستخدم
+                    await loadUserProfile(session.user.id);
                 } else {
                     console.log('ℹ️ No active session');
                 }
@@ -706,8 +763,56 @@
             }
         }
         
+        async function loadUserProfile(userId) {
+            try {
+                const { data: profile, error } = await window.supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+                
+                if (error) {
+                    console.log('⚠️ Profile not found, creating one...');
+                    await createUserProfile(userId);
+                } else {
+                    console.log('✅ Profile loaded:', profile);
+                }
+            } catch (error) {
+                console.error('❌ Error loading profile:', error);
+            }
+        }
+        
+        async function createUserProfile(userId) {
+            try {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                
+                if (!user) return;
+                
+                const { data: profile, error } = await window.supabase
+                    .from('profiles')
+                    .upsert({
+                        id: userId,
+                        email: user.email,
+                        full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+                        username: user.user_metadata?.username || user.email.split('@')[0],
+                        role: user.email === 'chinweamine11@gmail.com' ? 'admin' : 'user'
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                console.log('✅ Profile created:', profile);
+                return profile;
+                
+            } catch (error) {
+                console.error('❌ Error creating profile:', error);
+                return null;
+            }
+        }
+        
         async function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
             
             if (!email || !password) {
@@ -724,7 +829,7 @@
                 console.log('🔐 Attempting login for:', email);
                 
                 // محاولة تسجيل الدخول
-                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                const { data, error } = await window.supabase.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
@@ -735,7 +840,15 @@
                 
                 if (data.user) {
                     console.log('✅ Login successful:', data.user.email);
+                    
+                    // تحديث بريد المستخدم في الواجهة
+                    updateUserEmail(data.user.email);
+                    
+                    // تحميل أو إنشاء الملف الشخصي
+                    await loadUserProfile(data.user.id);
+                    
                     showAuthMessage('تم تسجيل الدخول بنجاح!', 'success');
+                    
                     setTimeout(() => {
                         showApp();
                     }, 1000);
@@ -749,6 +862,11 @@
                 
                 if (error.message.includes('Invalid login credentials')) {
                     errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                    
+                    // تلميح لحساب المسؤول
+                    if (email === 'chinweamine11@gmail.com') {
+                        errorMessage += ' - حاول بكلمة مرور "admin123"';
+                    }
                 } else if (error.message.includes('Email not confirmed')) {
                     errorMessage = 'يرجى تأكيد بريدك الإلكتروني أولاً';
                 } else if (error.message.includes('User not found')) {
@@ -759,10 +877,6 @@
                 
                 showAuthMessage(errorMessage, 'error');
                 
-                // تجربة تسجيل الدخول بالحسابات التجريبية تلقائياً
-                if (email.includes('@exotisa.com')) {
-                    showAuthMessage('💡 تلميح: حاول بكلمة مرور "user123"', 'info');
-                }
             } finally {
                 // إعادة تعيين الزر
                 const loginBtn = document.getElementById('loginBtn');
@@ -773,7 +887,7 @@
         
         async function handleRegister() {
             const name = document.getElementById('registerName').value.trim();
-            const email = document.getElementById('registerEmail').value.trim();
+            const email = document.getElementById('registerEmail').value.trim().toLowerCase();
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirm').value;
             
@@ -801,15 +915,15 @@
                 
                 console.log('📝 Creating account for:', email);
                 
-                // إنشاء الحساب بدون تأكيد بريد
-                const { data, error } = await window.supabaseClient.auth.signUp({
+                // إنشاء الحساب
+                const { data, error } = await window.supabase.auth.signUp({
                     email: email,
                     password: password,
                     options: {
                         data: {
-                            full_name: name
-                        },
-                        emailRedirectTo: window.location.origin
+                            full_name: name,
+                            username: name.replace(/\s+/g, '').toLowerCase()
+                        }
                     }
                 });
                 
@@ -825,11 +939,28 @@
                     
                     // تأخير بسيط ثم تسجيل الدخول
                     setTimeout(async () => {
-                        await window.supabaseClient.auth.signInWithPassword({
-                            email: email,
-                            password: password
-                        });
-                    }, 1500);
+                        try {
+                            const { data: loginData, error: loginError } = await window.supabase.auth.signInWithPassword({
+                                email: email,
+                                password: password
+                            });
+                            
+                            if (loginError) {
+                                console.error('Auto-login failed:', loginError);
+                                showAuthMessage('تم إنشاء الحساب، يرجى تسجيل الدخول يدوياً', 'info');
+                            } else {
+                                console.log('✅ Auto-login successful');
+                                updateUserEmail(loginData.user.email);
+                                
+                                // إنشاء الملف الشخصي
+                                await createUserProfile(loginData.user.id);
+                                
+                                showApp();
+                            }
+                        } catch (autoLoginError) {
+                            console.error('Auto-login error:', autoLoginError);
+                        }
+                    }, 2000);
                 }
                 
             } catch (error) {
@@ -867,7 +998,7 @@
                 
                 console.log('🔗 Starting Google login with redirect:', redirectUrl);
                 
-                const { error } = await window.supabaseClient.auth.signInWithOAuth({
+                const { error } = await window.supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
                         redirectTo: redirectUrl,
@@ -891,7 +1022,7 @@
         
         async function handleLogout() {
             try {
-                const { error } = await window.supabaseClient.auth.signOut();
+                const { error } = await window.supabase.auth.signOut();
                 
                 if (error) {
                     throw error;
@@ -954,6 +1085,10 @@
             }, 5000);
         }
         
+        function updateUserEmail(email) {
+            document.getElementById('userEmail').textContent = email;
+        }
+        
         function showLogin() {
             document.getElementById('loginOverlay').classList.remove('hidden');
             document.getElementById('appContainer').classList.remove('active');
@@ -969,26 +1104,12 @@
             document.getElementById('appContainer').classList.add('active');
             
             // تحديث واجهة المستخدم
-            updateUserInfo();
             loadApps();
-        }
-        
-        async function updateUserInfo() {
-            try {
-                const { data: { user } } = await window.supabaseClient.auth.getUser();
-                
-                if (user) {
-                    console.log('👤 User info updated:', user.email);
-                    // يمكنك تحديث واجهة المستخدم بمعلوماته هنا
-                }
-            } catch (error) {
-                console.error('❌ Error updating user info:', error);
-            }
         }
         
         async function loadApps() {
             try {
-                const { data: apps, error } = await window.supabaseClient
+                const { data: apps, error } = await window.supabase
                     .from('apps')
                     .select('*')
                     .order('created_at', { ascending: false })
@@ -1054,7 +1175,7 @@
         
         async function downloadApp(appId) {
             try {
-                const { data: { user } } = await window.supabaseClient.auth.getUser();
+                const { data: { user } } = await window.supabase.auth.getUser();
                 
                 if (!user) {
                     showAppMessage('يرجى تسجيل الدخول لتحميل التطبيقات', 'error');
@@ -1062,9 +1183,9 @@
                 }
                 
                 // زيادة عداد التحميلات
-                const { error } = await window.supabaseClient
+                const { error } = await window.supabase
                     .from('apps')
-                    .update({ download_count: window.supabaseClient.raw('download_count + 1') })
+                    .update({ download_count: window.supabase.raw('download_count + 1') })
                     .eq('id', appId);
                 
                 if (error) {
@@ -1087,11 +1208,16 @@
         // ============================================
         // مستمع حالة المصادقة
         // ============================================
-        window.supabaseClient.auth.onAuthStateChange((event, session) => {
+        window.supabase.auth.onAuthStateChange(async (event, session) => {
             console.log('🔑 Auth state changed:', event);
             
             if (event === 'SIGNED_IN') {
                 console.log('✅ User signed in:', session?.user?.email);
+                updateUserEmail(session.user.email);
+                
+                // تحميل أو إنشاء الملف الشخصي
+                await loadUserProfile(session.user.id);
+                
                 showApp();
                 showAppMessage('مرحباً بك في Exotisa!', 'success');
             } else if (event === 'SIGNED_OUT') {
@@ -1099,42 +1225,10 @@
                 showLogin();
             } else if (event === 'USER_UPDATED') {
                 console.log('📝 User updated');
-                updateUserInfo();
             }
         });
         
-        // ============================================
-        // اختبار الاتصال بـ Supabase
-        // ============================================
-        async function testSupabaseConnection() {
-            try {
-                const { data, error } = await window.supabaseClient
-                    .from('apps')
-                    .select('count')
-                    .limit(1);
-                
-                if (error) {
-                    console.error('❌ Supabase connection test failed:', error);
-                    showAuthMessage('⚠️ لا يمكن الاتصال بالخادم - تحقق من اتصال الإنترنت', 'error');
-                } else {
-                    console.log('✅ Supabase connection test passed');
-                }
-            } catch (error) {
-                console.error('❌ Connection test error:', error);
-            }
-        }
-        
-        // اختبار الاتصال عند التحميل
-        setTimeout(testSupabaseConnection, 1000);
-        
         console.log('🎉 Exotisa App - Ready!');
-        
-        // جعل الدوال متاحة عالمياً للتصحيح
-        window.handleLogin = handleLogin;
-        window.handleRegister = handleRegister;
-        window.handleGoogleLogin = handleGoogleLogin;
-        window.handleLogout = handleLogout;
-        window.testSupabaseConnection = testSupabaseConnection;
     </script>
 </body>
 </html>
