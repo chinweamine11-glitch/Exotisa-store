@@ -172,6 +172,7 @@
         
         .form-group {
             margin-bottom: 1.2rem;
+            position: relative;
         }
         
         .form-label {
@@ -224,6 +225,7 @@
             color: var(--text-muted);
             cursor: pointer;
             padding: 0.5rem;
+            z-index: 2;
         }
         
         /* ===== خيار تذكرني ===== */
@@ -238,12 +240,14 @@
             width: 18px;
             height: 18px;
             accent-color: var(--primary);
+            cursor: pointer;
         }
         
         .remember-label {
             color: var(--text-muted);
             font-size: 0.9rem;
             cursor: pointer;
+            user-select: none;
         }
         
         /* ===== الأزرار ===== */
@@ -310,6 +314,10 @@
             background: white;
             color: #333;
             border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
         
         .btn-google:hover {
@@ -1135,47 +1143,12 @@
 
     <script>
         // ============================================
-        // تهيئة النظام
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Exotisa - بدء التشغيل...');
-            
-            // تهيئة Supabase
-            initSupabase();
-            
-            // تهيئة معالجي الأحداث
-            initEventListeners();
-            
-            // التحقق من حالة المصادقة
-            checkAuthState();
-            
-            // تحميل الإعدادات
-            loadSettings();
-        });
-        
-        // ============================================
-        // تكوين Supabase
+        // SYSTEM CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://qjfpkwyglveukzfazmzo.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZnBrd3lnbHZldWt6ZmF6bXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjY2MjMsImV4cCI6MjA4MzA0MjYyM30.L-bh48EGgn348UzJzBajJc1PR7-z1weW1ayzZz-tbvc';
         
         let supabase = null;
-        
-        function initSupabase() {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-                auth: {
-                    autoRefreshToken: true,
-                    persistSession: true,
-                    detectSessionInUrl: true,
-                    flowType: 'pkce'
-                }
-            });
-            console.log('✅ Supabase جاهز');
-        }
-        
-        // ============================================
-        // إدارة الحالة
-        // ============================================
         let currentUser = null;
         let isAdmin = false;
         let currentPage = 1;
@@ -1184,50 +1157,115 @@
         let currentSort = 'newest';
         
         // ============================================
-        // معالجي الأحداث الرئيسية
+        // INITIALIZATION
         // ============================================
-        function initEventListeners() {
-            // تبديل تبويبات المصادقة
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Exotisa - Starting...');
+            
+            // Initialize Supabase
+            initSupabase();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Check authentication state
+            checkAuthState();
+            
+            // Load saved settings
+            loadSettings();
+        });
+        
+        function initSupabase() {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                auth: {
+                    autoRefreshToken: true,
+                    persistSession: true,
+                    detectSessionInUrl: true,
+                    storage: window.localStorage,
+                    flowType: 'pkce'
+                }
+            });
+            
+            console.log('✅ Supabase initialized');
+        }
+        
+        // ============================================
+        // EVENT LISTENERS SETUP
+        // ============================================
+        function setupEventListeners() {
+            console.log('🔧 Setting up event listeners...');
+            
+            // Auth tabs
             document.querySelectorAll('.auth-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
-                    const tabId = this.dataset.tab;
-                    switchAuthTab(tabId);
+                    switchAuthTab(this.dataset.tab);
                 });
             });
             
-            // إظهار/إخفاء كلمة المرور
+            // Show/Hide password buttons
             document.querySelectorAll('.toggle-password').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     const targetId = this.dataset.target;
-                    togglePasswordVisibility(targetId);
+                    togglePasswordVisibility(targetId, this);
                 });
             });
             
-            // تسجيل الدخول
-            document.getElementById('loginBtn').addEventListener('click', handleLogin);
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
+            // Login form
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 handleLogin();
             });
             
-            // إنشاء حساب
-            document.getElementById('registerBtn').addEventListener('click', handleRegister);
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+            
+            // Register form
+            const registerForm = document.getElementById('registerForm');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            registerForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 handleRegister();
             });
             
-            // تسجيل الدخول بـ Google
-            document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleAuth);
-            document.getElementById('googleRegisterBtn').addEventListener('click', handleGoogleAuth);
+            registerBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleRegister();
+            });
             
-            // تبديل الوضع الداكن
-            document.getElementById('themeToggle').addEventListener('click', toggleDarkMode);
+            // Google Auth buttons
+            document.getElementById('googleLoginBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleGoogleAuth();
+            });
             
-            // البحث
+            document.getElementById('googleRegisterBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleGoogleAuth();
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+            
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleDarkMode();
+            });
+            
+            // Search functionality
             document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 500));
             
-            // التصفية والترتيب
+            // Filters
             document.getElementById('categoryFilter').addEventListener('change', function() {
                 currentCategory = this.value;
                 loadApps();
@@ -1238,25 +1276,55 @@
                 loadApps();
             });
             
-            // تسجيل الخروج
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            // App management buttons
+            document.getElementById('uploadBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showUploadModal();
+            });
             
-            // رفع التطبيقات
-            document.getElementById('uploadBtn').addEventListener('click', showUploadModal);
-            document.getElementById('addAppBtn').addEventListener('click', showUploadModal);
-            document.getElementById('cancelUpload').addEventListener('click', hideUploadModal);
-            document.getElementById('closeUpload').addEventListener('click', hideUploadModal);
-            document.getElementById('uploadAppForm').addEventListener('submit', handleUploadApp);
+            document.getElementById('addAppBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showUploadModal();
+            });
             
-            // إدارة لوحة التحكم
-            document.getElementById('manageAppsBtn').addEventListener('click', () => loadApps());
-            document.getElementById('manageUsersBtn').addEventListener('click', loadUsers);
-            document.getElementById('manageCategoriesBtn').addEventListener('click', loadCategories);
+            document.getElementById('cancelUpload').addEventListener('click', function(e) {
+                e.preventDefault();
+                hideUploadModal();
+            });
             
-            // إغلاق المعاينة
-            document.getElementById('closePreview').addEventListener('click', hidePreview);
+            document.getElementById('closeUpload').addEventListener('click', function(e) {
+                e.preventDefault();
+                hideUploadModal();
+            });
             
-            // منع إغلاق النافذة بالنقر خارجها
+            document.getElementById('uploadAppForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleUploadApp(e);
+            });
+            
+            // Admin buttons
+            document.getElementById('manageAppsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadApps();
+            });
+            
+            document.getElementById('manageUsersBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadUsers();
+            });
+            
+            document.getElementById('manageCategoriesBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadCategories();
+            });
+            
+            // Close preview
+            document.getElementById('closePreview').addEventListener('click', function(e) {
+                e.preventDefault();
+                hidePreview();
+            });
+            
+            // Modal close on outside click
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 modal.addEventListener('click', function(e) {
                     if (e.target === this) {
@@ -1264,18 +1332,20 @@
                     }
                 });
             });
+            
+            console.log('✅ Event listeners set up');
         }
         
         // ============================================
-        // دوال المصادقة المحسنة
+        // AUTHENTICATION FUNCTIONS
         // ============================================
         async function checkAuthState() {
             try {
-                // التحقق من البيانات المحفوظة
-                const rememberMe = localStorage.getItem('rememberMe') === 'true';
-                const savedEmail = localStorage.getItem('savedEmail');
+                console.log('🔍 Checking authentication state...');
                 
-                if (rememberMe && savedEmail) {
+                // Check for saved email
+                const savedEmail = localStorage.getItem('exotisa_saved_email');
+                if (savedEmail) {
                     document.getElementById('loginEmail').value = savedEmail;
                     document.getElementById('rememberMe').checked = true;
                 }
@@ -1283,21 +1353,21 @@
                 const { data: { session }, error } = await supabase.auth.getSession();
                 
                 if (error) {
-                    console.error('❌ خطأ في الجلسة:', error);
+                    console.error('❌ Session error:', error);
                     return;
                 }
                 
                 if (session) {
-                    console.log('✅ جلسة نشطة موجودة:', session.user.email);
+                    console.log('✅ User is logged in:', session.user.email);
                     currentUser = session.user;
                     await loadUserProfile();
                     showMainApp();
                 } else {
-                    console.log('ℹ️ لا توجد جلسة نشطة');
+                    console.log('ℹ️ No active session');
                     showAuthScreen();
                 }
             } catch (error) {
-                console.error('❌ خطأ في التحقق من المصادقة:', error);
+                console.error('❌ Auth check error:', error);
                 showAuthScreen();
             }
         }
@@ -1313,10 +1383,10 @@
                     .single();
                 
                 if (error) {
-                    console.log('⚠️ الملف الشخصي غير موجود، جاري إنشاء ملف جديد...');
+                    console.log('⚠️ Profile not found, creating one...');
                     await createUserProfile();
                 } else {
-                    console.log('✅ تم تحميل الملف الشخصي:', profile);
+                    console.log('✅ Profile loaded:', profile);
                     updateUserUI(profile);
                     isAdmin = profile.role === 'admin';
                     
@@ -1326,47 +1396,41 @@
                     }
                 }
             } catch (error) {
-                console.error('❌ خطأ في تحميل الملف الشخصي:', error);
+                console.error('❌ Error loading profile:', error);
             }
         }
         
         async function createUserProfile() {
             try {
-                // الحصول على بيانات المستخدم
-                const { data: { user }, error: userError } = await supabase.auth.getUser();
+                const { data: { user }, error } = await supabase.auth.getUser();
                 
-                if (userError || !user) {
-                    console.error('❌ خطأ في الحصول على بيانات المستخدم:', userError);
-                    return;
-                }
+                if (!user) return;
                 
                 const profileData = {
                     id: user.id,
                     email: user.email,
-                    full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-                    username: user.user_metadata?.username || user.email.split('@')[0],
+                    full_name: user.user_metadata?.full_name || 
+                              user.user_metadata?.name || 
+                              user.email.split('@')[0],
+                    username: user.user_metadata?.username || 
+                             user.email.split('@')[0],
                     role: user.email === 'chinweamine11@gmail.com' ? 'admin' : 'user'
                 };
                 
-                console.log('📝 جاري إنشاء الملف الشخصي:', profileData);
-                
-                const { data: profile, error } = await supabase
+                const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .upsert(profileData)
                     .select()
                     .single();
                 
-                if (error) {
-                    console.error('❌ خطأ في إنشاء الملف الشخصي:', error);
-                    throw error;
-                }
+                if (profileError) throw profileError;
                 
-                console.log('✅ تم إنشاء الملف الشخصي:', profile);
+                console.log('✅ Profile created:', profile);
                 updateUserUI(profile);
                 isAdmin = profile.role === 'admin';
                 
             } catch (error) {
-                console.error('❌ خطأ في إنشاء الملف الشخصي:', error);
+                console.error('❌ Error creating profile:', error);
             }
         }
         
@@ -1375,24 +1439,24 @@
             const password = document.getElementById('loginPassword').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             
+            // Validation
             if (!email || !password) {
                 showAuthMessage('يرجى ملء جميع الحقول', 'error');
                 return;
             }
             
-            // حفظ بيانات تذكرني
-            if (rememberMe) {
-                localStorage.setItem('rememberMe', 'true');
-                localStorage.setItem('savedEmail', email);
-            } else {
-                localStorage.removeItem('rememberMe');
-                localStorage.removeItem('savedEmail');
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAuthMessage('البريد الإلكتروني غير صالح', 'error');
+                return;
             }
             
+            // Show loading
             showLoading('loginBtn', 'جاري تسجيل الدخول...');
             
             try {
-                console.log('🔐 محاولة تسجيل الدخول:', email);
+                console.log('🔐 Attempting login for:', email);
                 
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
@@ -1400,30 +1464,33 @@
                 });
                 
                 if (error) {
-                    console.error('❌ خطأ في تسجيل الدخول:', error);
+                    console.error('❌ Login error:', error);
                     
-                    // رسائل خطأ محددة
                     let errorMessage = 'بيانات الدخول غير صحيحة';
-                    
                     if (error.message.includes('Invalid login credentials')) {
                         errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
                     } else if (error.message.includes('Email not confirmed')) {
                         errorMessage = 'يرجى تأكيد بريدك الإلكتروني أولاً';
-                    } else if (error.message.includes('User not found')) {
-                        errorMessage = 'المستخدم غير موجود. يرجى إنشاء حساب جديد';
                     }
                     
                     throw new Error(errorMessage);
                 }
                 
-                console.log('✅ تسجيل الدخول ناجح:', data.user.email);
+                // Save email if remember me is checked
+                if (rememberMe) {
+                    localStorage.setItem('exotisa_saved_email', email);
+                } else {
+                    localStorage.removeItem('exotisa_saved_email');
+                }
+                
+                console.log('✅ Login successful:', data.user.email);
                 currentUser = data.user;
                 await loadUserProfile();
                 showMainApp();
                 showAppMessage('مرحباً بك في Exotisa!', 'success');
                 
             } catch (error) {
-                console.error('❌ خطأ في تسجيل الدخول:', error);
+                console.error('❌ Login failed:', error);
                 showAuthMessage(error.message || 'حدث خطأ أثناء تسجيل الدخول', 'error');
             } finally {
                 hideLoading('loginBtn', 'تسجيل الدخول');
@@ -1436,7 +1503,7 @@
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirm').value;
             
-            // التحقق من المدخلات
+            // Validation
             if (!name || !email || !password || !confirmPassword) {
                 showAuthMessage('يرجى ملء جميع الحقول', 'error');
                 return;
@@ -1452,17 +1519,18 @@
                 return;
             }
             
-            // التحقق من صحة البريد الإلكتروني
+            // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showAuthMessage('البريد الإلكتروني غير صالح', 'error');
                 return;
             }
             
+            // Show loading
             showLoading('registerBtn', 'جاري إنشاء الحساب...');
             
             try {
-                console.log('📝 جاري إنشاء حساب جديد:', email);
+                console.log('📝 Creating account for:', email);
                 
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
@@ -1476,25 +1544,22 @@
                 });
                 
                 if (error) {
-                    console.error('❌ خطأ في إنشاء الحساب:', error);
+                    console.error('❌ Registration error:', error);
                     
                     let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
                     if (error.message.includes('User already registered')) {
                         errorMessage = 'هذا البريد الإلكتروني مسجل مسبقاً';
-                    } else if (error.message.includes('Invalid email')) {
-                        errorMessage = 'البريد الإلكتروني غير صالح';
                     }
                     
                     throw new Error(errorMessage);
                 }
                 
                 if (data.user) {
-                    console.log('✅ تم إنشاء الحساب:', data.user.email);
+                    console.log('✅ Account created:', data.user.email);
                     
-                    // محاولة تسجيل الدخول تلقائياً
+                    // Auto login after registration
                     showAuthMessage('تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...', 'success');
                     
-                    // تأخير بسيط ثم تسجيل الدخول
                     setTimeout(async () => {
                         try {
                             const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
@@ -1503,24 +1568,24 @@
                             });
                             
                             if (loginError) {
-                                console.error('❌ فشل تسجيل الدخول التلقائي:', loginError);
+                                console.error('Auto-login failed:', loginError);
                                 showAuthMessage('تم إنشاء الحساب، يرجى تسجيل الدخول يدوياً', 'info');
                                 switchAuthTab('login');
                                 document.getElementById('loginEmail').value = email;
                             } else {
-                                console.log('✅ تسجيل الدخول التلقائي ناجح');
+                                console.log('✅ Auto-login successful');
                                 currentUser = loginData.user;
                                 await loadUserProfile();
                                 showMainApp();
                             }
                         } catch (autoLoginError) {
-                            console.error('❌ خطأ في تسجيل الدخول التلقائي:', autoLoginError);
+                            console.error('Auto-login error:', autoLoginError);
                         }
                     }, 2000);
                 }
                 
             } catch (error) {
-                console.error('❌ خطأ في إنشاء الحساب:', error);
+                console.error('❌ Registration failed:', error);
                 showAuthMessage(error.message || 'حدث خطأ أثناء إنشاء الحساب', 'error');
             } finally {
                 hideLoading('registerBtn', 'إنشاء حساب');
@@ -1529,15 +1594,12 @@
         
         async function handleGoogleAuth() {
             try {
-                console.log('🔐 بدء تسجيل الدخول بـ Google...');
-                
-                // إعداد رابط إعادة التوجيه
-                const redirectUrl = window.location.origin;
+                console.log('🔐 Starting Google OAuth...');
                 
                 const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: redirectUrl,
+                        redirectTo: window.location.origin,
                         queryParams: {
                             access_type: 'offline',
                             prompt: 'consent'
@@ -1546,14 +1608,12 @@
                 });
                 
                 if (error) {
-                    console.error('❌ خطأ في تسجيل الدخول بـ Google:', error);
+                    console.error('❌ Google OAuth error:', error);
                     throw error;
                 }
                 
-                console.log('✅ تم توجيه المستخدم إلى Google للتفويض');
-                
             } catch (error) {
-                console.error('❌ خطأ في تسجيل الدخول بـ Google:', error);
+                console.error('❌ Google auth failed:', error);
                 showAuthMessage('حدث خطأ أثناء تسجيل الدخول بـ Google', 'error');
             }
         }
@@ -1564,29 +1624,58 @@
                 
                 if (error) throw error;
                 
-                // مسح بيانات المستخدم
+                // Clear user data
                 currentUser = null;
                 isAdmin = false;
                 
-                // مسح بيانات تذكرني
-                localStorage.removeItem('rememberMe');
-                localStorage.removeItem('savedEmail');
+                // Clear saved email
+                localStorage.removeItem('exotisa_saved_email');
                 
-                // إعادة تعيين الواجهة
+                // Reset UI
                 showAuthScreen();
                 showAuthMessage('تم تسجيل الخروج بنجاح', 'success');
                 
-                console.log('👋 تم تسجيل الخروج بنجاح');
+                console.log('👋 Logged out successfully');
                 
             } catch (error) {
-                console.error('❌ خطأ في تسجيل الخروج:', error);
+                console.error('❌ Logout error:', error);
                 showAppMessage('حدث خطأ أثناء تسجيل الخروج', 'error');
             }
         }
         
         // ============================================
-        // واجهة المستخدم
+        // UI FUNCTIONS
         // ============================================
+        function switchAuthTab(tabId) {
+            // Update tabs
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update forms
+            document.getElementById('loginForm').classList.toggle('hidden', tabId !== 'login');
+            document.getElementById('registerForm').classList.toggle('hidden', tabId !== 'register');
+            
+            // Clear messages
+            clearAuthMessages();
+        }
+        
+        function togglePasswordVisibility(targetId, button) {
+            const input = document.getElementById(targetId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+        
         function showAuthScreen() {
             document.getElementById('authOverlay').classList.remove('hidden');
             document.getElementById('appContainer').classList.add('hidden');
@@ -1612,7 +1701,7 @@
                 userName.textContent = profile.full_name || profile.email;
                 userRole.textContent = profile.role === 'admin' ? 'مسؤول' : 'مستخدم';
                 
-                // إنشاء الأحرف الأولى للصورة
+                // Create avatar initials
                 const initials = (profile.full_name || profile.email)
                     .split(' ')
                     .map(n => n[0])
@@ -1624,44 +1713,17 @@
             }
         }
         
-        function switchAuthTab(tabId) {
-            // تحديث التبويبات
-            document.querySelectorAll('.auth-tab').forEach(t => {
-                t.classList.toggle('active', t.dataset.tab === tabId);
-            });
-            
-            // تحديث النماذج
-            document.getElementById('loginForm').classList.toggle('hidden', tabId !== 'login');
-            document.getElementById('registerForm').classList.toggle('hidden', tabId !== 'register');
-            
-            // مسح الرسائل
-            clearAuthMessages();
-        }
-        
-        function togglePasswordVisibility(targetId) {
-            const input = document.getElementById(targetId);
-            const icon = document.querySelector(`[data-target="${targetId}"] i`);
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
-        }
-        
         function toggleDarkMode() {
             const body = document.body;
             const isDark = body.classList.toggle('dark-mode');
             const icon = document.querySelector('#themeToggle i');
             
             icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            localStorage.setItem('darkMode', isDark);
+            localStorage.setItem('exotisa_dark_mode', isDark);
         }
         
         function loadSettings() {
-            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const darkMode = localStorage.getItem('exotisa_dark_mode') === 'true';
             if (darkMode) {
                 document.body.classList.add('dark-mode');
                 document.querySelector('#themeToggle i').className = 'fas fa-sun';
@@ -1669,7 +1731,7 @@
         }
         
         // ============================================
-        // إدارة التطبيقات
+        // APPS MANAGEMENT
         // ============================================
         async function loadApps() {
             try {
@@ -1679,18 +1741,18 @@
                     .from('apps')
                     .select('*, profiles(full_name)', { count: 'exact' });
                 
-                // التصفية بالفئة
+                // Filter by category
                 if (currentCategory) {
                     query = query.eq('category', currentCategory);
                 }
                 
-                // البحث
+                // Search
                 const searchTerm = document.getElementById('searchInput').value.trim();
                 if (searchTerm) {
                     query = query.or(`name.ilike.%${searchTerm}%,short_description.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`);
                 }
                 
-                // الترتيب
+                // Sorting
                 switch(currentSort) {
                     case 'popular':
                         query = query.order('download_count', { ascending: false });
@@ -1702,7 +1764,7 @@
                         query = query.order('created_at', { ascending: false });
                 }
                 
-                // التقسيم للصفحات
+                // Pagination
                 const from = (currentPage - 1) * appsPerPage;
                 const to = from + appsPerPage - 1;
                 query = query.range(from, to);
@@ -1715,7 +1777,7 @@
                 updatePagination(count || 0);
                 
             } catch (error) {
-                console.error('❌ خطأ في تحميل التطبيقات:', error);
+                console.error('❌ Error loading apps:', error);
                 showAppMessage('حدث خطأ في تحميل التطبيقات', 'error');
                 document.getElementById('appsGrid').innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
@@ -1771,14 +1833,14 @@
                                 </span>
                             </div>
                             <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-icon" onclick="previewApp('${app.id}')">
+                                <button class="btn btn-icon" onclick="window.previewApp('${app.id}')">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-primary" onclick="downloadApp('${app.id}')">
+                                <button class="btn btn-primary" onclick="window.downloadApp('${app.id}')">
                                     <i class="fas fa-download"></i>
                                 </button>
                                 ${isAdmin ? `
-                                    <button class="btn btn-danger btn-icon" onclick="deleteApp('${app.id}')">
+                                    <button class="btn btn-danger btn-icon" onclick="window.deleteApp('${app.id}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 ` : ''}
@@ -1811,74 +1873,12 @@
                 }
                 
             } catch (error) {
-                console.error('❌ خطأ في تحميل الفئات:', error);
+                console.error('❌ Error loading categories:', error);
             }
-        }
-        
-        function updatePagination(totalCount) {
-            const pagination = document.getElementById('pagination');
-            const totalPages = Math.ceil(totalCount / appsPerPage);
-            
-            if (totalPages <= 1) {
-                pagination.innerHTML = '';
-                return;
-            }
-            
-            let html = '';
-            
-            // زر السابق
-            html += `
-                <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            `;
-            
-            // أرقام الصفحات
-            for (let i = 1; i <= totalPages; i++) {
-                if (
-                    i === 1 ||
-                    i === totalPages ||
-                    (i >= currentPage - 1 && i <= currentPage + 1)
-                ) {
-                    html += `
-                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
-                            ${i}
-                        </button>
-                    `;
-                } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    html += '<span style="padding: 0.5rem;">...</span>';
-                }
-            }
-            
-            // زر التالي
-            html += `
-                <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-            `;
-            
-            pagination.innerHTML = html;
-        }
-        
-        function changePage(page) {
-            if (page < 1) return;
-            currentPage = page;
-            loadApps();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        function showLoadingState() {
-            const appsGrid = document.getElementById('appsGrid');
-            appsGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-                    <div class="loading" style="margin: 0 auto; width: 50px; height: 50px; border-width: 3px;"></div>
-                    <p style="margin-top: 1rem; color: var(--text-muted);">جاري تحميل التطبيقات...</p>
-                </div>
-            `;
         }
         
         // ============================================
-        // معاينة التطبيقات
+        // APP PREVIEW & DOWNLOAD
         // ============================================
         async function previewApp(appId) {
             try {
@@ -1941,10 +1941,10 @@
                         </div>
                         
                         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn btn-secondary" onclick="hidePreview()">
+                            <button class="btn btn-secondary" onclick="window.hidePreview()">
                                 إغلاق
                             </button>
-                            <button class="btn btn-primary" onclick="downloadApp('${app.id}')">
+                            <button class="btn btn-primary" onclick="window.downloadApp('${app.id}')">
                                 <i class="fas fa-download"></i>
                                 تحميل التطبيق
                             </button>
@@ -1955,18 +1955,11 @@
                 modal.classList.remove('hidden');
                 
             } catch (error) {
-                console.error('❌ خطأ في معاينة التطبيق:', error);
+                console.error('❌ Error previewing app:', error);
                 showAppMessage('حدث خطأ في معاينة التطبيق', 'error');
             }
         }
         
-        function hidePreview() {
-            document.getElementById('previewModal').classList.add('hidden');
-        }
-        
-        // ============================================
-        // تحميل التطبيقات
-        // ============================================
         async function downloadApp(appId) {
             if (!currentUser) {
                 showAppMessage('يجب تسجيل الدخول لتحميل التطبيقات', 'error');
@@ -1974,7 +1967,7 @@
             }
             
             try {
-                // تسجيل التحميل
+                // Record download
                 const { error: downloadError } = await supabase
                     .from('downloads')
                     .insert([{
@@ -1987,7 +1980,7 @@
                     throw downloadError;
                 }
                 
-                // زيادة عداد التحميلات
+                // Increment download count
                 const { error: updateError } = await supabase
                     .from('apps')
                     .update({ download_count: supabase.raw('download_count + 1') })
@@ -1997,17 +1990,17 @@
                 
                 showAppMessage('بدأ تحميل التطبيق...', 'success');
                 
-                // إعادة تحميل القائمة
+                // Reload apps
                 setTimeout(loadApps, 1000);
                 
             } catch (error) {
-                console.error('❌ خطأ في تحميل التطبيق:', error);
+                console.error('❌ Error downloading app:', error);
                 showAppMessage('حدث خطأ في تحميل التطبيق', 'error');
             }
         }
         
         // ============================================
-        // رفع التطبيقات (للمسؤول فقط)
+        // ADMIN FUNCTIONS
         // ============================================
         function showUploadModal() {
             if (!isAdmin) {
@@ -2060,7 +2053,7 @@
                 loadApps();
                 
             } catch (error) {
-                console.error('❌ خطأ في رفع التطبيق:', error);
+                console.error('❌ Error uploading app:', error);
                 showAppMessage('حدث خطأ في رفع التطبيق', 'error');
             }
         }
@@ -2082,29 +2075,26 @@
                 loadApps();
                 
             } catch (error) {
-                console.error('❌ خطأ في حذف التطبيق:', error);
+                console.error('❌ Error deleting app:', error);
                 showAppMessage('حدث خطأ في حذف التطبيق', 'error');
             }
         }
         
-        // ============================================
-        // لوحة تحكم المسؤول
-        // ============================================
         async function loadAdminStats() {
             if (!isAdmin) return;
             
             try {
-                // إحصائيات التطبيقات
+                // Apps count
                 const { count: appsCount } = await supabase
                     .from('apps')
                     .select('*', { count: 'exact', head: true });
                 
-                // إحصائيات المستخدمين
+                // Users count
                 const { count: usersCount } = await supabase
                     .from('profiles')
                     .select('*', { count: 'exact', head: true });
                 
-                // إحصائيات التحميلات
+                // Downloads count
                 const { data: downloadsData } = await supabase
                     .from('downloads')
                     .select('id');
@@ -2114,7 +2104,7 @@
                 document.getElementById('statsDownloads').textContent = downloadsData?.length || 0;
                 
             } catch (error) {
-                console.error('❌ خطأ في تحميل الإحصائيات:', error);
+                console.error('❌ Error loading stats:', error);
             }
         }
         
@@ -2157,7 +2147,7 @@
                 `);
                 
             } catch (error) {
-                console.error('❌ خطأ في تحميل المستخدمين:', error);
+                console.error('❌ Error loading users:', error);
             }
         }
         
@@ -2189,32 +2179,12 @@
                 `);
                 
             } catch (error) {
-                console.error('❌ خطأ في تحميل الفئات:', error);
+                console.error('❌ Error loading categories:', error);
             }
         }
         
         // ============================================
-        // البحث
-        // ============================================
-        function handleSearch() {
-            currentPage = 1;
-            loadApps();
-        }
-        
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-        
-        // ============================================
-        // دوال مساعدة
+        // UTILITY FUNCTIONS
         // ============================================
         function getAppIcon(category) {
             const icons = {
@@ -2235,16 +2205,15 @@
         }
         
         function showAuthMessage(message, type) {
-            const messagesDiv = document.getElementById('authMessages');
-            showMessage(messagesDiv, message, type);
+            showMessage('authMessages', message, type);
         }
         
         function showAppMessage(message, type) {
-            const messagesDiv = document.getElementById('appMessages');
-            showMessage(messagesDiv, message, type);
+            showMessage('appMessages', message, type);
         }
         
-        function showMessage(container, message, type) {
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
             const messageDiv = document.createElement('div');
             messageDiv.className = `alert alert-${type}`;
             messageDiv.innerHTML = `
@@ -2268,16 +2237,16 @@
         
         function showLoading(buttonId, text) {
             const button = document.getElementById(buttonId);
-            const originalText = button.querySelector('span').textContent;
-            button.innerHTML = `<div class="loading" style="display:inline-block;margin-left:8px;"></div> ${text}`;
+            const originalText = button.innerHTML;
+            button.innerHTML = `<div class="loading"></div> ${text}`;
             button.disabled = true;
             button.dataset.originalText = originalText;
         }
         
         function hideLoading(buttonId, text) {
             const button = document.getElementById(buttonId);
-            const originalText = button.dataset.originalText || text;
-            button.innerHTML = `<span>${originalText}</span>`;
+            const originalText = button.dataset.originalText || `<span>${text}</span>`;
+            button.innerHTML = originalText;
             button.disabled = false;
         }
         
@@ -2291,29 +2260,112 @@
             modal.classList.remove('hidden');
         }
         
+        function hidePreview() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+        
+        function showLoadingState() {
+            const appsGrid = document.getElementById('appsGrid');
+            appsGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <div class="loading" style="margin: 0 auto; width: 50px; height: 50px; border-width: 3px;"></div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);">جاري تحميل التطبيقات...</p>
+                </div>
+            `;
+        }
+        
+        function updatePagination(totalCount) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalCount / appsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Previous button
+            html += `
+                <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="window.changePage(${currentPage - 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (
+                    i === 1 ||
+                    i === totalPages ||
+                    (i >= currentPage - 1 && i <= currentPage + 1)
+                ) {
+                    html += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="window.changePage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += '<span style="padding: 0.5rem;">...</span>';
+                }
+            }
+            
+            // Next button
+            html += `
+                <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.changePage(${currentPage + 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+        
+        function changePage(page) {
+            if (page < 1) return;
+            currentPage = page;
+            loadApps();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function handleSearch() {
+            currentPage = 1;
+            loadApps();
+        }
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
         // ============================================
-        // مستمع حالة المصادقة
+        // AUTH STATE LISTENER
         // ============================================
         supabase.auth.onAuthStateChange((event, session) => {
-            console.log('🔑 تغيير حالة المصادقة:', event);
+            console.log('🔑 Auth state changed:', event);
             
             if (event === 'SIGNED_IN') {
-                console.log('✅ تم تسجيل الدخول:', session?.user?.email);
+                console.log('✅ User signed in:', session.user.email);
                 currentUser = session.user;
                 
-                // تحميل الملف الشخصي مع إعادة المحاولة
+                // Load user profile with retry
                 const loadProfileWithRetry = async (retries = 3) => {
                     try {
                         await loadUserProfile();
                         showMainApp();
                         showAppMessage('مرحباً بك في Exotisa!', 'success');
                     } catch (error) {
-                        console.error('❌ خطأ في تحميل الملف الشخصي، جاري إعادة المحاولة...', error);
+                        console.error('❌ Error loading profile, retrying...', error);
                         
                         if (retries > 0) {
                             setTimeout(() => loadProfileWithRetry(retries - 1), 1000);
                         } else {
-                            console.error('❌ فشل تحميل الملف الشخصي بعد عدة محاولات');
+                            console.error('❌ Failed to load profile after multiple attempts');
                             showAppMessage('حدث خطأ في تحميل بيانات المستخدم', 'error');
                         }
                     }
@@ -2322,27 +2374,25 @@
                 loadProfileWithRetry();
                 
             } else if (event === 'SIGNED_OUT') {
-                console.log('👋 تم تسجيل الخروج');
+                console.log('👋 User signed out');
                 currentUser = null;
                 isAdmin = false;
                 showAuthScreen();
             } else if (event === 'TOKEN_REFRESHED') {
-                console.log('🔄 تم تحديث الرمز المميز');
-            } else if (event === 'USER_UPDATED') {
-                console.log('📝 تم تحديث بيانات المستخدم');
+                console.log('🔄 Token refreshed');
             }
         });
         
-        console.log('🎉 Exotisa - جاهز للتشغيل!');
-        
         // ============================================
-        // تعريف الدوال العامة للاستخدام في الأحداث
+        // EXPORT FUNCTIONS TO WINDOW OBJECT
         // ============================================
         window.previewApp = previewApp;
         window.downloadApp = downloadApp;
         window.deleteApp = deleteApp;
         window.changePage = changePage;
         window.hidePreview = hidePreview;
+        
+        console.log('🎉 Exotisa - Ready!');
     </script>
 </body>
 </html>
