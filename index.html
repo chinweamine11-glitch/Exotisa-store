@@ -3203,41 +3203,46 @@
         // ============================================================
         // INITIALIZATION
         // ============================================================
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize icons
-            lucide.createIcons();
+        async function initializeApp() {
+            try {
+                // Initialize icons
+                lucide.createIcons();
 
-            // Apply saved theme and language
-            document.documentElement.setAttribute('data-theme', state.theme);
-            document.documentElement.setAttribute('dir', state.language === 'ar' ? 'rtl' : 'ltr');
-            document.documentElement.setAttribute('lang', state.language);
-            
-            // Set theme icon
-            const themeIcon = document.querySelector('#themeToggle i');
-            themeIcon.setAttribute('data-lucide', state.theme === 'dark' ? 'moon' : 'sun');
-            
-            // Set language toggle text
-            document.querySelector('#langToggle span').textContent = 
-                state.language === 'ar' ? 'EN' : 'AR';
+                // Apply saved theme and language
+                document.documentElement.setAttribute('data-theme', state.theme);
+                document.documentElement.setAttribute('dir', state.language === 'ar' ? 'rtl' : 'ltr');
+                document.documentElement.setAttribute('lang', state.language);
+                
+                // Set theme icon
+                const themeIcon = document.querySelector('#themeToggle i');
+                themeIcon.setAttribute('data-lucide', state.theme === 'dark' ? 'moon' : 'sun');
+                
+                // Set language toggle text
+                document.querySelector('#langToggle span').textContent = 
+                    state.language === 'ar' ? 'EN' : 'AR';
 
-            // Check authentication
-            await checkAuth();
+                // Check authentication
+                await checkAuth();
 
-            // Load initial data
-            await Promise.all([
-                loadCategories(),
-                loadStats()
-            ]);
+                // Load initial data
+                await Promise.all([
+                    loadCategories(),
+                    loadStats()
+                ]);
 
-            // Load page content
-            loadPageContent();
+                // Load page content
+                loadPageContent();
 
-            // Hide loading
-            hideLoading();
-
-            // Setup event listeners
-            setupEventListeners();
-        });
+                // Setup event listeners
+                setupEventListeners();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('error', 'خطأ', 'تعذر تحميل التطبيق');
+            } finally {
+                // Always hide loading screen
+                hideLoading();
+            }
+        }
 
         // ============================================================
         // EVENT LISTENERS
@@ -3301,6 +3306,7 @@
                 });
             } catch (error) {
                 console.error('Auth check error:', error);
+                // Continue even if auth check fails
             }
         }
 
@@ -4790,15 +4796,20 @@
             }
         }
 
-        // Initialize when DOM is loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                lucide.createIcons();
-                checkAuth();
-            });
-        } else {
-            lucide.createIcons();
-            checkAuth();
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeApp();
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                // Always hide loading even if initialization fails
+                hideLoading();
+            }
+        });
+
+        // Fallback initialization if DOM is already loaded
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            initializeApp();
         }
     </script>
 </body>
