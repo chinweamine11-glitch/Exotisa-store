@@ -3009,217 +3009,17 @@
         };
 
         // ============================================================
-        // UTILITY FUNCTIONS
-        // ============================================================
-        function formatDate(dateString) {
-            if (!dateString) return 'غير محدد';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ar-SA', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-
-        function formatNumber(num) {
-            if (!num) return '0';
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-            return num.toString();
-        }
-
-        function formatSize(bytes) {
-            if (!bytes) return '0 B';
-            const sizes = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(1024));
-            return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-        }
-
-        function renderStars(rating) {
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 >= 0.5;
-            let stars = '';
-            
-            for (let i = 1; i <= 5; i++) {
-                if (i <= fullStars) {
-                    stars += '<span class="star filled">★</span>';
-                } else if (i === fullStars + 1 && hasHalfStar) {
-                    stars += '<span class="star half">★</span>';
-                } else {
-                    stars += '<span class="star">★</span>';
-                }
-            }
-            return stars;
-        }
-
-        function showToast(type, title, message) {
-            const container = document.getElementById('toastContainer');
-            const icons = {
-                success: 'check-circle',
-                error: 'alert-circle',
-                warning: 'alert-triangle',
-                info: 'info'
-            };
-            
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.innerHTML = `
-                <i data-lucide="${icons[type] || 'info'}" class="toast-icon" style="width:20px;height:20px"></i>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-            `;
-            
-            container.appendChild(toast);
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 5000);
-        }
-
-        function showLoading() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function toggleDropdown(dropdownId) {
-            document.getElementById(dropdownId).classList.toggle('active');
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        function toggleTheme() {
-            const currentTheme = state.theme;
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            state.theme = newTheme;
-            localStorage.setItem('theme', newTheme);
-            
-            const icon = document.querySelector('#themeToggle i');
-            icon.setAttribute('data-lucide', newTheme === 'dark' ? 'moon' : 'sun');
-            lucide.createIcons();
-        }
-
-        function toggleLanguage() {
-            const currentLang = state.language;
-            const newLang = currentLang === 'ar' ? 'en' : 'ar';
-            const html = document.documentElement;
-            
-            html.setAttribute('dir', newLang === 'ar' ? 'rtl' : 'ltr');
-            html.setAttribute('lang', newLang);
-            state.language = newLang;
-            localStorage.setItem('language', newLang);
-            
-            document.querySelector('#langToggle span').textContent = 
-                newLang === 'ar' ? 'EN' : 'AR';
-            
-            showToast('success', 'تم التغيير', `تم تغيير اللغة إلى ${newLang === 'ar' ? 'العربية' : 'English'}`);
-        }
-
-        function navigateTo(page) {
-            // Hide all pages
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.page === page) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // Show target page
-            const targetPage = document.getElementById(`page-${page}`);
-            if (targetPage) {
-                targetPage.classList.add('active');
-                state.currentPage = page;
-                
-                // Load page-specific content
-                loadPageContent(page);
-            }
-            
-            // Close sidebar on mobile
-            if (window.innerWidth <= 1024) {
-                toggleSidebar();
-            }
-        }
-
-        function loadPageContent(page = state.currentPage) {
-            switch(page) {
-                case 'home':
-                    loadStats();
-                    loadFeaturedApps();
-                    loadCategories();
-                    loadTopApps();
-                    loadNewApps();
-                    break;
-                case 'apps':
-                    loadApps(true);
-                    break;
-                case 'categories':
-                    // Categories are already loaded
-                    break;
-                case 'top-charts':
-                    loadTopApps();
-                    break;
-                case 'profile':
-                    loadProfile();
-                    break;
-                case 'favorites':
-                    loadFavorites();
-                    break;
-                case 'downloads-history':
-                    loadDownloadsHistory();
-                    break;
-                case 'developer':
-                    loadDeveloperDashboard();
-                    break;
-                case 'admin':
-                    loadAdminDashboard();
-                    break;
-            }
-        }
-
-        // ============================================================
         // INITIALIZATION
         // ============================================================
-        async function initializeApp() {
+        document.addEventListener('DOMContentLoaded', async () => {
             try {
                 // Initialize icons
                 lucide.createIcons();
 
-                // Apply saved theme and language
-                document.documentElement.setAttribute('data-theme', state.theme);
-                document.documentElement.setAttribute('dir', state.language === 'ar' ? 'rtl' : 'ltr');
-                document.documentElement.setAttribute('lang', state.language);
-                
-                // Set theme icon
-                const themeIcon = document.querySelector('#themeToggle i');
-                themeIcon.setAttribute('data-lucide', state.theme === 'dark' ? 'moon' : 'sun');
-                
-                // Set language toggle text
-                document.querySelector('#langToggle span').textContent = 
-                    state.language === 'ar' ? 'EN' : 'AR';
+                // Apply saved theme
+                if (state.theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
 
                 // Check authentication
                 await checkAuth();
@@ -3233,50 +3033,21 @@
                 // Load page content
                 loadPageContent();
 
+                // Setup realtime subscriptions
+                setupRealtimeSubscriptions();
+
                 // Setup event listeners
                 setupEventListeners();
+
+                // Hide loading
+                document.getElementById('loadingOverlay').style.display = 'none';
             } catch (error) {
                 console.error('Initialization error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل التطبيق');
-            } finally {
-                // Always hide loading screen
-                hideLoading();
+                // Hide loading even if there's an error
+                document.getElementById('loadingOverlay').style.display = 'none';
+                showToast('error', 'خطأ في التهيئة', 'حدث خطأ أثناء تحميل التطبيق');
             }
-        }
-
-        // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
-        function setupEventListeners() {
-            // Rating stars interaction
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('star-3d')) {
-                    const rating = parseInt(e.target.dataset.rating);
-                    document.getElementById('selectedRating').value = rating;
-                    
-                    // Update stars display
-                    document.querySelectorAll('#ratingStars .star-3d').forEach((star, index) => {
-                        star.classList.toggle('active', index < rating);
-                    });
-                }
-            });
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.dropdown')) {
-                    document.querySelectorAll('.dropdown').forEach(dropdown => {
-                        dropdown.classList.remove('active');
-                    });
-                }
-            });
-
-            // Search input enter key
-            document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    performSearch();
-                }
-            });
-        }
+        });
 
         // ============================================================
         // AUTHENTICATION
@@ -3306,7 +3077,6 @@
                 });
             } catch (error) {
                 console.error('Auth check error:', error);
-                // Continue even if auth check fails
             }
         }
 
@@ -3328,8 +3098,7 @@
                             id: state.user.id,
                             email: state.user.email,
                             full_name: state.user.user_metadata?.full_name || '',
-                            avatar_url: state.user.user_metadata?.avatar_url || '',
-                            role: state.user.user_metadata?.role || 'user'
+                            avatar_url: state.user.user_metadata?.avatar_url || ''
                         })
                         .select()
                         .single();
@@ -3506,7 +3275,6 @@
                 renderCategories();
             } catch (error) {
                 console.error('Load categories error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل التصنيفات');
             }
         }
 
@@ -3625,7 +3393,6 @@
                 lucide.createIcons();
             } catch (error) {
                 console.error('Load apps error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل التطبيقات');
             }
         }
 
@@ -3650,7 +3417,6 @@
                 lucide.createIcons();
             } catch (error) {
                 console.error('Load top apps error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل التطبيقات الشائعة');
             }
         }
 
@@ -3669,7 +3435,6 @@
                 lucide.createIcons();
             } catch (error) {
                 console.error('Load new apps error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل التطبيقات الجديدة');
             }
         }
 
@@ -3688,7 +3453,6 @@
                 lucide.createIcons();
             } catch (error) {
                 console.error('Load featured apps error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل التطبيقات المميزة');
             }
         }
 
@@ -3700,7 +3464,7 @@
             return apps.map(app => `
                 <div class="app-card" onclick="viewAppDetails('${app.id}')">
                     <div class="app-card-header">
-                        <img src="${app.icon_url || 'https://placehold.co/72x72/1a1a24/ffffff?text=' + app.name.charAt(0)}" alt="${app.name}" class="app-icon">
+                        <img src="${app.icon_url || '/placeholder.svg?height=72&width=72'}" alt="${app.name}" class="app-icon">
                         <div class="app-info">
                             <h3 class="app-name">${app.name}</h3>
                             <p class="app-developer">${app.users?.full_name || 'مطور'}</p>
@@ -3737,7 +3501,7 @@
 
             return apps.map(app => `
                 <div class="featured-card" onclick="viewAppDetails('${app.id}')">
-                    <img src="${app.icon_url || 'https://placehold.co/100x100/1a1a24/ffffff?text=' + app.name.charAt(0)}" alt="${app.name}" class="featured-icon">
+                    <img src="${app.icon_url || '/placeholder.svg?height=100&width=100'}" alt="${app.name}" class="featured-icon">
                     <div class="featured-content">
                         <div class="featured-badge">
                             <i data-lucide="award" style="width:12px;height:12px"></i>
@@ -3751,9 +3515,6 @@
             `).join('');
         }
 
-        // ============================================================
-        // APP DETAILS
-        // ============================================================
         async function viewAppDetails(appId) {
             try {
                 showLoading();
@@ -3777,9 +3538,7 @@
                 // Calculate rating distribution
                 const ratingDist = [0, 0, 0, 0, 0];
                 ratings?.forEach(r => {
-                    if (r.rating >= 1 && r.rating <= 5) {
-                        ratingDist[r.rating - 1]++;
-                    }
+                    ratingDist[r.rating - 1]++;
                 });
 
                 const screenshots = app.screenshots || [];
@@ -3794,7 +3553,7 @@
                     </button>
 
                     <div class="app-details-header">
-                        <img src="${app.icon_url || 'https://placehold.co/120x120/1a1a24/ffffff?text=' + app.name.charAt(0)}" alt="${app.name}" class="app-details-icon">
+                        <img src="${app.icon_url || '/placeholder.svg?height=120&width=120'}" alt="${app.name}" class="app-details-icon">
                         <div class="app-details-info">
                             <h1 class="app-details-title">${app.name}</h1>
                             <p class="app-details-dev">${app.users?.full_name || 'مطور'}</p>
@@ -3866,18 +3625,14 @@
                                 <div class="text-muted text-sm">${app.rating_count || 0} تقييم</div>
                             </div>
                             <div class="rating-bars">
-                                ${[5,4,3,2,1].map(i => {
-                                    const count = app.rating_count ? ratingDist[i-1] : 0;
-                                    const percentage = app.rating_count ? (count / app.rating_count * 100) : 0;
-                                    return `
-                                        <div class="rating-bar-row">
-                                            <span class="rating-bar-label">${i}</span>
-                                            <div class="rating-bar-track">
-                                                <div class="rating-bar-fill" style="width:${percentage}%"></div>
-                                            </div>
+                                ${[5,4,3,2,1].map(i => `
+                                    <div class="rating-bar-row">
+                                        <span class="rating-bar-label">${i}</span>
+                                        <div class="rating-bar-track">
+                                            <div class="rating-bar-fill" style="width:${app.rating_count ? (ratingDist[i-1] / app.rating_count * 100) : 0}%"></div>
                                         </div>
-                                    `;
-                                }).join('')}
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
 
@@ -3910,34 +3665,6 @@
             } finally {
                 hideLoading();
             }
-        }
-
-        function openImage(url) {
-            // Simple image viewer
-            const viewer = document.createElement('div');
-            viewer.style.cssText = `
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.9);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                cursor: pointer;
-            `;
-            
-            const img = document.createElement('img');
-            img.src = url;
-            img.style.cssText = `
-                max-width: 90%;
-                max-height: 90%;
-                object-fit: contain;
-                border-radius: var(--radius-md);
-            `;
-            
-            viewer.appendChild(img);
-            viewer.onclick = () => viewer.remove();
-            document.body.appendChild(viewer);
         }
 
         // ============================================================
@@ -3984,7 +3711,7 @@
                     user_id: state.user?.id || null,
                     version: app.version,
                     device_id: deviceId,
-                    device_name: navigator.userAgent,
+                    device_name: navigator.userAgent.match(/$$(.*?)$$/)?.[1] || 'Unknown',
                     status: 'started'
                 };
 
@@ -3996,15 +3723,17 @@
 
                 if (dlError) console.error('Download record error:', dlError);
 
-                // Increment download count
-                await supabase
+                // Get signed URL
+                const { data: signedUrl, error: urlError } = await supabase
+                    .storage
                     .from('apps')
-                    .update({ download_count: (app.download_count || 0) + 1 })
-                    .eq('id', appId);
+                    .createSignedUrl(app.apk_url.replace(`${SUPABASE_URL}/storage/v1/object/public/apps/`, ''), 300);
+
+                const downloadUrl = signedUrl?.signedUrl || app.apk_url;
 
                 // Start download
                 const link = document.createElement('a');
-                link.href = app.apk_url;
+                link.href = downloadUrl;
                 link.download = `${app.package_name}-${app.version}.apk`;
                 link.click();
 
@@ -4088,7 +3817,6 @@
                 lucide.createIcons();
             } catch (error) {
                 console.error('Load favorites error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل المفضلة');
             }
         }
 
@@ -4236,7 +3964,7 @@
                     ? apps.map(app => `
                         <div class="app-card">
                             <div class="app-card-header">
-                                <img src="${app.icon_url || 'https://placehold.co/72x72/1a1a24/ffffff?text=' + app.name.charAt(0)}" alt="${app.name}" class="app-icon">
+                                <img src="${app.icon_url || '/placeholder.svg?height=72&width=72'}" alt="${app.name}" class="app-icon">
                                 <div class="app-info">
                                     <h3 class="app-name">${app.name}</h3>
                                     <span class="badge ${getStatusBadgeClass(app.status)}">${getStatusText(app.status)}</span>
@@ -4267,25 +3995,6 @@
                 lucide.createIcons();
             } catch (error) {
                 console.error('Load developer dashboard error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل لوحة المطور');
-            }
-        }
-
-        function getStatusBadgeClass(status) {
-            switch(status) {
-                case 'approved': return 'badge-success';
-                case 'pending': return 'badge-warning';
-                case 'rejected': return 'badge-danger';
-                default: return 'badge';
-            }
-        }
-
-        function getStatusText(status) {
-            switch(status) {
-                case 'approved': return 'مقبول';
-                case 'pending': return 'بانتظار المراجعة';
-                case 'rejected': return 'مرفوض';
-                default: return status;
             }
         }
 
@@ -4297,43 +4006,72 @@
                 return;
             }
 
+            const form = event.target;
+            const formData = new FormData(form);
+
             try {
                 showLoading();
 
-                const form = event.target;
-                const formData = new FormData(form);
-                
+                // Upload icon
+                const iconFile = formData.get('icon');
+                let iconUrl = null;
+                if (iconFile && iconFile.size > 0) {
+                    const iconPath = `${state.user.id}/${Date.now()}-icon.${iconFile.name.split('.').pop()}`;
+                    const { error: iconError } = await supabase.storage
+                        .from('apps')
+                        .upload(iconPath, iconFile);
+                    
+                    if (!iconError) {
+                        iconUrl = `${SUPABASE_URL}/storage/v1/object/public/apps/${iconPath}`;
+                    }
+                }
+
+                // Upload APK
+                const apkFile = formData.get('apk');
+                let apkUrl = null;
+                let apkSize = 0;
+                if (apkFile && apkFile.size > 0) {
+                    const apkPath = `${state.user.id}/${Date.now()}-${apkFile.name}`;
+                    const { error: apkError } = await supabase.storage
+                        .from('apps')
+                        .upload(apkPath, apkFile);
+                    
+                    if (!apkError) {
+                        apkUrl = `${SUPABASE_URL}/storage/v1/object/public/apps/${apkPath}`;
+                        apkSize = apkFile.size;
+                    }
+                }
+
+                // Generate slug
+                const name = formData.get('appName');
+                const slug = name.toLowerCase()
+                    .replace(/[^a-z0-9\u0600-\u06FF\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .substring(0, 100) + '-' + Date.now().toString(36);
+
+                // Insert app
                 const appData = {
                     developer_id: state.user.id,
                     category_id: formData.get('category'),
-                    name: formData.get('appName'),
+                    name: name,
+                    slug: slug,
                     package_name: formData.get('packageName'),
                     short_description: formData.get('shortDesc'),
                     full_description: formData.get('fullDesc'),
                     version: formData.get('version'),
                     min_sdk: parseInt(formData.get('minSdk')) || 21,
                     target_sdk: parseInt(formData.get('targetSdk')) || 34,
+                    icon_url: iconUrl,
+                    apk_url: apkUrl,
+                    apk_size: apkSize,
                     video_url: formData.get('videoUrl') || null,
+                    tags: formData.get('tags')?.split(',').map(t => t.trim()).filter(Boolean) || [],
                     status: 'pending'
                 };
 
-                // Generate slug
-                appData.slug = appData.name.toLowerCase()
-                    .replace(/[^a-z0-9\u0600-\u06FF\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .substring(0, 100) + '-' + Date.now().toString(36);
-
-                // Handle tags
-                const tags = formData.get('tags');
-                if (tags) {
-                    appData.tags = tags.split(',').map(t => t.trim()).filter(Boolean);
-                }
-
-                const { data: app, error } = await supabase
+                const { error } = await supabase
                     .from('apps')
-                    .insert(appData)
-                    .select()
-                    .single();
+                    .insert(appData);
 
                 if (error) throw error;
 
@@ -4344,240 +4082,6 @@
             } catch (error) {
                 console.error('Upload app error:', error);
                 showToast('error', 'خطأ', error.message || 'تعذر رفع التطبيق');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // ============================================================
-        // PROFILE FUNCTIONS
-        // ============================================================
-        async function loadProfile() {
-            if (!state.user || !state.userProfile) return;
-
-            document.getElementById('profileAvatar').textContent = (state.userProfile.full_name || state.user.email)[0].toUpperCase();
-            document.getElementById('profileName').textContent = state.userProfile.full_name || 'مستخدم';
-            document.getElementById('profileEmail').textContent = state.user.email;
-            document.getElementById('profileRole').textContent = getRoleText(state.userProfile.role);
-
-            // Fill edit form
-            document.getElementById('editFullName').value = state.userProfile.full_name || '';
-            document.getElementById('editUsername').value = state.userProfile.username || '';
-            document.getElementById('editBio').value = state.userProfile.bio || '';
-            document.getElementById('editWebsite').value = state.userProfile.website || '';
-
-            switchProfileTab('overview');
-        }
-
-        function getRoleText(role) {
-            switch(role) {
-                case 'admin': return 'مدير';
-                case 'developer': return 'مطور';
-                default: return 'مستخدم';
-            }
-        }
-
-        async function switchProfileTab(tab) {
-            const content = document.getElementById('profileTabContent');
-            
-            // Update tab buttons
-            document.querySelectorAll('.profile-tabs .tab').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.includes(getTabName(tab)));
-            });
-
-            switch (tab) {
-                case 'overview':
-                    content.innerHTML = `
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
-                            <div class="card" style="padding:24px">
-                                <h4 style="margin-bottom:16px">معلومات الحساب</h4>
-                                <div style="display:flex;flex-direction:column;gap:12px">
-                                    <div>
-                                        <span class="text-muted text-sm">البريد الإلكتروني</span>
-                                        <p>${state.user?.email}</p>
-                                    </div>
-                                    <div>
-                                        <span class="text-muted text-sm">اسم المستخدم</span>
-                                        <p>${state.userProfile?.username || 'غير محدد'}</p>
-                                    </div>
-                                    <div>
-                                        <span class="text-muted text-sm">تاريخ التسجيل</span>
-                                        <p>${formatDate(state.userProfile?.created_at)}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card" style="padding:24px">
-                                <h4 style="margin-bottom:16px">النبذة التعريفية</h4>
-                                <p class="text-secondary">${state.userProfile?.bio || 'لم تضف نبذة تعريفية بعد'}</p>
-                            </div>
-                        </div>
-                    `;
-                    break;
-
-                case 'favorites':
-                    await loadFavorites();
-                    const favoritesHtml = document.getElementById('favoritesGrid').innerHTML;
-                    content.innerHTML = `<div class="apps-grid">${favoritesHtml}</div>`;
-                    break;
-
-                case 'ratings':
-                    if (!state.user) return;
-                    
-                    try {
-                        const { data: ratings } = await supabase
-                            .from('ratings')
-                            .select('*, apps(name, icon_url)')
-                            .eq('user_id', state.user.id)
-                            .order('created_at', { ascending: false });
-
-                        content.innerHTML = ratings?.length > 0 
-                            ? `<div class="apps-grid">${ratings.map(r => `
-                                <div class="app-card" onclick="viewAppDetails('${r.app_id}')">
-                                    <div class="app-card-header">
-                                        <img src="${r.apps?.icon_url || 'https://placehold.co/72x72/1a1a24/ffffff'}" class="app-icon">
-                                        <div class="app-info">
-                                            <h3 class="app-name">${r.apps?.name || 'تطبيق محذوف'}</h3>
-                                            <div class="rating">${renderStars(r.rating)}</div>
-                                        </div>
-                                    </div>
-                                    ${r.review ? `<div class="app-card-body"><p>${r.review}</p></div>` : ''}
-                                </div>
-                            `).join('')}</div>`
-                            : '<p class="text-center text-muted" style="padding:40px">لا توجد تقييمات</p>';
-                    } catch (error) {
-                        console.error('Load ratings error:', error);
-                        content.innerHTML = '<p class="text-center text-muted">حدث خطأ في تحميل التقييمات</p>';
-                    }
-                    break;
-
-                case 'downloads':
-                    if (!state.user) return;
-                    
-                    try {
-                        const { data: downloads } = await supabase
-                            .from('downloads')
-                            .select('*, apps(name, icon_url, version)')
-                            .eq('user_id', state.user.id)
-                            .order('created_at', { ascending: false })
-                            .limit(20);
-
-                        content.innerHTML = downloads?.length > 0 
-                            ? `<div class="card" style="padding:0;overflow:hidden">
-                                <table class="admin-table">
-                                    <thead><tr><th>التطبيق</th><th>الإصدار</th><th>التاريخ</th><th>الحالة</th></tr></thead>
-                                    <tbody>
-                                        ${downloads.map(dl => `
-                                            <tr>
-                                                <td>
-                                                    <div class="flex items-center gap-3">
-                                                        <img src="${dl.apps?.icon_url || 'https://placehold.co/40x40/1a1a24/ffffff'}" class="avatar" style="border-radius:8px">
-                                                        ${dl.apps?.name || 'تطبيق محذوف'}
-                                                    </div>
-                                                </td>
-                                                <td>${dl.version}</td>
-                                                <td>${formatDate(dl.created_at)}</td>
-                                                <td><span class="badge ${dl.status === 'completed' ? 'badge-success' : 'badge-warning'}">${dl.status === 'completed' ? 'مكتمل' : 'جاري'}</span></td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>`
-                            : '<p class="text-center text-muted" style="padding:40px">لا توجد تحميلات</p>';
-                    } catch (error) {
-                        console.error('Load downloads error:', error);
-                        content.innerHTML = '<p class="text-center text-muted">حدث خطأ في تحميل سجل التحميلات</p>';
-                    }
-                    break;
-
-                case 'devices':
-                    if (!state.user) return;
-                    
-                    try {
-                        // Simulate devices from downloads
-                        const { data: downloads } = await supabase
-                            .from('downloads')
-                            .select('device_id, device_name, created_at')
-                            .eq('user_id', state.user.id)
-                            .order('created_at', { ascending: false })
-                            .limit(10);
-
-                        const uniqueDevices = Array.from(new Map(downloads?.map(d => [d.device_id, d])).values());
-
-                        content.innerHTML = uniqueDevices?.length > 0
-                            ? `<div class="card" style="padding:0;overflow:hidden">
-                                <table class="admin-table">
-                                    <thead><tr><th>الجهاز</th><th>آخر نشاط</th></tr></thead>
-                                    <tbody>
-                                        ${uniqueDevices.map(d => `
-                                            <tr>
-                                                <td>
-                                                    <div class="flex items-center gap-3">
-                                                        <i data-lucide="smartphone" style="width:20px;height:20px"></i>
-                                                        <div>
-                                                            <div>${d.device_name || 'جهاز غير معروف'}</div>
-                                                            <div class="text-sm text-muted">${d.device_id}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>${formatDate(d.created_at)}</td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>`
-                            : '<p class="text-center text-muted" style="padding:40px">لا توجد أجهزة مسجلة</p>';
-                        lucide.createIcons();
-                    } catch (error) {
-                        console.error('Load devices error:', error);
-                        content.innerHTML = '<p class="text-center text-muted">حدث خطأ في تحميل الأجهزة</p>';
-                    }
-                    break;
-            }
-        }
-
-        function getTabName(tab) {
-            switch(tab) {
-                case 'overview': return 'نظرة عامة';
-                case 'favorites': return 'المفضلة';
-                case 'ratings': return 'تقييماتي';
-                case 'downloads': return 'التحميلات';
-                case 'devices': return 'الأجهزة';
-                default: return tab;
-            }
-        }
-
-        async function handleUpdateProfile(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-
-            try {
-                showLoading();
-
-                const updates = {
-                    full_name: formData.get('fullName'),
-                    username: formData.get('username'),
-                    bio: formData.get('bio'),
-                    website: formData.get('website'),
-                    updated_at: new Date().toISOString()
-                };
-
-                const { error } = await supabase
-                    .from('users')
-                    .update(updates)
-                    .eq('id', state.user.id);
-
-                if (error) throw error;
-
-                // Reload profile
-                await loadUserProfile();
-                loadProfile();
-                
-                closeModal('editProfileModal');
-                showToast('success', 'تم التحديث', 'تم تحديث الملف الشخصي بنجاح');
-            } catch (error) {
-                console.error('Update profile error:', error);
-                showToast('error', 'خطأ', 'تعذر تحديث الملف الشخصي');
             } finally {
                 hideLoading();
             }
@@ -4615,7 +4119,7 @@
                         <tr>
                             <td>
                                 <div class="flex items-center gap-3">
-                                    <img src="${app.icon_url || 'https://placehold.co/40x40/1a1a24/ffffff'}" class="avatar" style="border-radius:8px">
+                                    <img src="${app.icon_url || '/placeholder.svg?height=40&width=40'}" class="avatar" style="border-radius:8px">
                                     <div>
                                         <div class="font-semibold">${app.name}</div>
                                         <div class="text-sm text-muted">${app.package_name}</div>
@@ -4663,25 +4167,13 @@
                     </tr>
                 `).join('') || '<tr><td colspan="5" class="text-center text-muted">لا يوجد مستخدمين</td></tr>';
 
-                lucide.createIcons();
             } catch (error) {
                 console.error('Load admin dashboard error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل لوحة الإدارة');
-            }
-        }
-
-        function getRoleBadgeClass(role) {
-            switch(role) {
-                case 'admin': return 'badge-danger';
-                case 'developer': return 'badge-warning';
-                default: return 'badge-primary';
             }
         }
 
         async function approveApp(appId) {
             try {
-                showLoading();
-                
                 await supabase
                     .from('apps')
                     .update({ status: 'approved', published_at: new Date().toISOString() })
@@ -4690,17 +4182,12 @@
                 showToast('success', 'تم القبول', 'تم قبول التطبيق ونشره');
                 loadAdminDashboard();
             } catch (error) {
-                console.error('Approve app error:', error);
                 showToast('error', 'خطأ', 'تعذر قبول التطبيق');
-            } finally {
-                hideLoading();
             }
         }
 
         async function rejectApp(appId) {
             try {
-                showLoading();
-                
                 await supabase
                     .from('apps')
                     .update({ status: 'rejected' })
@@ -4709,108 +4196,610 @@
                 showToast('success', 'تم الرفض', 'تم رفض التطبيق');
                 loadAdminDashboard();
             } catch (error) {
-                console.error('Reject app error:', error);
                 showToast('error', 'خطأ', 'تعذر رفض التطبيق');
-            } finally {
-                hideLoading();
             }
         }
 
         async function updateUserRole(userId, newRole) {
             try {
-                showLoading();
-                
                 await supabase
                     .from('users')
                     .update({ role: newRole })
                     .eq('id', userId);
                 
                 showToast('success', 'تم التحديث', 'تم تحديث دور المستخدم');
-                loadAdminDashboard();
             } catch (error) {
-                console.error('Update user role error:', error);
                 showToast('error', 'خطأ', 'تعذر تحديث الدور');
+            }
+        }
+
+        // ============================================================
+        // PROFILE FUNCTIONS
+        // ============================================================
+        async function loadProfile() {
+            if (!state.user || !state.userProfile) return;
+
+            document.getElementById('profileAvatar').textContent = (state.userProfile.full_name || state.user.email)[0].toUpperCase();
+            document.getElementById('profileName').textContent = state.userProfile.full_name || 'مستخدم';
+            document.getElementById('profileEmail').textContent = state.user.email;
+            document.getElementById('profileRole').textContent = getRoleText(state.userProfile.role);
+
+            // Fill edit form
+            document.getElementById('editFullName').value = state.userProfile.full_name || '';
+            document.getElementById('editUsername').value = state.userProfile.username || '';
+            document.getElementById('editBio').value = state.userProfile.bio || '';
+            document.getElementById('editWebsite').value = state.userProfile.website || '';
+
+            switchProfileTab('overview');
+        }
+
+        async function switchProfileTab(tab) {
+            const content = document.getElementById('profileTabContent');
+            
+            // Update tab buttons
+            document.querySelectorAll('.profile-tabs .tab').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(getTabName(tab)));
+            });
+
+            switch (tab) {
+                case 'overview':
+                    content.innerHTML = `
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+                            <div class="card" style="padding:24px">
+                                <h4 style="margin-bottom:16px">معلومات الحساب</h4>
+                                <div style="display:flex;flex-direction:column;gap:12px">
+                                    <div>
+                                        <span class="text-muted text-sm">البريد الإلكتروني</span>
+                                        <p>${state.user?.email}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted text-sm">اسم المستخدم</span>
+                                        <p>${state.userProfile?.username || 'غير محدد'}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted text-sm">تاريخ التسجيل</span>
+                                        <p>${formatDate(state.userProfile?.created_at)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" style="padding:24px">
+                                <h4 style="margin-bottom:16px">النبذة التعريفية</h4>
+                                <p class="text-secondary">${state.userProfile?.bio || 'لم تضف نبذة تعريفية بعد'}</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'favorites':
+                    await loadFavorites();
+                    const favoritesHtml = document.getElementById('favoritesGrid').innerHTML;
+                    content.innerHTML = `<div class="apps-grid">${favoritesHtml}</div>`;
+                    break;
+
+                case 'downloads':
+                    const { data: downloads } = await supabase
+                        .from('downloads')
+                        .select('*, apps(name, icon_url, version)')
+                        .eq('user_id', state.user.id)
+                        .order('created_at', { ascending: false })
+                        .limit(20);
+
+                    content.innerHTML = downloads?.length > 0 
+                        ? `<div class="card" style="padding:0;overflow:hidden">
+                            <table class="admin-table">
+                                <thead><tr><th>التطبيق</th><th>الإصدار</th><th>التاريخ</th><th>الحالة</th></tr></thead>
+                                <tbody>
+                                    ${downloads.map(dl => `
+                                        <tr>
+                                            <td>
+                                                <div class="flex items-center gap-3">
+                                                    <img src="${dl.apps?.icon_url || '/placeholder.svg?height=40&width=40'}" class="avatar" style="border-radius:8px">
+                                                    ${dl.apps?.name || 'تطبيق محذوف'}
+                                                </div>
+                                            </td>
+                                            <td>${dl.version}</td>
+                                            <td>${formatDate(dl.created_at)}</td>
+                                            <td><span class="badge ${dl.status === 'completed' ? 'badge-success' : 'badge-warning'}">${dl.status === 'completed' ? 'مكتمل' : 'جاري'}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`
+                        : '<p class="text-center text-muted" style="padding:40px">لا توجد تحميلات</p>';
+                    break;
+
+                case 'devices':
+                    const { data: sessions } = await supabase
+                        .from('sessions')
+                        .select('*')
+                        .eq('user_id', state.user.id)
+                        .order('last_activity', { ascending: false });
+
+                    content.innerHTML = sessions?.length > 0
+                        ? `<div class="card" style="padding:0;overflow:hidden">
+                            <table class="admin-table">
+                                <thead><tr><th>الجهاز</th><th>آخر نشاط</th><th>الحالة</th><th></th></tr></thead>
+                                <tbody>
+                                    ${sessions.map(s => `
+                                        <tr>
+                                            <td>
+                                                <div class="flex items-center gap-3">
+                                                    <i data-lucide="smartphone" style="width:20px;height:20px"></i>
+                                                    <div>
+                                                        <div>${s.device_name || 'جهاز غير معروف'}</div>
+                                                        <div class="text-sm text-muted">${s.device_model || ''}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>${formatDate(s.last_activity)}</td>
+                                            <td><span class="badge ${s.is_active ? 'badge-success' : ''}">${s.is_active ? 'نشط' : 'غير نشط'}</span></td>
+                                            <td><button class="btn btn-ghost btn-sm" onclick="removeSession('${s.id}')">إزالة</button></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`
+                        : '<p class="text-center text-muted" style="padding:40px">لا توجد أجهزة مسجلة</p>';
+                    lucide.createIcons();
+                    break;
+
+                case 'ratings':
+                    const { data: ratings } = await supabase
+                        .from('ratings')
+                        .select('*, apps(name, icon_url)')
+                        .eq('user_id', state.user.id)
+                        .order('created_at', { ascending: false })
+                        .limit(20);
+
+                    content.innerHTML = ratings?.length > 0
+                        ? `<div class="review-list">${ratings.map(r => `
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <img src="${r.apps?.icon_url || '/placeholder.svg?height=40&width=40'}" class="avatar avatar-sm">
+                                    <div class="review-author">
+                                        <div class="review-author-name">${r.apps?.name || 'تطبيق محذوف'}</div>
+                                        <div class="review-date">${formatDate(r.created_at)}</div>
+                                    </div>
+                                    <div class="rating">
+                                        ${renderStars(r.rating)}
+                                    </div>
+                                </div>
+                                ${r.review ? `<p class="review-content">${r.review}</p>` : ''}
+                            </div>
+                        `).join('')}</div>`
+                        : '<p class="text-center text-muted" style="padding:40px">لم تقم بتقييم أي تطبيقات بعد</p>';
+                    lucide.createIcons();
+                    break;
+            }
+        }
+
+        async function loadDownloadsHistory() {
+            if (!state.user) return;
+
+            try {
+                const { data, error } = await supabase
+                    .from('downloads')
+                    .select('*, apps(name, icon_url, version)')
+                    .eq('user_id', state.user.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('downloadsHistory');
+                if (data && data.length > 0) {
+                    container.innerHTML = data.map(dl => `
+                        <div class="card" style="margin-bottom:12px;padding:16px">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="${dl.apps?.icon_url || '/placeholder.svg?height=40&width=40'}" class="avatar" style="border-radius:8px">
+                                    <div>
+                                        <div class="font-semibold">${dl.apps?.name || 'تطبيق محذوف'}</div>
+                                        <div class="text-sm text-muted">الإصدار ${dl.version} • ${formatDate(dl.created_at)}</div>
+                                    </div>
+                                </div>
+                                <span class="badge ${dl.status === 'completed' ? 'badge-success' : 'badge-warning'}">
+                                    ${dl.status === 'completed' ? 'مكتمل' : 'جاري'}
+                                </span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p class="text-center text-muted" style="padding:40px">لا توجد تحميلات سابقة</p>';
+                }
+            } catch (error) {
+                console.error('Load downloads history error:', error);
+            }
+        }
+
+        async function removeSession(sessionId) {
+            try {
+                await supabase
+                    .from('sessions')
+                    .delete()
+                    .eq('id', sessionId);
+                showToast('success', 'تمت الإزالة', 'تم إزالة الجهاز بنجاح');
+                switchProfileTab('devices'); // Reload devices tab
+            } catch (error) {
+                showToast('error', 'خطأ', 'تعذر إزالة الجهاز');
+            }
+        }
+
+        async function handleUpdateProfile(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                showLoading();
+                const { error } = await supabase
+                    .from('users')
+                    .update({
+                        full_name: formData.get('fullName'),
+                        username: formData.get('username'),
+                        bio: formData.get('bio'),
+                        website: formData.get('website')
+                    })
+                    .eq('id', state.user.id);
+
+                if (error) throw error;
+
+                await loadUserProfile();
+                loadProfile();
+                closeModal('editProfileModal');
+                showToast('success', 'تم التحديث', 'تم تحديث الملف الشخصي بنجاح');
+            } catch (error) {
+                showToast('error', 'خطأ', error.message);
             } finally {
                 hideLoading();
             }
         }
 
         // ============================================================
-        // DOWNLOADS HISTORY
+        // NAVIGATION & UI FUNCTIONS
         // ============================================================
-        async function loadDownloadsHistory() {
-            if (!state.user) return;
-
-            try {
-                const { data: downloads } = await supabase
-                    .from('downloads')
-                    .select('*, apps(name, icon_url, version)')
-                    .eq('user_id', state.user.id)
-                    .order('created_at', { ascending: false });
-
-                const container = document.getElementById('downloadsHistory');
-                
-                if (!downloads || downloads.length === 0) {
-                    container.innerHTML = '<p class="text-center text-muted" style="padding:40px">لا توجد تحميلات سابقة</p>';
-                    return;
-                }
-
-                container.innerHTML = `
-                    <div class="card" style="padding:0;overflow:hidden">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>التطبيق</th>
-                                    <th>الإصدار</th>
-                                    <th>التاريخ</th>
-                                    <th>الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${downloads.map(dl => `
-                                    <tr>
-                                        <td>
-                                            <div class="flex items-center gap-3">
-                                                <img src="${dl.apps?.icon_url || 'https://placehold.co/40x40/1a1a24/ffffff'}" 
-                                                     class="avatar" style="border-radius:8px">
-                                                <div>
-                                                    <div class="font-semibold">${dl.apps?.name || 'تطبيق محذوف'}</div>
-                                                    <div class="text-sm text-muted">${dl.device_name || 'جهاز غير معروف'}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>${dl.version}</td>
-                                        <td>${formatDate(dl.created_at)}</td>
-                                        <td><span class="badge ${dl.status === 'completed' ? 'badge-success' : 'badge-warning'}">
-                                            ${dl.status === 'completed' ? 'مكتمل' : 'جاري'}
-                                        </span></td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            } catch (error) {
-                console.error('Load downloads history error:', error);
-                showToast('error', 'خطأ', 'تعذر تحميل سجل التحميلات');
+        function navigateTo(pageId) {
+            state.currentPage = pageId;
+            loadPageContent();
+            // Close sidebar on mobile
+            if (window.innerWidth <= 1024) {
+                toggleSidebar(true);
             }
         }
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initializeApp();
-            } catch (error) {
-                console.error('Failed to initialize app:', error);
-                // Always hide loading even if initialization fails
-                hideLoading();
+        function loadPageContent() {
+            // Hide all page sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show current page section
+            const pageSection = document.getElementById(`page-${state.currentPage}`);
+            if (pageSection) {
+                pageSection.classList.add('active');
             }
+
+            // Update sidebar navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === state.currentPage) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load specific page data
+            switch (state.currentPage) {
+                case 'home':
+                    loadFeaturedApps();
+                    loadTopApps();
+                    loadNewApps();
+                    break;
+                case 'apps':
+                    loadApps();
+                    break;
+                case 'categories':
+                    // Already loaded in loadCategories()
+                    break;
+                case 'top-charts':
+                    loadTopApps();
+                    break;
+                case 'profile':
+                    loadProfile();
+                    break;
+                case 'favorites':
+                    loadFavorites();
+                    break;
+                case 'downloads-history':
+                    loadDownloadsHistory();
+                    break;
+                case 'developer':
+                    loadDeveloperDashboard();
+                    break;
+                case 'admin':
+                    loadAdminDashboard();
+                    break;
+            }
+        }
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    stars += '<i data-lucide="star" class="star filled" style="width:16px;height:16px"></i>';
+                } else if (hasHalfStar && i === fullStars + 1) {
+                    stars += '<i data-lucide="star" class="star half" style="width:16px;height:16px"></i>';
+                } else {
+                    stars += '<i data-lucide="star" class="star" style="width:16px;height:16px"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'approved': return 'badge-success';
+                case 'pending': return 'badge-warning';
+                case 'rejected': return 'badge-danger';
+                case 'suspended': return 'badge-danger';
+                default: return 'badge';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'approved': return 'مقبول';
+                case 'pending': return 'بانتظار المراجعة';
+                case 'rejected': return 'مرفوض';
+                case 'suspended': return 'موقوف';
+                default: return status;
+            }
+        }
+
+        function getRoleBadgeClass(role) {
+            switch (role) {
+                case 'admin': return 'badge-danger';
+                case 'developer': return 'badge-primary';
+                case 'user': return 'badge';
+                default: return 'badge';
+            }
+        }
+
+        function getRoleText(role) {
+            switch (role) {
+                case 'admin': return 'مدير';
+                case 'developer': return 'مطور';
+                case 'user': return 'مستخدم';
+                default: return role;
+            }
+        }
+
+        function getTabName(tabKey) {
+            const tabs = {
+                'overview': 'نظرة عامة',
+                'favorites': 'المفضلة',
+                'ratings': 'تقييماتي',
+                'downloads': 'التحميلات',
+                'devices': 'الأجهزة'
+            };
+            return tabs[tabKey] || tabKey;
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function showToast(type, title, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'alert-triangle'}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="btn btn-icon btn-ghost" onclick="this.parentElement.remove()">
+                    <i data-lucide="x"></i>
+                </button>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 5000);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function toggleTheme() {
+            const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+            state.theme = newTheme;
+            localStorage.setItem('theme', newTheme);
+            document.documentElement.setAttribute('data-theme', newTheme);
+        }
+
+        function toggleLanguage() {
+            const newLang = state.language === 'ar' ? 'en' : 'ar';
+            state.language = newLang;
+            localStorage.setItem('language', newLang);
+            document.documentElement.setAttribute('dir', newLang === 'ar' ? 'rtl' : 'ltr');
+            document.documentElement.lang = newLang;
+            // Reload the page to apply language changes
+            location.reload();
+        }
+
+        function toggleSidebar(forceClose) {
+            const sidebar = document.getElementById('sidebar');
+            if (forceClose) {
+                sidebar.classList.add('collapsed');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                if (!dropdown.contains(event.target)) {
+                    dropdown.classList.remove('active');
+                }
+            });
         });
 
-        // Fallback initialization if DOM is already loaded
-        if (document.readyState === 'interactive' || document.readyState === 'complete') {
-            initializeApp();
+        function setupRealtimeSubscriptions() {
+            // We'll implement realtime subscriptions for notifications, etc.
         }
+
+        function setupEventListeners() {
+            // Search input enter key
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+
+            // File upload handlers
+            const iconUpload = document.getElementById('iconUpload');
+            if (iconUpload) {
+                iconUpload.addEventListener('click', () => {
+                    iconUpload.querySelector('input[type="file"]').click();
+                });
+                iconUpload.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    iconUpload.classList.add('dragover');
+                });
+                iconUpload.addEventListener('dragleave', () => {
+                    iconUpload.classList.remove('dragover');
+                });
+                iconUpload.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    iconUpload.classList.remove('dragover');
+                    const file = e.dataTransfer.files[0];
+                    if (file) {
+                        iconUpload.querySelector('input[type="file"]').files = e.dataTransfer.files;
+                        // You can add preview here
+                    }
+                });
+            }
+
+            // APK upload
+            const apkUpload = document.getElementById('apkUpload');
+            if (apkUpload) {
+                apkUpload.addEventListener('click', () => {
+                    apkUpload.querySelector('input[type="file"]').click();
+                });
+            }
+
+            // Screenshots upload
+            const screenshotUpload = document.getElementById('screenshotsUpload');
+            if (screenshotUpload) {
+                screenshotUpload.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('screenshot-upload-item') || e.target.closest('.screenshot-upload-item')) {
+                        document.getElementById('screenshotInput').click();
+                    }
+                });
+            }
+
+            // Rating stars interaction
+            const ratingStars = document.getElementById('ratingStars');
+            if (ratingStars) {
+                ratingStars.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('star-3d')) {
+                        const rating = parseInt(e.target.dataset.rating);
+                        document.getElementById('selectedRating').value = rating;
+                        // Update stars visual
+                        document.querySelectorAll('#ratingStars .star-3d').forEach((star, index) => {
+                            if (index < rating) {
+                                star.classList.add('active');
+                            } else {
+                                star.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        // Additional helper functions
+        function openImage(url) {
+            // Implement image lightbox if needed
+            window.open(url, '_blank');
+        }
+
+        function editApp(appId) {
+            // Implement app editing
+            showToast('info', 'قريباً', 'ميزة تعديل التطبيق قريباً');
+        }
+
+        function triggerScreenshotUpload() {
+            document.getElementById('screenshotInput').click();
+        }
+
+        // Initialize
+        lucide.createIcons();
     </script>
 </body>
 </html>
